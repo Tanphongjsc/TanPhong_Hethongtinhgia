@@ -1,0 +1,35 @@
+{% load workspace_tags %}
+<section id="cost-element-table" class="rounded border border-slate-200 bg-white" data-sort="{{ current_sort }}" data-per-page="{{ per_page }}" aria-label="Danh mục phần tử chi phí">
+  <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-3 py-2">
+    <p class="text-xs text-slate-500">{{ page_obj.paginator.count }} phần tử chi phí</p>
+    <form method="get" hx-get="{% url 'master_data:cost_element_list' %}" hx-target="#cost-element-table" hx-select="#cost-element-table" hx-swap="outerHTML" hx-trigger="submit, change target:select" hx-push-url="true" hx-indicator="#list-loading" hx-sync="#cost-element-filters:replace" class="flex items-center gap-2 text-xs">
+      {% for key, value in request.GET.items %}{% if key != 'page' and key != 'sort' %}<input type="hidden" name="{{ key }}" value="{{ value }}">{% endif %}{% endfor %}
+      <label for="table-sort">Sắp xếp</label>
+      <select id="table-sort" name="sort" class="rounded border border-slate-300 bg-white px-2 py-1">
+        {% for value, label in sort_options %}<option value="{{ value }}" {% if current_sort == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+      </select>
+      <noscript><button type="submit">Áp dụng</button></noscript>
+    </form>
+  </div>
+  <div class="overflow-x-auto">
+    <table class="w-full whitespace-nowrap text-left text-sm">
+      <caption class="sr-only">Danh mục phần tử chi phí</caption>
+      <thead class="bg-slate-50 text-xs font-semibold text-slate-600">
+        <tr>
+          {% include "components/sort_header.html" with field="code" label="Mã" %}
+          {% include "components/sort_header.html" with field="name" label="Tên" %}
+          <th scope="col" class="px-3 py-3">Nhóm chi phí</th>
+          {% include "components/sort_header.html" with field="value_type" label="Loại giá trị" %}
+          <th scope="col" class="px-3 py-3">Nguồn dữ liệu</th>
+          <th scope="col" class="px-3 py-3">Phạm vi kế toán</th>
+          <th scope="col" class="px-3 py-3">Phạm vi chi phí</th>
+          <th scope="col" class="px-3 py-3">Dữ liệu nhạy cảm</th>
+          <th scope="col" class="px-3 py-3">Trạng thái</th>
+          <th scope="col" class="px-3 py-3 text-right">Thao tác</th>
+        </tr>
+      </thead>
+      <tbody>{% include "master_data/partials/cost_element_rows.html" %}</tbody>
+    </table>
+  </div>
+  {% include "components/pagination.html" %}
+</section>

@@ -1,0 +1,15 @@
+{% load workspace_tags %}
+{% for record in records %}
+<tr class="h-12 border-t border-slate-200 hover:bg-slate-50">
+  <td class="px-3 py-2 font-mono text-xs"><a href="{% url 'pricing:scenario_detail' record.pk %}" class="text-brand-700 hover:underline">{{ record.code }}</a></td>
+  <td class="px-3 py-2">{{ record.name }}</td>
+  <td class="px-3 py-2">{{ record.display_product }}<span class="block text-xs text-slate-500">{{ record.display_sku }}</span></td>
+  <td class="px-3 py-2">{{ record.display_channel }}</td>
+  <td class="px-3 py-2">{{ record.display_date }}</td>
+  <td class="px-3 py-2 text-right tabular-nums">{{ record.display_cost }}</td>
+  <td class="px-3 py-2 text-right tabular-nums">{{ record.display_price }} {{ record.currency_code_id }}</td>
+  <td class="px-3 py-2 text-right tabular-nums">{{ record.display_margin }}</td>
+  <td class="px-3 py-2">{% include "components/status_badge.html" with status=record.status %}</td>
+  <td class="px-3 py-2 text-right"><a href="{% url 'pricing:scenario_detail' record.pk %}" class="text-brand-700 hover:underline">Xem chi tiết</a></td>
+</tr>
+{% endfor %}

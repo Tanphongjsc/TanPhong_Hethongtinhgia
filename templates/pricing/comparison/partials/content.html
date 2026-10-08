@@ -1,0 +1,53 @@
+{% load workspace_tags %}
+<section id="scenario-comparison" x-data="{ selectedCount: {{ selected_ids|length }} }" aria-label="So sánh kịch bản giá bán">
+  {% if errors %}<div role="alert" class="mb-3 rounded border border-red-200 bg-red-50 p-3 text-red-800">{% for error in errors %}<p>{{ error }}</p>{% endfor %}</div>{% endif %}
+  <form id="comparison-form" method="get" action="{{ list_url }}" hx-get="{{ list_url }}" hx-target="#scenario-comparison" hx-select="#scenario-comparison" hx-swap="outerHTML" hx-push-url="true" hx-indicator="#list-loading" hx-sync="this:replace" hx-trigger="submit, change from:select, change from:input[type=date], change from:input[name=scenario]" @change="selectedCount = $el.querySelectorAll('input[name=scenario]:checked, input[type=hidden][name=scenario]').length">
+    {% for pk in hidden_ids %}<input type="hidden" name="scenario" value="{{ pk }}">{% endfor %}
+    {% if compared %}<input type="hidden" name="compare" value="1">{% endif %}
+    <div class="mb-3 flex flex-wrap items-end gap-3">
+      {% for option in filter_options %}{% include "components/filter_select.html" with name=option.name label=option.label choices=option.choices selected=option.selected %}{% endfor %}
+      {% include "components/search_box.html" %}
+      <label for="comparison-date-from" class="text-xs text-slate-600">Định giá từ ngày<input id="comparison-date-from" name="date_from" type="date" value="{{ filters.date_from }}" class="mt-1 block h-9 rounded border border-slate-300 px-2"></label>
+      <label for="comparison-date-to" class="text-xs text-slate-600">Định giá đến ngày<input id="comparison-date-to" name="date_to" type="date" value="{{ filters.date_to }}" class="mt-1 block h-9 rounded border border-slate-300 px-2"></label>
+      <a href="{{ list_url }}" class="px-1 py-2 text-slate-600 underline underline-offset-2">Đặt lại</a>
+      {% include "partials/loading.html" %}
+    </div>
+    <div class="rounded border border-slate-200">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-3 py-2">
+        <p class="text-xs text-slate-600">Kịch bản đã tính · chọn từ 2 đến 5</p>
+        <label for="comparison-sort" class="text-xs text-slate-600">Sắp xếp
+          <select id="comparison-sort" name="sort" class="ml-2 rounded border border-slate-300 px-2 py-1">
+            <option value="code" {% if current_sort == 'code' %}selected{% endif %}>Mã ↑</option><option value="-code" {% if current_sort == '-code' %}selected{% endif %}>Mã ↓</option>
+            <option value="name" {% if current_sort == 'name' %}selected{% endif %}>Tên ↑</option><option value="-name" {% if current_sort == '-name' %}selected{% endif %}>Tên ↓</option>
+            <option value="pricing_date" {% if current_sort == 'pricing_date' %}selected{% endif %}>Ngày định giá ↑</option><option value="-pricing_date" {% if current_sort == '-pricing_date' %}selected{% endif %}>Ngày định giá ↓</option>
+          </select>
+        </label>
+      </div>
+      <input type="hidden" name="per_page" value="{{ per_page }}">
+      <div class="overflow-x-auto">
+        <table class="w-full whitespace-nowrap text-left text-sm">
+          <thead class="border-b border-slate-200 bg-slate-50 text-xs text-slate-600"><tr><th scope="col" class="px-3 py-3">Chọn</th><th scope="col" class="px-3 py-3">Kịch bản</th><th scope="col" class="px-3 py-3">Ngày định giá</th><th scope="col" class="px-3 py-3">Kênh bán</th><th scope="col" class="px-3 py-3 text-right">Giá khách trả</th><th scope="col" class="px-3 py-3 text-right">Biên lợi nhuận</th><th scope="col" class="px-3 py-3">Trạng thái</th></tr></thead>
+          <tbody class="divide-y divide-slate-200">
+            {% for c in candidates %}<tr class="hover:bg-slate-50">
+              <td class="px-3 py-3"><input id="scenario-{{ c.id }}" type="checkbox" name="scenario" value="{{ c.id }}" {% if c.id in selected_ids %}checked{% endif %} :disabled="selectedCount >= 5 &amp;&amp; !$el.checked" aria-label="Chọn kịch bản {{ c.code }}"></td>
+              <th scope="row" class="px-3 py-2 font-normal"><label for="scenario-{{ c.id }}" class="block cursor-pointer font-medium">{{ c.name }}</label><a href="{{ c.detail_url }}" class="font-mono text-xs text-brand-700 underline">{{ c.code }}</a></th>
+              <td class="px-3 py-3">{{ c.date }}</td><td class="px-3 py-3">{{ c.channel }}</td><td class="px-3 py-3 text-right tabular-nums">{{ c.price }} {{ c.currency }}</td><td class="px-3 py-3 text-right tabular-nums">{{ c.margin }}</td><td class="px-3 py-3">{% include "components/status_badge.html" with status=c.status %}</td>
+            </tr>{% empty %}<tr><td colspan="7">{% include "components/empty_state.html" with empty_title="Chưa có kịch bản phù hợp để chọn." empty_description="Chọn sản phẩm, SKU hoặc thay đổi bộ lọc. Chỉ sử dụng kịch bản có kết quả đã lưu hợp lệ." %}</td></tr>{% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="my-3 flex flex-wrap items-center gap-3">
+      <p aria-live="polite" class="text-sm text-slate-600">Đã chọn <span x-text="selectedCount">{{ selected_ids|length }}</span>/5 kịch bản</p>
+      {% if selected %}<label for="comparison-baseline" class="text-xs text-slate-600">Kịch bản mốc
+        <select id="comparison-baseline" name="baseline" class="ml-2 h-9 max-w-64 rounded border border-slate-300 px-2"><option value="">Kịch bản đầu tiên</option>{% for c in selected %}<option value="{{ c.id }}" {% if filters.baseline == c.id|stringformat:'s' %}selected{% endif %}>{{ c.code }} — {{ c.name }}</option>{% endfor %}</select>
+      </label>{% endif %}
+      <button type="submit" name="compare" value="1" :disabled="selectedCount < 2 || selectedCount > 5" class="inline-flex min-h-9 items-center rounded bg-brand-600 px-3 py-2 text-sm font-medium text-white hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-50">So sánh kịch bản</button>
+      <noscript><p class="text-xs text-slate-500">Bấm So sánh để gửi lựa chọn và bộ lọc.</p></noscript>
+    </div>
+  </form>
+  {% include "components/pagination.html" %}
+  {% if insufficient %}<p class="my-3 text-slate-600">SKU này chưa có đủ kịch bản để so sánh. <a href="{% url 'pricing:scenario_create' %}" class="text-brand-700 underline">Thêm kịch bản giá bán</a></p>{% endif %}
+  {% if selected %}<div class="my-3 flex flex-wrap gap-2" aria-label="Kịch bản đã chọn">{% for c in selected %}<span class="inline-flex items-center gap-2 rounded border border-slate-200 px-2 py-1 text-xs"><span class="font-mono">{{ c.code }}</span><a href="{{ c.remove_url }}" hx-get="{{ c.remove_url }}" hx-target="#scenario-comparison" hx-select="#scenario-comparison" hx-swap="outerHTML" hx-push-url="true" aria-label="Bỏ kịch bản {{ c.code }}" class="text-slate-600 underline">Bỏ chọn</a></span>{% endfor %}</div>{% endif %}
+  {% if comparison %}{% include "pricing/comparison/partials/matrix.html" %}{% endif %}
+</section>

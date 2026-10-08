@@ -1,0 +1,35 @@
+{% load workspace_tags costing_tags %}
+<div id="run-detail">
+  <section class="mb-5 border-b border-slate-200 pb-5" aria-labelledby="run-info-title">
+    <div class="mb-4 flex flex-wrap items-center gap-3"><h2 id="run-info-title" class="font-semibold">Thông tin lần tính</h2>{% include "components/status_badge.html" with status=run.run_status %}</div>
+    <dl class="grid gap-x-6 gap-y-3 md:grid-cols-2 lg:grid-cols-3">
+      {% include "components/detail_field.html" with label="Mã lần tính" value=run.run_no %}
+      {% include "components/detail_field.html" with label="Ngày tính giá" value=run.effective_at|date:'d/m/Y' %}
+      {% include "components/detail_field.html" with label="Sản phẩm" value=display.product %}
+      {% include "components/detail_field.html" with label="SKU" value=display.sku %}
+      {% include "components/detail_field.html" with label="Phương án" value=display.scheme %}
+      {% include "components/detail_field.html" with label="Phiên bản phương án" value=display.version %}
+      {% include "components/detail_field.html" with label="Sản lượng" value=run.quantity|vn_number %}
+      {% include "components/detail_field.html" with label="Đơn vị sản lượng" value=display.uom %}
+      {% include "components/detail_field.html" with label="Tiền tệ" value=display.currency %}
+      {% include "components/detail_field.html" with label="Bắt đầu" value=started_at|snapshot_date %}
+      {% include "components/detail_field.html" with label="Kết thúc" value=finished_at|snapshot_date %}
+      {% include "components/detail_field.html" with label="Ghi chú" value=run.context_jsonb.notes %}
+    </dl>
+    <p class="mt-3 text-xs text-slate-500">Mã tham chiếu: <span class="font-mono">{{ run.trace_id }}</span></p>
+  </section>
+  {% if errors %}<section class="mb-5 text-red-700" role="alert"><h2 class="font-semibold">Không thể hoàn thành lần tính giá thành</h2><ul class="mt-2 list-disc pl-5">{% for error in errors %}<li>{{ error.message }}</li>{% endfor %}</ul></section>{% endif %}
+  {% if run.full_cost != None %}<section class="mb-5 border-b border-slate-200 pb-5" aria-labelledby="cost-summary-title"><h2 id="cost-summary-title" class="mb-3 font-semibold">Tổng quan giá thành sản xuất</h2><dl class="grid gap-3 sm:grid-cols-2">
+    {% with value=run.full_cost|vn_number|add:' '|add:display.currency %}{% include "components/detail_field.html" with label="Giá thành tổng" %}{% endwith %}
+    {% with value=per_unit|vn_number|add:' '|add:display.currency|add:' / '|add:display.uom %}{% include "components/detail_field.html" with label="Giá thành trên đơn vị sản lượng" %}{% endwith %}
+  </dl><p class="mt-3 text-xs text-slate-500">Tổng lấy từ dòng đầu ra của phương án; các tổng phụ và thành phần không được cộng lặp. Giá trị trên đơn vị được làm tròn khi hiển thị.</p></section>{% endif %}
+  {% if warnings %}<section class="mb-5 text-amber-800"><h2 class="font-semibold">Lưu ý lần tính</h2><ul class="mt-2 list-disc pl-5">{% for warning in warnings %}<li>{{ warning }}</li>{% endfor %}</ul></section>{% endif %}
+  <div id="run-trace-editor"></div>
+  {% include "costing/runs/partials/lines.html" %}
+  <nav class="mt-5 flex flex-wrap gap-4 border-t border-slate-200 pt-4" aria-label="Thao tác lần tính">
+    <a href="{% url 'costing:run_snapshot' run.public_id %}" class="text-brand-700 hover:underline">Xem dữ liệu và phiên bản đã sử dụng</a>
+    <a href="{% url 'costing:run_rerun' run.public_id %}" class="text-brand-700 hover:underline">Tạo lần tính mới</a>
+    <a href="{% url 'costing:run_list' %}" class="text-brand-700 hover:underline">Quay lại danh sách</a>
+  </nav>
+  <p class="mt-3 text-xs text-slate-500">Lịch sử đọc kết quả và diễn giải đã lưu; không chọn lại nguồn hoặc tính lại bằng dữ liệu hiện tại.</p>
+</div>

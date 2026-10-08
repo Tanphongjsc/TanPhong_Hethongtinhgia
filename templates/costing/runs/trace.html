@@ -1,0 +1,2 @@
+{% extends "layouts/app_shell.html" %}
+{% block content %}{% include "costing/runs/partials/trace_content.html" %}<a class="mt-4 inline-block text-brand-700" href="{% url 'costing:run_detail' run.public_id %}">Quay lại kết quả</a>{% endblock %}

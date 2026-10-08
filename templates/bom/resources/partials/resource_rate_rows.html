@@ -1,0 +1,17 @@
+{% load workspace_tags %}
+{% for record in records %}
+<tr class="h-12 border-t border-slate-200 hover:bg-slate-50">
+  <td class="px-3 py-2"><span class="font-mono">{{ record.resource.code }}</span> — {{ record.resource.name }}</td>
+  <td class="px-3 py-2">{{ record.resource.resource_type|display_label }}</td>
+  <td class="px-3 py-2">{% if record.resource.work_center %}<span class="font-mono">{{ record.resource.work_center.code }}</span> — {{ record.resource.work_center.name }}{% else %}—{% endif %}</td>
+  <td class="px-3 py-2 font-mono">{{ record.rate_type }}</td>
+  <td class="px-3 py-2 text-right tabular-nums">{{ record.amount|vn_number }}</td>
+  <td class="px-3 py-2 font-mono">{{ record.currency_code.code }}</td>
+  <td class="px-3 py-2">{{ record.per_uom.name }} ({{ record.per_uom.symbol }})</td>
+  <td class="px-3 py-2 tabular-nums">{{ record.effective_from|date:"d/m/Y" }}</td>
+  <td class="px-3 py-2 tabular-nums">{{ record.effective_to|date:"d/m/Y"|default:"Không giới hạn" }}</td>
+  <td class="px-3 py-2">{% include "components/status_badge.html" with status=record.date_status %}</td>
+  <td class="px-3 py-2">{% include "components/status_badge.html" with status=record.status %}</td>
+  <td class="px-3 py-2 text-right">{% include "master_data/partials/reference_data_actions.html" %}</td>
+</tr>
+{% endfor %}

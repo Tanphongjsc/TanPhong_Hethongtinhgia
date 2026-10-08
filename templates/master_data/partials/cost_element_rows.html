@@ -1,0 +1,26 @@
+{% load workspace_tags %}
+{% for element in elements %}
+<tr class="h-12 border-t border-slate-200 hover:bg-slate-50">
+  <td class="px-3 py-2 font-mono text-xs"><a href="{% url 'master_data:cost_element_detail' element.pk %}" class="font-medium text-brand-700 hover:underline">{{ element.code }}</a></td>
+  <td class="max-w-80 truncate px-3 py-2" title="{{ element.name }}">{{ element.name }}</td>
+  <td class="px-3 py-2 text-slate-500">{{ element.group.name|default:'—' }}</td>
+  <td class="px-3 py-2">{{ element.value_type|display_label }}</td>
+  <td class="px-3 py-2">{{ element.default_source_mode|display_label }}</td>
+  <td class="px-3 py-2 text-slate-500">{{ element.accounting_scope|display_label }}</td>
+  <td class="px-3 py-2 text-slate-500">{{ element.cost_scope|display_label }}</td>
+  <td class="px-3 py-2">{{ element.is_sensitive|yesno:'Có,Không' }}</td>
+  <td class="px-3 py-2">{% if element.is_active %}{% include "components/status_badge.html" with status="ACTIVE" %}{% else %}{% include "components/status_badge.html" with status="INACTIVE" %}{% endif %}</td>
+  <td class="px-3 py-2 text-right">
+    <a href="{% url 'master_data:cost_element_detail' element.pk %}" class="inline-block px-2 py-1 text-brand-700 hover:underline" aria-label="Xem {{ element.code }}">Xem chi tiết</a>
+    {% if permissions.can_edit_cost_element %}{% if not element.is_sensitive or permissions.can_manage_sensitive_cost_element %}<a href="{% url 'master_data:cost_element_edit' element.pk %}" class="inline-block px-2 py-1 text-slate-600 hover:underline" aria-label="Sửa {{ element.code }}">Chỉnh sửa</a>{% endif %}{% endif %}
+  </td>
+</tr>
+{% empty %}
+<tr><td colspan="10">
+  {% if has_filters %}
+    {% url 'master_data:cost_element_list' as reset_url %}{% include "components/empty_state.html" with empty_title="Không có kết quả phù hợp." empty_description="Thử thay đổi từ khóa hoặc bộ lọc." empty_url=reset_url empty_action="Xóa bộ lọc" %}
+  {% else %}
+    {% include "components/empty_state.html" with empty_title="Chưa có phần tử chi phí." empty_description="Thêm phần tử chi phí đầu tiên để sử dụng trong công thức và phương án tính giá thành." empty_url=None %}
+  {% endif %}
+</td></tr>
+{% endfor %}

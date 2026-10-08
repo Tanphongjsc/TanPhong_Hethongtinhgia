@@ -1,0 +1,7 @@
+{% extends "layouts/app_shell.html" %}
+{% block content %}
+<section id="routing-operation-editor" class="max-w-5xl rounded border border-slate-200 bg-white p-5">
+  <h2 class="mb-4 font-semibold">{{ editor_title }}</h2>
+  {% include "bom/routing/partials/operation_form_content.html" %}
+</section>
+{% endblock %}

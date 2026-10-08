@@ -1,0 +1,38 @@
+{% load workspace_tags %}
+<div id="production-detail">
+  <div class="rounded border border-slate-200 bg-white p-4 sm:p-6">
+    <div class="mb-4 flex flex-wrap items-center gap-3 border-b border-slate-200 pb-3">
+      {% if resource != 'resource_rate' %}<span class="break-all font-mono font-semibold">{{ record.code }}</span>{% include "master_data/partials/reference_data_status.html" %}{% else %}{% include "components/status_badge.html" with status=record.status %}{% endif %}
+    </div>
+    {% for title, fields in detail_sections %}
+    <section class="mb-5 border-b border-slate-200 pb-4">
+      <h2 class="mb-3 font-semibold">{{ title }}</h2>
+      <dl class="grid grid-cols-1 gap-x-6 gap-y-4 md:grid-cols-2">
+        {% for field in fields %}{% include "components/detail_field.html" with label=field.label value=field.value numeric=field.numeric technical=field.technical %}{% endfor %}
+      </dl>
+    </section>
+    {% endfor %}
+    <dl class="grid grid-cols-1 gap-x-6 gap-y-4 md:grid-cols-2">
+      {% include "components/detail_field.html" with label="Ngày tạo" value=record.created_at|date:'d/m/Y H:i' %}
+      {% if resource != 'resource_rate' %}{% include "components/detail_field.html" with label="Ngày cập nhật" value=record.updated_at|date:'d/m/Y H:i' %}{% endif %}
+    </dl>
+    <a href="{{ list_url }}" class="mt-5 inline-block text-brand-700 hover:underline">← Quay lại danh sách</a>
+  </div>
+  {% if resource == 'work_center' %}
+  <section class="mt-5 rounded border border-slate-200 bg-white" aria-labelledby="center-resources-title">
+    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 p-3">
+      <h2 id="center-resources-title" class="font-semibold">Nguồn lực thuộc trung tâm</h2>
+      <a href="{{ resources_url }}" class="text-brand-700 hover:underline">Xem toàn bộ nguồn lực →</a>
+    </div>
+    <div class="overflow-x-auto"><table class="w-full whitespace-nowrap text-left text-sm">
+      <caption class="sr-only">Tối đa 10 nguồn lực của trung tâm</caption>
+      <thead class="bg-slate-50 text-xs text-slate-600"><tr><th scope="col" class="px-3 py-3">Mã</th><th scope="col" class="px-3 py-3">Tên</th><th scope="col" class="px-3 py-3">Loại</th><th scope="col" class="px-3 py-3">Trạng thái</th></tr></thead>
+      <tbody>{% for entry in center_resources %}<tr class="h-12 border-t border-slate-200 hover:bg-slate-50">
+        <td class="px-3 py-2 font-mono"><a href="{% url 'bom:resource_detail' entry.pk %}" class="text-brand-700 hover:underline">{{ entry.code }}</a></td>
+        <td class="px-3 py-2">{{ entry.name }}</td><td class="px-3 py-2">{{ entry.resource_type|display_label }}</td>
+        <td class="px-3 py-2">{% include "master_data/partials/reference_data_status.html" with record=entry %}</td>
+      </tr>{% empty %}<tr><td colspan="4" class="p-4 text-slate-500">Chưa có nguồn lực sản xuất.</td></tr>{% endfor %}</tbody>
+    </table></div>
+  </section>
+  {% elif resource == 'resource' %}{% include "bom/resources/partials/rate_history.html" %}{% endif %}
+</div>

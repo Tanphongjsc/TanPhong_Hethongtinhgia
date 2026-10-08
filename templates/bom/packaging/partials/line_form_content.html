@@ -1,0 +1,12 @@
+{% if line_error %}<p role="alert" class="mb-4 text-red-700">{{ line_error }}</p>{% endif %}
+{% if not removing %}{% include "partials/form_errors.html" %}{% endif %}
+<form method="post" action="{{ form_action }}" novalidate {% if inline_editor %}hx-post="{{ form_action }}" hx-target="#packaging-line-editor" hx-swap="outerHTML" hx-push-url="false" hx-sync="#packaging-line-editor:replace" hx-indicator="#line-loading"{% endif %}>
+  {% csrf_token %}
+  {% if removing %}<p class="mb-3">Bạn có chắc muốn xóa thành phần bao bì này?</p><p class="mb-5"><span class="font-mono">{{ line.packaging_item.code }}</span> — {{ line.packaging_item.name }}</p>
+  {% else %}{% include "components/form_sections.html" %}{% endif %}
+  <div class="flex items-center justify-end gap-3">
+    <span id="line-loading" class="htmx-indicator text-xs text-slate-500" role="status">Đang xử lý…</span>
+    {% if inline_editor %}<button type="button" @click="close()" class="rounded border border-slate-300 px-3 py-2">Hủy</button>{% else %}<a href="{{ version_url }}" class="rounded border border-slate-300 px-3 py-2">Hủy</a>{% endif %}
+    {% if editable %}{% if removing %}{% include "components/button.html" with type="submit" href=None label="Xác nhận xóa" primary=True %}{% else %}{% include "components/button.html" with type="submit" href=None label="Lưu thành phần bao bì" primary=True %}{% endif %}{% endif %}
+  </div>
+</form>

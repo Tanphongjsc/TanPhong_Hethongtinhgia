@@ -1,0 +1,12 @@
+{% load workspace_tags %}
+{% for record in records %}<tr class="h-12 border-t border-slate-200 hover:bg-slate-50">
+  <td class="px-3 py-2 font-mono">{{ record.code }}</td><td class="px-3 py-2">{{ record.name }}</td>
+  <td class="px-3 py-2"><span class="font-mono">{{ record.pool.code }}</span> — {{ record.pool.name }}</td>
+  <td class="px-3 py-2">{{ record.basis_type|display_label }}</td>
+  <td class="px-3 py-2">{% if record.basis_uom %}{{ record.basis_uom.name }} ({{ record.basis_uom.symbol }}){% else %}—{% endif %}</td>
+  <td class="px-3 py-2 text-right tabular-nums">{{ record.priority }}</td>
+  <td class="px-3 py-2 tabular-nums">{{ record.effective_from|date:"d/m/Y" }}</td><td class="px-3 py-2 tabular-nums">{{ record.effective_to|date:"d/m/Y"|default:"Không giới hạn" }}</td>
+  <td class="px-3 py-2">{% include "components/status_badge.html" with status=record.date_status %}</td>
+  <td class="px-3 py-2">{% include "components/status_badge.html" with status=record.status %}</td>
+  <td class="px-3 py-2 text-right">{% include "master_data/partials/reference_data_actions.html" %}</td>
+</tr>{% endfor %}

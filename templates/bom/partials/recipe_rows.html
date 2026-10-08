@@ -1,0 +1,15 @@
+{% load workspace_tags %}
+{% for record in records %}
+<tr class="h-12 border-t border-slate-200 hover:bg-slate-50">
+  <td class="px-3 py-2 font-mono"><a href="{% url 'bom:bom_detail' record.pk %}" class="text-brand-700 hover:underline">{{ record.code }}</a></td>
+  <td class="px-3 py-2">{{ record.name }}</td>
+  <td class="px-3 py-2"><span class="font-mono">{{ record.product.code }}</span> — {{ record.product.name }}</td>
+  <td class="px-3 py-2 text-right tabular-nums">{% if record.latest_pk %}<a href="{% url 'bom:bom_version_detail' record.pk record.latest_pk %}" class="text-brand-700 hover:underline">{{ record.latest_version_no }}</a>{% else %}—{% endif %}</td>
+  <td class="px-3 py-2 text-right tabular-nums">{{ record.latest_output_qty|vn_number }}</td>
+  <td class="px-3 py-2">{% if record.latest_pk %}{{ record.latest_output_uom_name }} ({{ record.latest_output_uom_symbol }}){% else %}—{% endif %}</td>
+  <td class="px-3 py-2">{% if record.latest_pk %}{% include "components/status_badge.html" with status=record.latest_status %}{% else %}Chưa có phiên bản{% endif %}</td>
+  <td class="px-3 py-2 tabular-nums">{{ record.latest_effective_from|date:"d/m/Y"|default:"Chưa đặt hiệu lực" }}</td>
+  <td class="px-3 py-2">{% include "master_data/partials/reference_data_status.html" %}</td>
+  <td class="px-3 py-2 text-right">{% include "master_data/partials/reference_data_actions.html" %}</td>
+</tr>
+{% endfor %}

@@ -1,0 +1,4 @@
+<div class="min-w-48 flex-1">
+  <label for="{{ search_id|default:'cost-element-search' }}" class="mb-1 block text-xs font-medium text-slate-600">Tìm kiếm</label>
+  <input id="{{ search_id|default:'cost-element-search' }}" name="q" type="search" value="{{ filters.q }}" placeholder="{{ search_placeholder|default:'Mã, tên hoặc mô tả' }}" autocomplete="off" class="h-9 w-full rounded border border-slate-300 bg-white px-3" hx-get="{{ list_url|default:request.path }}" hx-trigger="input changed delay:400ms, search" hx-include="closest form" hx-target="#{{ table_id|default:'cost-element-table' }}" hx-select="#{{ table_id|default:'cost-element-table' }}" hx-swap="outerHTML" hx-push-url="true" hx-indicator="#list-loading" hx-sync="#{{ filter_form_id|default:'cost-element-filters' }}:replace">
+</div>

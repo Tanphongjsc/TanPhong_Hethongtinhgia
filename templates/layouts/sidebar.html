@@ -1,0 +1,29 @@
+<div x-cloak x-show="mobileOpen && !desktop" @click="mobileOpen = false" class="fixed inset-0 z-40 bg-slate-900/40" aria-hidden="true"></div>
+<aside id="workspace-sidebar" class="fixed inset-y-0 left-0 z-40 flex w-60 -translate-x-full flex-col border-r border-slate-200 bg-white lg:translate-x-0"
+       :class="{ 'translate-x-0': mobileOpen, '-translate-x-full': !mobileOpen, 'lg:w-60': expanded, 'lg:w-18': !expanded }"
+       :inert="!desktop && !mobileOpen" x-trap.inert.noscroll="mobileOpen && !desktop">
+  <div class="flex h-14 shrink-0 items-center justify-between border-b border-slate-200 px-4">
+    <a href="{% url 'master_data:cost_element_list' %}" class="font-semibold tracking-tight text-slate-900" :title="expanded || mobileOpen ? '' : 'Giá thành & giá bán'">
+      <span x-show="expanded || mobileOpen">Giá thành & giá bán</span><span x-cloak x-show="!expanded && !mobileOpen">GT</span>
+    </a>
+    <button type="button" class="p-2 lg:hidden" @click="mobileOpen = false" aria-label="Đóng menu">×</button>
+  </div>
+  <nav aria-label="Điều hướng hệ thống" class="flex-1 overflow-y-auto px-2 py-3">
+    <button x-cloak x-show="!expanded && !mobileOpen" type="button" @click="expanded = true" class="w-full rounded bg-brand-50 px-2 py-3 font-medium text-brand-700" aria-label="Mở dữ liệu danh mục">DM</button>
+    <div x-show="expanded || mobileOpen">
+    {% for title, items, section_active in sidebar_sections %}
+      <details class="mb-1" {% if section_active %}open{% endif %}>
+        <summary class="rounded px-3 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-50">{{ title }}</summary>
+        <ul class="mt-1 space-y-0.5">
+          {% for item in items %}
+          <li>
+            <a href="{{ item.url }}" {% if item.active %}aria-current="page"{% endif %} class="block rounded px-3 py-2 {% if item.active %}border-l-2 border-brand-600 bg-brand-50 font-medium text-brand-700{% else %}text-slate-600 hover:bg-slate-50{% endif %}">{{ item.label }}</a>
+          </li>
+          {% endfor %}
+        </ul>
+      </details>
+    {% endfor %}
+    </div>
+  </nav>
+  <div x-show="expanded || mobileOpen" class="border-t border-slate-200 px-4 py-3 text-xs text-slate-500">Hệ thống tính giá thành</div>
+</aside>

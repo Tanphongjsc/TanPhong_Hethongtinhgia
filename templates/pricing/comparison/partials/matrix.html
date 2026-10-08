@@ -1,0 +1,33 @@
+{% load workspace_tags %}
+<div class="mt-6" id="comparison-results">
+  <h2 class="mb-2 text-base font-semibold">Kết quả so sánh đã lưu</h2>
+  <p class="mb-3 text-xs text-slate-600">Mỗi cột tính cho 1 {{ selected.0.uom }}. Chênh lệch = kịch bản − kịch bản mốc; chênh lệch tương đối chia trị tuyệt đối của mốc. Mốc bằng 0 hiển thị —. Tỷ lệ dùng điểm phần trăm.</p>
+  {% if not comparison.same_currency %}<p role="note" class="mb-3 rounded border border-amber-200 bg-amber-50 p-3 text-amber-900">Các kịch bản dùng tiền tệ khác nhau. Không tính chênh lệch tiền hoặc xếp hạng khoản tiền; không quy đổi bằng tỷ giá hiện tại.</p>{% endif %}
+  <div class="overflow-x-auto rounded border border-slate-200">
+    <table class="w-full text-sm" aria-label="Bảng so sánh kết quả kịch bản">
+      <thead class="border-b border-slate-200 bg-slate-50 text-left"><tr><th scope="col" class="min-w-56 px-3 py-3">Chỉ tiêu</th>{% for c in selected %}<th scope="col" class="min-w-64 px-3 py-3"><a href="{{ c.detail_url }}" class="text-brand-700 underline">{{ c.name }}</a><span class="mt-1 block font-mono text-xs font-normal text-slate-500">{{ c.code }} · {{ c.currency }}</span>{% if c.id == comparison.baseline_id %}<span class="mt-1 inline-block text-xs font-medium text-slate-600">Kịch bản mốc</span>{% endif %}</th>{% endfor %}</tr></thead>
+      <tbody class="divide-y divide-slate-200">
+        <tr><th scope="row" class="px-3 py-3 text-left font-medium">Sản phẩm / SKU</th>{% for c in selected %}<td class="px-3 py-3">{{ c.product }}<br>{{ c.sku }}</td>{% endfor %}</tr>
+        <tr><th scope="row" class="px-3 py-3 text-left font-medium">Ngày định giá · Kênh bán</th>{% for c in selected %}<td class="px-3 py-3">{{ c.date }}<br>{{ c.channel }}</td>{% endfor %}</tr>
+        <tr><th scope="row" class="px-3 py-3 text-left font-medium">Nguồn giá thành đã lưu</th>{% for c in selected %}<td class="px-3 py-3"><a href="{{ c.costing_url }}" class="break-all font-mono text-xs text-brand-700 underline">{{ c.costing_label }}</a><p>{{ c.costing_date }}</p><p>{{ c.source_cost }} / {{ c.uom }}</p></td>{% endfor %}</tr>
+        <tr><th scope="row" class="px-3 py-3 text-left font-medium">Phương pháp định giá</th>{% for c in selected %}<td class="px-3 py-3">{{ c.method }}</td>{% endfor %}</tr>
+        <tr><th scope="row" class="px-3 py-3 text-left font-medium">Biên lợi nhuận mục tiêu</th>{% for c in selected %}<td class="px-3 py-3 text-right tabular-nums">{{ c.target_margin }}</td>{% endfor %}</tr>
+        <tr><th scope="row" class="px-3 py-3 text-left font-medium">Tỷ lệ cộng mục tiêu / giá vốn</th>{% for c in selected %}<td class="px-3 py-3 text-right tabular-nums">{{ c.target_markup }}</td>{% endfor %}</tr>
+        <tr><th scope="row" class="px-3 py-3 text-left font-medium">Lợi nhuận mục tiêu / đơn vị</th>{% for c in selected %}<td class="px-3 py-3 text-right tabular-nums">{{ c.target_profit }}</td>{% endfor %}</tr>
+        {% for group in comparison.groups %}<tr class="bg-slate-50"><th colspan="{{ selected|length|add:1 }}" scope="colgroup" class="px-3 py-2 text-left text-xs font-semibold text-slate-600">{{ group.title }}</th></tr>
+          {% for row in group.rows %}<tr data-metric="{{ row.key }}" class="hover:bg-slate-50"><th scope="row" class="px-3 py-3 text-left font-medium">{{ row.label }}</th>{% for cell in row.cells %}<td class="px-3 py-3 text-right tabular-nums"><span class="block font-medium">{{ cell.value }}</span>{% if not cell.baseline %}<span class="mt-1 block text-xs text-slate-500">{% if cell.comparable %}Chênh lệch: {{ cell.delta }} · {{ cell.relative }}{% else %}Khác tiền tệ · không tính chênh lệch{% endif %}</span>{% endif %}</td>{% endfor %}</tr>{% endfor %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <details class="mt-3 rounded border border-slate-200 p-3"><summary class="cursor-pointer font-medium">Chi tiết phí, thuế và tỷ giá đã lưu</summary>
+    <div class="mt-3 grid gap-4 xl:grid-cols-2">
+      {% for c in selected %}<section class="border-t border-slate-200 pt-3" aria-label="Diễn giải {{ c.code }}"><h3 class="font-medium">{{ c.name }} · {{ c.currency }}</h3>
+        <dl class="mt-2 text-sm">{% for line in c.fees %}<div class="flex justify-between gap-3 py-1"><dt>{{ line.label }}<span class="block text-xs text-slate-500">Cơ sở: {{ line.basis_display }} {{ c.currency }} · {{ line.rate|vn_percent }} · Cố định: {{ line.fixed_display }} {{ c.currency }}<br>Sàn: {{ line.floor_display }} · Trần: {{ line.cap_display }} {{ c.currency }}</span></dt><dd class="text-right tabular-nums">{{ line.amount_display }} {{ c.currency }}</dd></div>{% empty %}<div>Không có phí kênh bán.</div>{% endfor %}
+        {% for line in c.taxes %}<div class="flex justify-between gap-3 py-1"><dt>{{ line.label }}<span class="block text-xs text-slate-500">Cơ sở: {{ line.basis_display }} {{ c.currency }} · {{ line.rate|vn_percent }} · {% if line.inclusive %}Đã gồm thuế{% else %}Chưa gồm thuế{% endif %}</span></dt><dd class="text-right tabular-nums">{{ line.amount_display }} {{ c.currency }}</dd></div>{% empty %}<div>Không có thuế trong kết quả đã lưu.</div>{% endfor %}</dl>
+        <p class="mt-2 text-xs font-medium">Tỷ giá đã áp dụng</p>{% for fx in c.fx %}<p class="text-xs">1 {{ fx.from }} = {{ fx.rate|vn_number }} {{ fx.to }} · {{ fx.display_at }} · Chiều nhân</p>{% empty %}<p class="text-xs text-slate-600">Không có quy đổi tỷ giá.</p>{% endfor %}
+        <p class="mt-2 break-all font-mono text-xs text-slate-500">Mã truy vết: {{ c.trace_id }}<br>Mã kiểm tra dữ liệu: {{ c.hash }}</p><a href="{{ c.detail_url }}" class="mt-2 inline-block text-xs text-brand-700 underline">Xem nguồn và diễn giải kịch bản</a>
+      </section>{% endfor %}
+    </div>
+  </details>
+</div>

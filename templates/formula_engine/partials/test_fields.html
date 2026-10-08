@@ -1,0 +1,5 @@
+<div class="space-y-3">
+  {% for field in test_form.input_fields %}{% include "components/form_field.html" %}{% empty %}<p class="text-xs text-slate-500">Biểu thức không cần dữ liệu mẫu.</p>{% endfor %}
+  {% include "components/form_field.html" with field=test_form.expected %}
+  {% if allow_save_test %}{% include "components/form_field.html" with field=test_form.test_name %}{% endif %}
+</div>

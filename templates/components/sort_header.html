@@ -1,0 +1,7 @@
+{% load workspace_tags %}
+{% with descending='-'|add:field %}
+<th scope="col" class="px-3 py-3 {% if numeric %}text-right{% endif %}" aria-sort="{% if current_sort == field %}ascending{% elif current_sort == descending %}descending{% else %}none{% endif %}">
+  {% if current_sort == field %}{% query_url sort=descending page=None as sort_url %}{% else %}{% query_url sort=field page=None as sort_url %}{% endif %}
+  <a href="{{ sort_url }}" hx-get="{{ sort_url }}" hx-target="#{{ table_id|default:'cost-element-table' }}" hx-select="#{{ table_id|default:'cost-element-table' }}" hx-swap="outerHTML" hx-push-url="true" hx-indicator="#list-loading" hx-sync="#{{ filter_form_id|default:'cost-element-filters' }}:replace" class="inline-flex items-center gap-1 hover:text-brand-700" aria-label="Sắp xếp theo {{ label }}">{{ label }}{% if current_sort == field %}<span aria-hidden="true">↑</span>{% elif current_sort == descending %}<span aria-hidden="true">↓</span>{% endif %}</a>
+</th>
+{% endwith %}

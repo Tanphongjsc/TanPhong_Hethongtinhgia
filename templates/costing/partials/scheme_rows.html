@@ -1,0 +1,11 @@
+{% load workspace_tags %}
+{% for record in records %}<tr class="h-12 border-t border-slate-200 hover:bg-slate-50">
+  <td class="px-3 py-2 font-mono"><a class="text-brand-700 hover:underline" href="{% url 'costing:scheme_detail' record.pk %}">{{ record.code }}</a></td>
+  <td class="px-3 py-2">{{ record.name }}</td><td class="px-3 py-2 font-mono">{{ record.purpose }}</td><td class="px-3 py-2 font-mono">{{ record.context_scope }}</td>
+  <td class="px-3 py-2 text-right tabular-nums">{{ record.latest_version_no|default:'—' }}</td>
+  <td class="px-3 py-2">{% if record.latest_status %}{% include "components/status_badge.html" with status=record.latest_status %}{% else %}Chưa có phiên bản{% endif %}</td>
+  <td class="px-3 py-2">{{ record.latest_effective_from|date:'d/m/Y'|default:'Chưa đặt' }}</td>
+  <td class="px-3 py-2">{% include "components/status_badge.html" with status=record.date_status %}</td>
+  <td class="px-3 py-2">{% include "master_data/partials/reference_data_status.html" %}</td>
+  {% include "master_data/partials/reference_data_actions.html" %}
+</tr>{% endfor %}

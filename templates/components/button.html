@@ -1,0 +1,5 @@
+{% if href %}
+<a href="{{ href }}" class="inline-flex min-h-9 items-center justify-center rounded px-3 py-2 text-sm font-medium {% if primary %}bg-brand-600 text-white hover:bg-brand-700{% else %}border border-slate-300 bg-white text-slate-700 hover:bg-slate-50{% endif %}">{{ label }}</a>
+{% else %}
+<button type="{{ type|default:'button' }}" {% if form_id %}form="{{ form_id }}"{% endif %} {% if disabled %}disabled{% endif %} class="inline-flex min-h-9 items-center justify-center rounded px-3 py-2 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50 {% if primary %}bg-brand-600 text-white hover:bg-brand-700{% else %}border border-slate-300 bg-white text-slate-700 hover:bg-slate-50{% endif %}">{{ label }}</button>
+{% endif %}

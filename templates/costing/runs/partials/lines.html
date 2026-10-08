@@ -1,0 +1,13 @@
+{% load workspace_tags %}
+<section id="run-lines-table" class="rounded border border-slate-200 bg-white" aria-labelledby="run-lines-title">
+  <div class="flex items-center justify-between p-3"><h2 id="run-lines-title" class="font-semibold">Cấu thành chi phí và dữ liệu tính</h2><span id="list-loading" class="htmx-indicator text-xs text-slate-500" role="status">Đang tải…</span></div>
+  {% if lines %}<div class="overflow-x-auto"><table class="w-full whitespace-nowrap text-left text-sm"><thead class="bg-slate-50 text-xs text-slate-600"><tr>
+    <th scope="col" class="p-3">Mã / Phần tử chi phí</th><th scope="col" class="p-3">Loại dòng</th><th scope="col" class="p-3 text-right">Giá trị</th><th scope="col" class="p-3 text-right">So với tổng</th><th scope="col" class="p-3">Nguồn</th><th scope="col" class="p-3">Thao tác</th>
+  </tr></thead><tbody>{% for line in lines %}<tr class="h-12 border-t border-slate-200 hover:bg-slate-50">
+    <td class="p-3"><span class="font-mono">{{ line.line_code }}</span><span class="block text-xs text-slate-500">{{ line.label }}</span></td><td class="p-3">{{ line.line_type|display_label }}</td>
+    <td class="p-3 text-right tabular-nums">{% if line.value_type == 'PERCENT' %}{{ line.display_value|vn_percent }}{% else %}{{ line.display_value|formula_value }}{% endif %}{% if line.currency_code_id %} {{ line.currency_code_id }}{% endif %}{% if line.quantity_uom_id %} {{ line.input_snapshot_jsonb.unit_label }}{% endif %}</td>
+    <td class="p-3 text-right tabular-nums">{{ line.share|vn_percent }}</td><td class="p-3">{{ line.source_mode|display_label }}</td>
+    <td class="p-3"><a href="{% url 'costing:run_trace' run.public_id line.pk %}" hx-get="{% url 'costing:run_trace' run.public_id line.pk %}" hx-target="#run-trace-editor" hx-swap="innerHTML" hx-push-url="false" class="text-brand-700 hover:underline">Nguồn dữ liệu / Diễn giải</a></td>
+  </tr>{% endfor %}</tbody></table></div>{% include "components/pagination.html" %}
+  {% else %}{% include "components/empty_state.html" with empty_title="Chưa có kết quả tính giá." empty_description="Lần tính thất bại không lưu các dòng kết quả nửa vời." empty_url=None %}{% endif %}
+</section>

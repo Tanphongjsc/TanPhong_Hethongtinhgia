@@ -1,0 +1,13 @@
+{% load workspace_tags %}
+{% for record in records %}
+<tr class="h-12 border-t border-slate-200 hover:bg-slate-50">
+  <td class="px-3 py-2 font-mono">{{ record.code }}</td>
+  <td class="px-3 py-2">{{ record.name }}</td>
+  <td class="px-3 py-2 font-mono">{{ record.site_code|default:"—" }}</td>
+  <td class="px-3 py-2 text-right tabular-nums">{{ record.capacity_value|vn_number }}</td>
+  <td class="px-3 py-2 text-right tabular-nums">{{ record.normal_capacity_value|vn_number }}</td>
+  <td class="px-3 py-2">{% if record.capacity_uom %}{{ record.capacity_uom.name }} ({{ record.capacity_uom.symbol }}){% else %}—{% endif %}</td>
+  <td class="px-3 py-2">{% include "master_data/partials/reference_data_status.html" %}</td>
+  <td class="px-3 py-2 text-right">{% include "master_data/partials/reference_data_actions.html" %}</td>
+</tr>
+{% endfor %}

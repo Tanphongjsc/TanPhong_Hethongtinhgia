@@ -1,0 +1,10 @@
+<form id="{{ filter_form_id }}" method="get" action="{{ list_url }}" class="mb-3 flex flex-wrap items-end gap-3" hx-get="{{ list_url }}" hx-trigger="submit, change{% if not date_filters %} target:select{% endif %}" hx-target="#{{ table_id }}" hx-select="#{{ table_id }}" hx-swap="outerHTML" hx-push-url="true" hx-indicator="#list-loading" hx-sync="this:replace">
+  {% include "components/search_box.html" %}
+  {% for option in filter_options %}{% include "components/filter_select.html" with name=option.name label=option.label choices=option.choices selected=option.selected %}{% endfor %}
+  {% for option in date_filters %}<label for="filter-{{ option.name }}" class="text-xs text-slate-600">{{ option.label }}<input id="filter-{{ option.name }}" type="date" name="{{ option.name }}" value="{{ option.value }}" class="mt-1 block rounded border border-slate-300 px-2 py-1.5"></label>{% endfor %}
+  <input name="sort" type="hidden" value="{{ current_sort }}">
+  <input name="per_page" type="hidden" value="{{ per_page }}">
+  {% include "components/button.html" with type="submit" label="Lọc" primary=False %}
+  <a href="{{ list_url }}" class="px-1 py-2 text-slate-600 underline underline-offset-2">Đặt lại</a>
+  {% include "partials/loading.html" %}
+</form>

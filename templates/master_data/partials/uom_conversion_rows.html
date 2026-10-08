@@ -1,0 +1,12 @@
+{% load workspace_tags %}
+{% for record in records %}
+<tr class="h-12 border-t border-slate-200 hover:bg-slate-50">
+  <td class="px-3 py-2 font-mono text-xs" title="{{ record.from_uom.name }}"><a href="{% url detail_url_name record.pk %}" class="font-medium text-brand-700 hover:underline">{{ record.from_uom.code }}</a></td>
+  <td class="px-3 py-2 font-mono text-xs" title="{{ record.to_uom.name }}">{{ record.to_uom.code }}</td>
+  <td class="px-3 py-2 text-right tabular-nums">{{ record.factor|vn_number }}</td>
+  <td class="px-3 py-2 font-mono text-xs" title="{{ record.item.name }}">{{ record.item.code|default:'—' }}</td>
+  <td class="px-3 py-2 tabular-nums">{{ record.effective_from|date:'d/m/Y' }}</td>
+  <td class="px-3 py-2 tabular-nums">{{ record.effective_to|date:'d/m/Y'|default:'Không giới hạn' }}</td>
+  <td class="px-3 py-2 text-right">{% include "master_data/partials/reference_data_actions.html" %}</td>
+</tr>
+{% endfor %}

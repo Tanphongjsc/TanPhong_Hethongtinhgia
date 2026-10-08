@@ -1,0 +1,13 @@
+<div id="scenario-form-content" class="max-w-5xl rounded border border-slate-200 bg-white p-4 sm:p-5">
+  {% include "partials/form_errors.html" %}
+  <p class="mb-5 text-sm text-slate-600">Lưu Nháp trước khi tính giá. Giá vốn lấy từ lần tính đã khóa; không tính lại giá thành. Biên lợi nhuận = lợi nhuận / giá khách trả. Tỷ lệ cộng = lợi nhuận / giá vốn.</p>
+  <form id="scenario-form" method="post" action="{{ form_action|default:request.path }}" hx-post="{{ form_action|default:request.path }}" hx-target="#scenario-form-content" hx-swap="outerHTML" hx-disabled-elt="button[type='submit']" novalidate>
+    {% csrf_token %}
+    {% include "components/form_sections.html" %}
+    {% include "pricing/scenarios/partials/dependent_fields.html" %}
+    <div class="flex justify-end gap-3">
+      {% include "components/button.html" with href=cancel_url label="Hủy" primary=False %}
+      {% include "components/button.html" with href=None type="submit" label="Lưu Nháp" primary=True %}
+    </div>
+  </form>
+</div>

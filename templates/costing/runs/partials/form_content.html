@@ -1,0 +1,15 @@
+<div id="run-form-content" class="max-w-5xl rounded border border-slate-200 bg-white p-4 sm:p-5">
+  {% include "partials/form_errors.html" %}
+  {% if source %}<p class="mb-4 text-slate-600">Tạo lần tính mới từ dữ liệu yêu cầu của lần {{ source.run_no }}. Nguồn dữ liệu được chọn lại theo ngày tính giá; kết quả cũ giữ nguyên.</p>{% endif %}
+  <form id="run-form" method="post" action="{{ request.path }}" hx-post="{{ request.path }}" hx-target="#run-form-content" hx-swap="outerHTML" hx-disabled-elt="#run-form button[type='submit']" hx-indicator="#run-loading" novalidate>
+    {% csrf_token %}{{ form.idempotency_key }}
+    {% include "components/form_sections.html" %}
+    {% include "costing/runs/partials/dependent_fields.html" %}
+    {% include "components/form_field.html" with field=form.notes %}
+    <div class="mt-4 flex flex-wrap items-center justify-end gap-3">
+      <span id="run-loading" class="htmx-indicator text-xs text-slate-600" role="status">Đang tính giá thành…</span>
+      {% include "components/button.html" with href=cancel_url label="Hủy" primary=False %}
+      {% include "components/button.html" with href=None type="submit" label="Chạy tính giá" primary=True %}
+    </div>
+  </form>
+</div>

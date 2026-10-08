@@ -1,0 +1,7 @@
+{% if form.errors %}
+<div role="alert" class="mb-5 rounded border border-red-200 bg-red-50 p-3 text-red-800">
+  <p class="font-medium">Không thể lưu {{ resource_label|default:'dữ liệu' }}.</p><p>Vui lòng kiểm tra các trường được đánh dấu.</p>
+  {% if form.non_field_errors %}<ul class="mt-2 list-inside list-disc">{% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}</ul>{% endif %}
+  <ul class="mt-2 list-inside list-disc">{% for field in form %}{% if field.errors %}<li><a href="#{{ field.id_for_label }}" class="underline">{{ field.label }}</a>: {{ field.errors|join:', ' }}</li>{% endif %}{% endfor %}</ul>
+</div>
+{% endif %}

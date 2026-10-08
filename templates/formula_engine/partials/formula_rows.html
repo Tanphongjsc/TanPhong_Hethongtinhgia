@@ -1,0 +1,12 @@
+{% load workspace_tags %}
+{% for record in records %}<tr class="border-t border-slate-200 hover:bg-slate-50">
+  <td class="px-3 py-3 font-mono"><a href="{% url detail_url_name record.pk %}" class="text-brand-700 hover:underline">{{ record.code }}</a></td>
+  <td class="px-3 py-3">{{ record.name }}{% if not record.is_active %}<span class="block text-xs text-slate-500">Ngừng hoạt động</span>{% endif %}</td>
+  <td class="px-3 py-3">{% if record.output_element %}{{ record.output_element.name }} <span class="block text-xs text-slate-500">{{ record.output_element.value_type|display_label }}</span>{% else %}Theo biểu thức{% endif %}</td>
+  <td class="px-3 py-3">{% if record.latest_pk %}<a href="{% url 'formula_engine:formula_version_detail' record.pk record.latest_pk %}" class="text-brand-700 hover:underline">Phiên bản {{ record.latest_version_no }}</a>{% else %}Chưa có phiên bản{% endif %}</td>
+  <td class="px-3 py-3">{% include "components/status_badge.html" with status=record.latest_status %}</td>
+  <td class="px-3 py-3">{{ record.latest_validation_status|display_label|default:"Chưa kiểm tra" }}</td>
+  <td class="px-3 py-3">{{ record.latest_effective_from|date:"d/m/Y"|default:"—" }} · {{ record.date_status|display_label }}</td>
+  <td class="px-3 py-3">{{ record.updated_at|date:"d/m/Y H:i" }}</td>
+  <td class="px-3 py-3 text-right">{% include "master_data/partials/reference_data_actions.html" %}</td>
+</tr>{% endfor %}

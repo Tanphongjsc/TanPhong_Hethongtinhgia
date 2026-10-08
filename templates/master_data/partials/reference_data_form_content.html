@@ -1,0 +1,20 @@
+<div id="reference-data-form-content" class="max-w-5xl rounded border border-slate-200 bg-white p-4 sm:p-6">
+  {% include "partials/form_errors.html" %}
+  {% if version_form %}{% include "partials/form_errors.html" with form=version_form resource_label="phiên bản đầu tiên" %}{% endif %}
+  {% if form_notice %}<p class="mb-5 rounded border border-slate-200 bg-slate-50 p-3 text-sm text-slate-600">{{ form_notice }}</p>{% endif %}
+  <form id="reference-data-form" method="post" action="{{ form_action|default:request.path }}" novalidate
+        {% if record.is_active %}x-data="{ deactivationConfirmed: false }" @confirm-action.window="if ($event.detail.id === 'deactivate-reference') deactivationConfirmed = true" @submit="if (!deactivationConfirmed && !$el.elements.is_active.checked) { $event.preventDefault(); $dispatch('open-modal', { id: 'deactivate-reference' }) }"{% endif %}>
+    {% csrf_token %}
+    {% include "components/form_sections.html" %}
+    {% if version_form %}{% include "components/form_sections.html" with form=version_form %}{% endif %}
+    <div class="flex items-center justify-end gap-3">
+      {% include "components/button.html" with href=cancel_url label="Hủy" primary=False %}
+      {% with label='Lưu '|add:resource_label %}{% include "components/button.html" with href=None type="submit" primary=True disabled=form_readonly %}{% endwith %}
+    </div>
+  </form>
+</div>
+{% if record.is_active %}
+  {% with description='Ngừng hoạt động '|add:resource_label|add:' '|add:record.code|add:' và lưu các thay đổi của bạn?' %}
+    {% include "components/confirm_dialog.html" with confirm_id="deactivate-reference" confirm_title="Ngừng hoạt động danh mục" confirm_description=description confirm_form_id="reference-data-form" confirm_label="Xác nhận và lưu" %}
+  {% endwith %}
+{% endif %}

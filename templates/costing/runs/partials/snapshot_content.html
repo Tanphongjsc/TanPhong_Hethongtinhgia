@@ -1,0 +1,17 @@
+{% load costing_tags workspace_tags %}
+<div id="run-snapshot">
+  <p class="mb-4 text-slate-600">Dữ liệu đã sử dụng trong lần {{ run.run_no }}. Các nguồn và biểu thức được sao lưu tại thời điểm tính.</p>
+  <dl class="mb-5 grid gap-3 border-b border-slate-200 pb-4 sm:grid-cols-2">
+    {% include "components/detail_field.html" with label="Ngày tính giá" value=inputs.costing_date|snapshot_date %}
+    {% include "components/detail_field.html" with label="Sản lượng" value=inputs.quantity|vn_number %}
+    {% include "components/detail_field.html" with label="Sản lượng cơ sở đóng gói" value=inputs.packaging_quantity|vn_number %}
+    {% include "components/detail_field.html" with label="Ghi chú" value=inputs.notes %}
+  </dl>
+  <h2 class="mb-3 font-semibold">Nguồn và phiên bản đã sử dụng</h2>
+  <div class="overflow-x-auto rounded border border-slate-200"><table class="w-full whitespace-nowrap text-left text-sm"><thead class="bg-slate-50"><tr><th scope="col" class="p-3">Loại nguồn</th><th scope="col" class="p-3">Mã</th><th scope="col" class="p-3">Tên</th><th scope="col" class="p-3">Phiên bản / Tham chiếu</th><th scope="col" class="p-3">Hiệu lực từ</th><th scope="col" class="p-3">Hiệu lực đến</th></tr></thead><tbody>
+  {% for row in sources %}<tr class="h-12 border-t border-slate-200"><td class="p-3">{{ row.label }}</td><td class="p-3 font-mono">{{ row.code }}</td><td class="p-3">{{ row.name }}</td><td class="p-3">{% if row.version %}Phiên bản {{ row.version }} · {% endif %}#{{ row.reference }}</td><td class="p-3">{{ row.from|snapshot_date }}</td><td class="p-3">{{ row.to|snapshot_date }}</td></tr>{% empty %}<tr><td colspan="6" class="p-4">Chưa có dữ liệu nguồn đã lưu.</td></tr>{% endfor %}
+  </tbody></table></div>
+  <h2 class="mb-3 mt-5 font-semibold">Biểu thức công thức đã sử dụng</h2>
+  {% for formula in formulas %}<section class="mb-3 border-b border-slate-200 pb-3"><h3 class="font-semibold">{{ formula.code }} · Phiên bản {{ formula.version }}</h3><pre class="mt-2 overflow-x-auto whitespace-pre-wrap break-words font-mono text-xs">{{ formula.expression }}</pre></section>{% empty %}<p>Không sử dụng công thức.</p>{% endfor %}
+  <a href="{% url 'costing:run_detail' run.public_id %}" class="mt-5 inline-block text-brand-700 hover:underline">Quay lại kết quả</a>
+</div>

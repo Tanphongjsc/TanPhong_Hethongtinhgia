@@ -1,0 +1,14 @@
+{% load workspace_tags %}
+{% for record in records %}
+<tr class="h-12 border-t border-slate-200 hover:bg-slate-50">
+  <td class="px-3 py-2 text-right tabular-nums"><a href="{% url 'bom:bom_version_detail' recipe.pk record.pk %}" class="text-brand-700 hover:underline">Phiên bản {{ record.version_no }}</a></td>
+  <td class="px-3 py-2 text-right tabular-nums">{{ record.output_qty|vn_number }}</td>
+  <td class="px-3 py-2">{{ record.output_uom.name }} ({{ record.output_uom.symbol }})</td>
+  <td class="px-3 py-2 text-right tabular-nums">{{ record.yield_rate|vn_percent }}</td>
+  <td class="px-3 py-2">{% include "components/status_badge.html" with status=record.status %}</td>
+  <td class="px-3 py-2 tabular-nums">{{ record.effective_from|date:"d/m/Y"|default:"Chưa đặt" }}</td>
+  <td class="px-3 py-2 tabular-nums">{{ record.effective_to|date:"d/m/Y"|default:"Không giới hạn" }}</td>
+  <td class="px-3 py-2">{% include "components/status_badge.html" with status=record.date_status %}</td>
+  <td class="px-3 py-2 text-right"><a href="{% url 'bom:bom_version_detail' recipe.pk record.pk %}" class="px-2 py-1 text-brand-700 hover:underline">Xem chi tiết</a><a href="{% url 'bom:bom_version_create' recipe.pk %}?source={{ record.pk }}" class="px-2 py-1 text-slate-600 hover:underline" aria-label="Sao chép phiên bản {{ record.version_no }}">Tạo phiên bản mới</a></td>
+</tr>
+{% endfor %}

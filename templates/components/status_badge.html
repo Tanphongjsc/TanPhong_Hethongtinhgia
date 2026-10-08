@@ -1,0 +1,2 @@
+{% load workspace_tags %}
+<span class="inline-flex whitespace-nowrap rounded px-2 py-1 text-xs font-medium {% if status == 'ACTIVE' or status == 'APPROVED' or status == 'EFFECTIVE' %}bg-emerald-50 text-emerald-700{% elif status == 'FAILED' or status == 'REJECTED' %}bg-red-50 text-red-700{% elif status == 'IN_REVIEW' %}bg-blue-50 text-blue-700{% else %}bg-slate-100 text-slate-600{% endif %}">{{ status|display_label }}</span>

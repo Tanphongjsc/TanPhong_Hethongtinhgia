@@ -1,0 +1,8 @@
+{% for record in records %}<tr class="h-12 border-t border-slate-200 hover:bg-slate-50">
+  <td class="px-3 py-2"><a href="{% url 'product:sku_detail' record.sku.pk %}" class="text-brand-700 hover:underline"><span class="font-mono">{{ record.sku.code }}</span> — {{ record.sku.name }}</a></td>
+  <td class="px-3 py-2">{{ record.is_primary|yesno:"Có,Không" }}</td>
+  <td class="px-3 py-2 tabular-nums">{{ record.effective_from|date:"d/m/Y" }}</td>
+  <td class="px-3 py-2 tabular-nums">{{ record.effective_to|date:"d/m/Y"|default:"Không giới hạn" }}</td>
+  <td class="px-3 py-2">{% include "components/status_badge.html" with status=record.date_status %}</td>
+  <td class="px-3 py-2 text-right"><a href="{% url 'bom:packaging_assignment_edit' config.pk record.pk %}" class="px-2 py-1 text-brand-700 hover:underline" aria-label="Chỉnh sửa liên kết {{ record.sku.code }}">Chỉnh sửa</a></td>
+</tr>{% endfor %}

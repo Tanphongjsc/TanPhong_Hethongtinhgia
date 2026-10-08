@@ -1,0 +1,36 @@
+<section id="{{ table_id }}" class="rounded border border-slate-200 bg-white" data-sort="{{ current_sort }}" data-per-page="{{ per_page }}" data-filter-form="{{ filter_form_id }}" aria-label="Danh sách {{ resource_label }}">
+  <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-3 py-2">
+    <p class="text-xs text-slate-500">{{ page_obj.paginator.count }} bản ghi</p>
+    <form method="get" action="{{ list_url }}" hx-get="{{ list_url }}" hx-target="#{{ table_id }}" hx-select="#{{ table_id }}" hx-swap="outerHTML" hx-trigger="submit, change target:select" hx-push-url="true" hx-indicator="#list-loading" hx-sync="#{{ filter_form_id }}:replace" class="flex items-center gap-2 text-xs">
+      {% for key, value in request.GET.items %}{% if key != 'page' and key != 'sort' %}<input type="hidden" name="{{ key }}" value="{{ value }}">{% endif %}{% endfor %}
+      <label for="table-sort">Sắp xếp</label>
+      <select id="table-sort" name="sort" class="rounded border border-slate-300 bg-white px-2 py-1">
+        {% for value, label in sort_options %}<option value="{{ value }}" {% if current_sort == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+      </select>
+      <noscript><button type="submit">Áp dụng</button></noscript>
+    </form>
+  </div>
+  <div class="overflow-x-auto">
+    <table class="w-full whitespace-nowrap text-left text-sm">
+      <caption class="sr-only">Danh sách {{ resource_label }}</caption>
+      <thead class="bg-slate-50 text-xs font-semibold text-slate-600"><tr>
+        {% for field, label, numeric in columns %}
+          {% if field %}{% include "components/sort_header.html" %}{% else %}<th scope="col" class="px-3 py-3 {% if numeric %}text-right{% endif %}">{{ label }}</th>{% endif %}
+        {% endfor %}
+        <th scope="col" class="px-3 py-3 text-right">Thao tác</th>
+      </tr></thead>
+      <tbody>
+        {% if records %}{% include rows_template %}{% else %}
+        <tr><td colspan="{{ column_count }}">
+          {% if has_filters %}
+            {% include "components/empty_state.html" with empty_title="Không có kết quả phù hợp." empty_description="Thử thay đổi từ khóa hoặc bộ lọc." empty_url=list_url empty_action="Xóa bộ lọc" %}
+          {% else %}
+            {% with title='Chưa có '|add:resource_label|add:'.' %}{% include "components/empty_state.html" with empty_title=title empty_description="Thêm bản ghi đầu tiên để bắt đầu sử dụng danh mục." empty_url=primary_action_url empty_action=primary_action_label %}{% endwith %}
+          {% endif %}
+        </td></tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+  {% include "components/pagination.html" %}
+</section>

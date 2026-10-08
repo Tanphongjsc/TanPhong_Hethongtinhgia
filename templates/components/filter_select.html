@@ -1,0 +1,7 @@
+<div>
+  <label for="filter-{{ name }}" class="mb-1 block text-xs font-medium text-slate-600">{{ label }}</label>
+  <select id="filter-{{ name }}" name="{{ name }}" class="h-9 max-w-44 rounded border border-slate-300 bg-white px-2">
+    <option value="">Tất cả</option>
+    {% for value, text in choices %}<option value="{{ value }}" {% if selected|stringformat:'s' == value|stringformat:'s' %}selected{% endif %}>{{ text }}</option>{% endfor %}
+  </select>
+</div>

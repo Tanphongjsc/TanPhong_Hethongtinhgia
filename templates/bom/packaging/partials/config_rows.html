@@ -1,0 +1,11 @@
+{% load workspace_tags %}
+{% for record in records %}<tr class="h-12 border-t border-slate-200 hover:bg-slate-50">
+  <td class="px-3 py-2 font-mono"><a href="{% url 'bom:packaging_detail' record.pk %}" class="text-brand-700 hover:underline">{{ record.code }}</a></td>
+  <td class="px-3 py-2">{{ record.name }}</td><td class="px-3 py-2"><span class="font-mono">{{ record.product.code }}</span> — {{ record.product.name }}</td>
+  <td class="px-3 py-2 text-right tabular-nums"><a href="{% url 'bom:packaging_assignment_list' record.pk %}" class="text-brand-700 hover:underline">{{ record.assignment_count|default:"0" }}</a></td>
+  <td class="px-3 py-2 text-right tabular-nums">{% if record.latest_pk %}<a href="{% url 'bom:packaging_version_detail' record.pk record.latest_pk %}" class="text-brand-700 hover:underline">{{ record.latest_version_no }}</a>{% else %}—{% endif %}</td>
+  <td class="px-3 py-2">{% if record.latest_status %}{% include "components/status_badge.html" with status=record.latest_status %}{% else %}Chưa có phiên bản{% endif %}</td>
+  <td class="px-3 py-2 tabular-nums">{{ record.latest_effective_from|date:"d/m/Y"|default:"Chưa đặt" }}</td>
+  <td class="px-3 py-2">{% if record.is_active %}{% include "components/status_badge.html" with status="ACTIVE" %}{% else %}{% include "components/status_badge.html" with status="INACTIVE" %}{% endif %}</td>
+  {% include "master_data/partials/reference_data_actions.html" %}
+</tr>{% endfor %}

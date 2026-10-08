@@ -1,0 +1,15 @@
+{% load workspace_tags %}
+{% if test_saved %}<p role="status" class="mb-3 text-emerald-700">Đã lưu bộ kiểm thử công thức.</p>{% endif %}
+{% if result %}
+<div class="mt-4 border-t border-slate-200 pt-4" role="status">
+  <h3 class="mb-2 text-sm font-semibold">Kết quả thực tế</h3>
+  <p class="font-mono text-base">{% if result.data_type == 'BOOLEAN' %}{{ result.value|yesno:"Có,Không" }}{% elif result.data_type == 'TEXT' %}{{ result.value }}{% else %}{{ result.value|vn_number }}{% endif %}</p>
+  {% for warning in result.warnings %}<p class="mt-2 text-xs text-slate-500">{{ warning }}</p>{% endfor %}
+  {% if has_expected %}<p class="mt-2 font-medium {% if passed %}text-emerald-700{% else %}text-red-700{% endif %}">{% if passed %}Đạt{% else %}Không đạt{% endif %}</p>{% endif %}
+  <details class="mt-4"><summary class="cursor-pointer font-medium">Diễn giải phép tính</summary>
+    <div class="mt-2 overflow-x-auto"><table class="w-full text-left text-xs"><thead><tr class="border-b border-slate-200"><th scope="col" class="p-2">Công thức / Phiên bản</th><th scope="col" class="p-2">Biến / Phép tính</th><th scope="col" class="p-2">Giá trị thay thế</th><th scope="col" class="p-2 text-right">Kết quả</th></tr></thead>
+    <tbody>{% for step in result.trace %}<tr class="border-b border-slate-100"><td class="p-2 font-mono">{{ step.formula }}{% if step.version %} · {{ step.version }}{% endif %}</td><td class="p-2 font-mono">{{ step.expression }}</td><td class="p-2">{% for value in step.arguments %}{{ value|formula_value }}{% if not forloop.last %}, {% endif %}{% endfor %}</td><td class="p-2 text-right font-mono">{{ step.value|formula_value }}</td></tr>{% endfor %}</tbody></table></div>
+  </details>
+</div>
+{% endif %}
+{% if case_results != None %}<div class="mt-4 overflow-x-auto"><table class="w-full text-left text-sm"><thead><tr><th scope="col" class="p-2">Bộ kiểm thử</th><th scope="col" class="p-2">Kết quả</th><th scope="col" class="p-2">Đánh giá</th></tr></thead><tbody>{% for entry in case_results %}<tr class="border-t border-slate-200"><td class="p-2">{{ entry.case.name }}</td><td class="p-2">{% if entry.error %}{{ entry.error }}{% else %}{{ entry.value|formula_value }}{% endif %}</td><td class="p-2">{% if entry.passed %}Đạt{% else %}Không đạt{% endif %}</td></tr>{% empty %}<tr><td class="p-2" colspan="3">Chưa có bộ kiểm thử đang hoạt động.</td></tr>{% endfor %}</tbody></table></div>{% endif %}

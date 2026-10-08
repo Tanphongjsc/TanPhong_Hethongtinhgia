@@ -1,0 +1,14 @@
+{% load workspace_tags %}
+{% for record in records %}
+<tr class="h-12 border-t border-slate-200 hover:bg-slate-50">
+  <td class="px-3 py-2 font-mono">{{ record.code }}</td><td class="px-3 py-2">{{ record.name }}</td>
+  <td class="px-3 py-2"><span class="font-mono">{{ record.product.code }}</span> — {{ record.product.name }}</td>
+  <td class="px-3 py-2 text-right tabular-nums">{{ record.latest_version_no|default:"—" }}</td>
+  <td class="px-3 py-2 text-right tabular-nums">{{ record.latest_operation_count|default_if_none:"0" }}</td>
+  <td class="px-3 py-2">{% if record.latest_status %}{% include "components/status_badge.html" with status=record.latest_status %}{% else %}Chưa có phiên bản{% endif %}</td>
+  <td class="px-3 py-2 tabular-nums">{{ record.latest_effective_from|date:"d/m/Y"|default:"Chưa đặt" }}</td>
+  <td class="px-3 py-2">{% include "components/status_badge.html" with status=record.date_status %}</td>
+  <td class="px-3 py-2">{% include "master_data/partials/reference_data_status.html" %}</td>
+  <td class="px-3 py-2 text-right">{% include "master_data/partials/reference_data_actions.html" %}</td>
+</tr>
+{% endfor %}

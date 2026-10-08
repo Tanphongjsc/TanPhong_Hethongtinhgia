@@ -1,0 +1,12 @@
+<section id="scheme-validation" class="rounded border border-slate-200 bg-white p-4" aria-live="polite" aria-labelledby="scheme-validation-title">
+  <h2 id="scheme-validation-title" class="mb-3 font-semibold">Trạng thái cấu hình · Phiên bản {{ version.version_no }}</h2>
+  {% if activation_errors %}<div role="alert" class="mb-4 text-red-700"><p class="font-semibold">Không thể kích hoạt phiên bản.</p><ul class="mt-2 list-disc pl-5">{% for error in activation_errors %}<li>{{ error }}</li>{% endfor %}</ul></div>{% endif %}
+  {% if report.errors %}<div role="alert" class="mb-4 text-red-700"><p class="font-semibold">Cấu hình chưa hợp lệ</p><ul class="mt-2 list-disc pl-5">{% for error in report.errors %}<li>{{ error }}</li>{% endfor %}</ul></div>{% else %}<p class="mb-4 text-emerald-700">Cấu hình không có lỗi trong phạm vi đã kiểm tra.</p>{% endif %}
+  {% if report.warnings %}<div class="mb-4 text-amber-800"><p class="font-semibold">Lưu ý cấu hình</p><ul class="mt-2 list-disc pl-5">{% for warning in report.warnings %}<li>{{ warning }}</li>{% endfor %}</ul></div>{% endif %}
+  {% if report.dependencies %}<div class="overflow-x-auto"><table class="w-full text-left text-sm"><caption class="mb-2 text-left font-semibold">Phụ thuộc dữ liệu</caption>
+    <thead class="bg-slate-50"><tr><th scope="col" class="p-2">Dòng</th><th scope="col" class="p-2">Công thức</th><th scope="col" class="p-2">Phần tử cần cung cấp</th><th scope="col" class="p-2">Dòng cung cấp</th><th scope="col" class="p-2">Kết quả kiểm tra</th></tr></thead>
+    <tbody>{% for row in report.dependencies %}<tr class="border-t border-slate-200"><td class="p-2 font-mono">{{ row.line }}</td><td class="p-2 font-mono">{{ row.formula }}</td><td class="p-2 font-mono">{{ row.element }}</td><td class="p-2 font-mono">{{ row.provider }}</td><td class="p-2">{{ row.state }}</td></tr>{% endfor %}</tbody>
+  </table></div>{% endif %}
+  {% if report.order %}<p class="mt-3 text-xs text-slate-600">Thứ tự theo phụ thuộc: <span class="font-mono">{{ report.order|join:' → ' }}</span></p>{% endif %}
+  <p class="mt-3 text-xs text-slate-500">Chỉ kiểm tra định nghĩa cấu hình, không lấy giá mua hoặc đơn giá nguồn lực, không tính giá thành. Công thức phụ thuộc được kiểm tra tại ngày bắt đầu phương án. Chưa xác nhận bộ chọn phiên bản cho mọi ngày trong kỳ hoặc tình trạng sẵn có của dữ liệu khi tính giá.</p>
+</section>

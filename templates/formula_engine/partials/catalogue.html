@@ -1,0 +1,9 @@
+<div id="token-palette" class="max-h-96 space-y-1 overflow-y-auto">
+{% for token in catalogue %}<div class="border-b border-slate-100 py-2">
+  <p class="text-xs">{{ token.label }}</p>
+  <div class="flex items-center justify-between gap-2"><code class="break-all text-xs text-slate-500">{{ token.code }}</code>
+    <button type="button" class="rounded border border-slate-300 px-2 py-1 text-xs hover:bg-slate-50" data-token="{{ token.token }}" @click="insert($el.dataset.token)" aria-label="Chèn {{ token.code }}">Chèn</button>
+  </div><span class="text-xs text-slate-500">{{ token.kind }}</span>
+</div>{% empty %}<p class="py-3 text-xs text-slate-500">Không có biến hoặc công thức phù hợp.</p>{% endfor %}
+<p class="py-2 text-xs text-slate-500">Hiển thị tối đa 60 biến và 60 công thức; dùng tìm kiếm để chọn mã khác.</p>
+</div>

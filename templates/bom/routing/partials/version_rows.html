@@ -1,0 +1,10 @@
+{% load workspace_tags %}
+{% for record in records %}<tr class="h-12 border-t border-slate-200 hover:bg-slate-50">
+  <td class="px-3 py-2 text-right tabular-nums"><a href="{% url 'bom:routing_version_detail' routing.pk record.pk %}" class="text-brand-700 hover:underline">Phiên bản {{ record.version_no }}</a></td>
+  <td class="px-3 py-2 text-right tabular-nums">{{ record.batch_size|vn_number }}{% if record.batch_uom %} {{ record.batch_uom.name }} ({{ record.batch_uom.symbol }}){% endif %}</td>
+  <td class="px-3 py-2">{% include "components/status_badge.html" with status=record.status %}</td>
+  <td class="px-3 py-2">{{ record.effective_from|date:"d/m/Y"|default:"Chưa đặt" }}</td>
+  <td class="px-3 py-2">{{ record.effective_to|date:"d/m/Y"|default:"Không giới hạn" }}</td>
+  <td class="px-3 py-2">{% include "components/status_badge.html" with status=record.date_status %}</td>
+  <td class="px-3 py-2 text-right"><a href="{% url 'bom:routing_version_detail' routing.pk record.pk %}" class="inline-block px-2 py-1 text-brand-700 hover:underline" aria-label="Xem phiên bản {{ record.version_no }}">Xem chi tiết</a></td>
+</tr>{% endfor %}

@@ -1,0 +1,60 @@
+"""Information architecture; only implemented destinations have links."""
+
+SECTIONS = (
+    ("Workspace", ("Costing Runs",)),
+    ("Master Data", ("Cost Elements", "Product Categories", "Items", "Products", "SKUs", "Currency", "UoM Categories", "UoM", "UoM Conversion", "Suppliers", "Supplier Prices")),
+    ("Manufacturing", ("Recipe / BOM", "Packaging", "Work Centers", "Resources", "Resource Rates", "Routing", "Cost Pools", "Allocation Rules")),
+    ("Formula & Rules", ("Formula Studio", "Costing Schemes")),
+    ("Pricing", ("Channels", "Channel Fee Rules", "Tax Rules", "FX Rates", "Pricing Scenarios", "Compare Scenarios")),
+)
+
+DESTINATIONS = {
+    "Compare Scenarios": ("comparison", "pricing:scenario_compare"),
+    "Pricing Scenarios": ("scenario", "pricing:scenario_list"),
+    "Channels": ("channel", "pricing:channel_list"),
+    "Channel Fee Rules": ("channel_fee_rule", "pricing:channel_fee_rule_list"),
+    "Tax Rules": ("tax_rule", "pricing:tax_rule_list"),
+    "FX Rates": ("fx_rate", "pricing:fx_rate_list"),
+    "Costing Runs": ("run", "costing:run_list"),
+    "Costing Schemes": ("scheme", "costing:scheme_list"),
+    "Formula Studio": ("formula", "formula_engine:formula_list"),
+    "Cost Pools": ("cost_pool", "bom:cost_pool_list"),
+    "Allocation Rules": ("allocation_rule", "bom:allocation_rule_list"),
+    "Routing": ("routing", "bom:routing_list"),
+    "Work Centers": ("work_center", "bom:work_center_list"),
+    "Resources": ("resource", "bom:resource_list"),
+    "Resource Rates": ("resource_rate", "bom:resource_rate_list"),
+    "Packaging": ("packaging", "bom:packaging_list"),
+    "Recipe / BOM": ("bom", "bom:bom_list"),
+    "Cost Elements": ("cost_element", "master_data:cost_element_list"),
+    "Currency": ("currency", "master_data:currency_list"),
+    "UoM Categories": ("uom_category", "master_data:uom_category_list"),
+    "UoM": ("uom", "master_data:uom_list"),
+    "UoM Conversion": ("uom_conversion", "master_data:uom_conversion_list"),
+    "Product Categories": ("category", "product:category_list"),
+    "Items": ("item", "product:item_list"),
+    "Products": ("product", "product:product_list"),
+    "SKUs": ("sku", "product:sku_list"),
+    "Suppliers": ("supplier", "master_data:supplier_list"),
+    "Supplier Prices": ("supplier_price", "master_data:supplier_price_list"),
+}
+
+# Stable navigation keys above are separate from user-facing labels.
+NAVIGATION_LABELS = {
+    "Workspace": "TỔNG QUAN", "Master Data": "DỮ LIỆU DANH MỤC",
+    "Manufacturing": "SẢN XUẤT", "Formula & Rules": "CÔNG THỨC & QUY TẮC",
+    "Pricing": "GIÁ BÁN",
+    "Costing Runs": "Lần tính giá thành", "Pricing Scenarios": "Kịch bản giá bán",
+    "Cost Elements": "Phần tử chi phí", "Product Categories": "Nhóm sản phẩm",
+    "Items": "Vật tư / Hàng hóa", "Products": "Sản phẩm", "SKUs": "SKU",
+    "Currency": "Tiền tệ", "UoM Categories": "Nhóm đơn vị tính",
+    "UoM": "Đơn vị tính", "UoM Conversion": "Quy đổi đơn vị tính",
+    "Suppliers": "Nhà cung cấp", "Supplier Prices": "Giá nhà cung cấp",
+    "Recipe / BOM": "BOM / Công thức sản xuất", "Packaging": "Cấu hình bao bì",
+    "Routing": "Quy trình sản xuất", "Work Centers": "Trung tâm sản xuất",
+    "Resources": "Nguồn lực", "Resource Rates": "Đơn giá nguồn lực",
+    "Cost Pools": "Nhóm chi phí chung", "Allocation Rules": "Quy tắc phân bổ",
+    "Formula Studio": "Thiết lập công thức", "Costing Schemes": "Phương án tính giá thành",
+    "Channels": "Kênh bán", "Channel Fee Rules": "Quy tắc phí kênh",
+    "Tax Rules": "Quy tắc thuế", "FX Rates": "Tỷ giá", "Compare Scenarios": "So sánh kịch bản",
+}

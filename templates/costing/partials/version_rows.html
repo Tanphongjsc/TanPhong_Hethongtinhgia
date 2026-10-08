@@ -1,0 +1,7 @@
+{% for record in records %}<tr class="h-12 border-t border-slate-200 hover:bg-slate-50">
+  <td class="px-3 py-2 text-right tabular-nums">{{ record.version_no }}</td><td class="px-3 py-2 text-right tabular-nums">{{ record.line_count }}</td>
+  <td class="px-3 py-2">{% include "components/status_badge.html" with status=record.status %}</td>
+  <td class="px-3 py-2">{{ record.effective_from|date:'d/m/Y'|default:'Chưa đặt' }}</td><td class="px-3 py-2">{{ record.effective_to|date:'d/m/Y'|default:'Không giới hạn' }}</td>
+  <td class="px-3 py-2">{% include "components/status_badge.html" with status=record.date_status %}</td>
+  <td class="px-3 py-2 text-right"><a class="text-brand-700 hover:underline" href="{% url 'costing:scheme_version_detail' scheme.pk record.pk %}">Xem chi tiết</a></td>
+</tr>{% endfor %}

@@ -1,0 +1,9 @@
+{% if breadcrumbs %}
+<nav aria-label="Điều hướng trang" class="mb-3 text-xs text-slate-500">
+  <ol class="flex flex-wrap items-center gap-2">
+    {% for label, url in breadcrumbs %}
+    <li>{% if not forloop.first %}<span aria-hidden="true" class="mr-2">/</span>{% endif %}{% if url %}<a class="hover:text-brand-700" href="{{ url }}">{{ label }}</a>{% else %}<span>{{ label }}</span>{% endif %}</li>
+    {% endfor %}
+  </ol>
+</nav>
+{% endif %}

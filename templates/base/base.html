@@ -1,0 +1,29 @@
+{% load static %}
+<!doctype html>
+<html lang="vi" class="h-full">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf-token" content="{{ csrf_token }}">
+  <meta name="htmx-config" content='{"historyRestoreAsHxRequest":false,"historyCacheSize":0,"includeIndicatorStyles":false,"defaultSettleDelay":0}'>
+  <title>{% block title %}{{ page_title|default:"Hệ thống tính giá thành" }} · Giá thành{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+  <script defer src="{% static 'vendor/htmx/htmx.min.js' %}"></script>
+  <script defer src="{% static 'js/htmx-config.js' %}"></script>
+  <script defer src="{% static 'js/alpine-components.js' %}"></script>
+  <script defer src="{% static 'vendor/alpine/focus.min.js' %}"></script>
+  <script defer src="{% static 'vendor/alpine/alpine.min.js' %}"></script>
+  <script defer src="{% static 'js/app.js' %}"></script>
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="min-h-full bg-slate-50 font-sans text-sm text-slate-800 antialiased">
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-2 focus:z-50 focus:bg-white focus:p-3">Đến nội dung chính</a>
+  {% block body %}{% endblock %}
+  <div id="modal-root"></div>
+  <div id="drawer-root"></div>
+  <div id="toast-root" class="fixed bottom-4 right-4 z-50 flex max-w-sm flex-col gap-2" aria-live="polite">
+    {% for message in messages %}{% include "components/toast.html" with message=message %}{% endfor %}
+  </div>
+  <div id="request-error" role="alert" class="fixed bottom-4 left-4 z-50 max-w-sm rounded border border-red-200 bg-red-50 p-3 text-red-800" hidden></div>
+</body>
+</html>

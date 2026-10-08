@@ -1,0 +1,46 @@
+{% load workspace_tags %}
+<section id="scenario-detail-content" class="rounded border border-slate-200 bg-white p-4 sm:p-5">
+  {% if action_error %}<p role="alert" class="mb-4 rounded border border-red-200 bg-red-50 p-3 text-red-700">{{ action_error }}</p>{% endif %}
+  {% for error in snapshot.errors %}<p role="alert" class="mb-3 rounded border border-red-200 bg-red-50 p-3 text-red-700">{{ error.message }} <span class="block text-xs">Mã tham chiếu: {{ snapshot.trace_id }}</span></p>{% endfor %}
+  <div class="mb-4 flex flex-wrap items-center justify-between gap-3"><h2 class="font-semibold">{{ record.code }} · {{ record.name }}</h2>{% include "components/status_badge.html" with status=record.status %}</div>
+  <dl class="mb-5 grid gap-4 border-b border-slate-200 pb-5 sm:grid-cols-2 lg:grid-cols-3">
+    <div><dt class="text-xs text-slate-500">Sản phẩm</dt><dd>{{ record.display_product }}</dd></div>
+    <div><dt class="text-xs text-slate-500">SKU</dt><dd>{{ record.display_sku }}</dd></div>
+    <div><dt class="text-xs text-slate-500">Kênh bán</dt><dd>{{ record.display_channel }}</dd></div>
+    <div><dt class="text-xs text-slate-500">Ngày định giá</dt><dd>{{ record.display_date }}</dd></div>
+    <div><dt class="text-xs text-slate-500">Tiền tệ bán</dt><dd>{{ record.currency_code_id }}</dd></div>
+    <div><dt class="text-xs text-slate-500">Phương pháp định giá</dt><dd>{{ record.display_method }}</dd></div>
+    {% if target_margin != None %}<div><dt class="text-xs text-slate-500">Biên lợi nhuận mục tiêu / giá khách trả</dt><dd>{{ target_margin|vn_percent }}</dd></div>{% endif %}
+    {% if target_markup != None %}<div><dt class="text-xs text-slate-500">Tỷ lệ cộng mục tiêu / giá vốn</dt><dd>{{ target_markup|vn_percent }}</dd></div>{% endif %}
+    {% if target_profit_per_unit != None %}<div><dt class="text-xs text-slate-500">Lợi nhuận mục tiêu trên một đơn vị</dt><dd>{{ target_profit_per_unit|vn_number }} {{ record.currency_code_id }}</dd></div>{% endif %}
+    <div><dt class="text-xs text-slate-500">Hiệu lực kịch bản</dt><dd>{{ record.valid_from|date:'d/m/Y'|default:'Không giới hạn' }} — {{ record.valid_to|date:'d/m/Y'|default:'Không giới hạn' }}</dd></div>
+    <div><dt class="text-xs text-slate-500">Nguồn giá thành</dt><dd><a class="break-all text-brand-700 underline" href="{% url 'costing:run_detail' record.base_run.public_id %}">{{ record.base_run.run_no }}</a></dd></div>
+  </dl>
+  {% if result %}
+    <h3 class="mb-3 font-semibold">Kết quả giá bán</h3>
+    <dl class="mb-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{% for label, value in result_fields %}<div><dt class="text-xs text-slate-500">{{ label }}</dt><dd class="font-mono tabular-nums">{{ value }}</dd></div>{% endfor %}</dl>
+    <p class="mb-3 text-xs text-slate-600">Giá niêm yết {% if result.listed_price_includes_tax %}đã gồm{% else %}chưa gồm{% endif %} thuế. Các loại thuế tính độc lập trên cùng giá trước thuế. Biên thực tế dùng giá khách trả sau làm tròn lưu trữ 8 chữ số; chưa có làm tròn thương mại.</p>
+    <h3 class="mb-3 font-semibold">Cấu thành giá bán</h3>
+    <div class="mb-5 overflow-x-auto"><table class="w-full text-sm"><thead class="bg-slate-50 text-left"><tr><th scope="col" class="px-3 py-2">Thành phần</th><th scope="col" class="px-3 py-2 text-right">Số tiền ({{ record.currency_code_id }})</th></tr></thead><tbody>
+      {% for row in result.waterfall %}<tr class="h-11 border-t border-slate-200"><th scope="row" class="px-3 py-2 text-left font-normal">{{ row.label }}</th><td class="px-3 py-2 text-right tabular-nums">{% if row.kind == 'FEE' or row.kind == 'TAX' or row.kind == 'COST' %}− {% endif %}{{ row.amount|vn_number }}</td></tr>{% endfor %}
+    </tbody></table></div>
+    {% for warning in snapshot.warnings %}<p class="mb-3 rounded border border-amber-200 bg-amber-50 p-3 text-amber-900">{{ warning }}</p>{% endfor %}
+    <details class="mb-5 border-t border-slate-200 pt-4"><summary class="cursor-pointer font-semibold">Nguồn và diễn giải đã lưu</summary>
+      <p class="my-3 text-xs text-slate-600">Ngày tính giá thành: {{ costing_date }}. Giá vốn gốc: {{ costing.unit_cost|vn_number }} {{ costing.currency }}; tổng giá thành {{ costing.full_cost|vn_number }} cho {{ costing.quantity|vn_number }} {{ snapshot.display.uom }}. Kết quả này không đọc lại phí, thuế hoặc tỷ giá hiện tại.</p>
+      <div class="overflow-x-auto"><table class="w-full text-sm"><thead class="bg-slate-50 text-left"><tr><th scope="col" class="p-2">Nguồn</th><th scope="col" class="p-2">Mã / Tham chiếu</th><th scope="col" class="p-2 text-right">Tỷ lệ / Tỷ giá</th><th scope="col" class="p-2 text-right">Số tiền cố định</th><th scope="col" class="p-2">Hiệu lực</th></tr></thead><tbody>{% for row in source_rows %}<tr class="border-t border-slate-200"><td class="p-2">{{ row.label }}</td><td class="p-2 font-mono text-xs">{{ row.code }} · #{{ row.reference }}{% if row.reference_text %}<span class="block">{{ row.reference_text }}</span>{% endif %}</td><td class="p-2 text-right">{{ row.rate }}</td><td class="p-2 text-right">{{ row.fixed }} {{ row.currency }}</td><td class="p-2 text-xs">{{ row.from }} — {{ row.to }}</td></tr>{% endfor %}</tbody></table></div>
+      <p class="mt-3 text-xs text-slate-500">Diễn giải hiển thị tối đa 8 chữ số thập phân; snapshot giữ các giá trị trung gian đầy đủ.</p>
+      {% for row in trace_fee_rows %}<p class="mt-3 break-words text-xs">{{ row.label }}: cơ sở {{ row.basis_display }} × {{ row.rate|vn_percent }} + {{ row.fixed_display }} = {{ row.raw_display }}; sàn {{ row.floor_display }}, trần {{ row.cap_display }} → {{ row.amount_display }}.</p>{% endfor %}
+      {% for row in trace_tax_rows %}<p class="mt-3 break-words text-xs">{{ row.label }}: giá trước thuế {{ row.basis_display }} × {{ row.rate|vn_percent }} + {{ row.fixed_display }} → {{ row.amount_display }}.</p>{% endfor %}
+      {% for row in snapshot.trace.fx %}<p class="mt-3 text-xs">Tỷ giá: 1 {{ row.from }} = {{ row.rate|vn_number }} {{ row.to }}; nguồn #{{ row.id }}; nhân theo chiều nguồn → đích.</p>{% endfor %}
+      {% if snapshot.trace.rejected_rules %}<p class="mt-3 text-xs">Các quy tắc không được chọn do phạm vi hoặc mức ưu tiên thấp hơn: {% for row in snapshot.trace.rejected_rules %}#{{ row.id }} ({{ row.code }}){% if not forloop.last %}, {% endif %}{% endfor %}.</p>{% endif %}
+      <p class="mt-3 break-all text-xs text-slate-500">Mã tham chiếu: {{ snapshot.trace_id }}<br>Dấu vân tay kết quả: {{ snapshot.hash }}</p>
+    </details>
+  {% else %}<p class="mb-5 text-slate-600">Kịch bản chưa có kết quả giá bán. Kiểm tra các mục tiêu và cấu hình nguồn trước khi tính.</p>{% endif %}
+  <div class="flex flex-wrap items-center gap-3 border-t border-slate-200 pt-4">
+    {% if can_calculate %}<a href="{% url 'pricing:scenario_edit' record.pk %}" class="text-brand-700 underline">Chỉnh sửa</a>{% endif %}
+    {% if can_calculate %}<form method="post" action="{% url 'pricing:scenario_calculate' record.pk %}" hx-post="{% url 'pricing:scenario_calculate' record.pk %}" hx-target="#scenario-detail-content" hx-swap="outerHTML" hx-disabled-elt="button" hx-indicator="#scenario-loading">{% csrf_token %}{% include "components/button.html" with href=None type='submit' label='Tính giá bán' primary=True %}<span id="scenario-loading" class="htmx-indicator ml-2 text-xs" role="status">Đang tính giá…</span></form>{% endif %}
+    <a href="{% url 'pricing:scenario_create' %}?source={{ record.pk }}" class="text-brand-700 underline">Nhân bản thành kịch bản mới</a>
+    <a href="{{ list_url }}" class="text-slate-600 underline">Quay lại danh sách</a>
+  </div>
+</section>
+{% if calculated_response %}<div hx-swap-oob="beforeend:#toast-root">{% for message in messages %}{% include "components/toast.html" %}{% endfor %}</div>{% endif %}

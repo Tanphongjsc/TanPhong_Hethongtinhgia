@@ -1,0 +1,18 @@
+{% load workspace_tags %}
+<div id="pricing-detail" class="max-w-5xl rounded border border-slate-200 bg-white p-4 sm:p-6">
+  <div class="mb-5 flex flex-wrap items-center gap-3 border-b border-slate-200 pb-4">
+    {% if resource == 'channel' %}<span class="font-mono font-semibold">{{ record.code }}</span>{% include "master_data/partials/reference_data_status.html" %}
+    {% else %}{% include "components/status_badge.html" with status=record.status %}<span class="text-xs text-slate-500">{{ record.date_status|display_label }} theo thời gian</span>{% endif %}
+  </div>
+  {% if readonly %}<p class="mb-5 text-sm text-slate-600">Bản đã chốt chỉ được xem. Thêm bản mới để giữ lịch sử khi thay đổi kỳ hoặc mức áp dụng.</p>{% endif %}
+  {% if direction %}<p class="mb-5 font-mono font-semibold">{{ direction }}</p>{% endif %}
+  <div class="space-y-5">
+  {% for title, fields in detail_sections %}
+    <section class="border-b border-slate-200 pb-5"><h2 class="mb-3 font-semibold">{{ title }}</h2>
+      <dl class="grid grid-cols-1 gap-x-6 gap-y-4 md:grid-cols-2">{% for field in fields %}{% include "components/detail_field.html" with label=field.label value=field.value numeric=field.numeric %}{% endfor %}</dl>
+    </section>
+  {% endfor %}
+    <dl class="grid grid-cols-1 gap-4 md:grid-cols-2">{% include "components/detail_field.html" with label="Ngày tạo" value=record.created_at|date:'d/m/Y H:i' %}</dl>
+  </div>
+  <div class="mt-6 flex flex-wrap gap-4 border-t border-slate-200 pt-4"><a href="{{ list_url }}" class="text-brand-700 hover:underline">← Quay lại danh sách</a>{% if close_url %}<a href="{{ close_url }}" class="text-slate-600 underline">Kết thúc hiệu lực</a>{% endif %}</div>
+</div>

@@ -1,0 +1,21 @@
+{% load workspace_tags %}
+<div class="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 px-3 py-3 text-xs text-slate-600">
+  <p>{{ page_obj.start_index }}–{{ page_obj.end_index }} / {{ page_obj.paginator.count }} phần tử</p>
+  <form method="get" hx-get="{{ list_url|default:request.path }}" hx-target="#{{ table_id|default:'cost-element-table' }}" hx-select="#{{ table_id|default:'cost-element-table' }}" hx-swap="outerHTML" hx-trigger="submit, change target:select" hx-push-url="true" hx-indicator="#list-loading" hx-sync="#{{ filter_form_id|default:'cost-element-filters' }}:replace" class="flex items-center gap-2">
+    {% if preserved_query_items %}
+      {% for key, value in preserved_query_items %}{% if key != 'page' and key != 'per_page' %}<input type="hidden" name="{{ key }}" value="{{ value }}">{% endif %}{% endfor %}
+    {% else %}
+      {% for key, value in request.GET.items %}{% if key != 'page' and key != 'per_page' %}<input type="hidden" name="{{ key }}" value="{{ value }}">{% endif %}{% endfor %}
+    {% endif %}
+    <label for="page-size">Mỗi trang</label>
+    <select id="page-size" name="per_page" class="rounded border border-slate-300 bg-white px-2 py-1">
+      {% for size in page_sizes %}<option value="{{ size }}" {% if size == per_page %}selected{% endif %}>{{ size }}</option>{% endfor %}
+    </select>
+    <noscript><button type="submit">Áp dụng</button></noscript>
+  </form>
+  <nav aria-label="Phân trang" class="flex items-center gap-3" hx-target="#{{ table_id|default:'cost-element-table' }}" hx-select="#{{ table_id|default:'cost-element-table' }}" hx-swap="outerHTML" hx-push-url="true" hx-indicator="#list-loading" hx-sync="#{{ filter_form_id|default:'cost-element-filters' }}:replace">
+    {% if page_obj.has_previous %}{% query_url page=page_obj.previous_page_number as previous_url %}<a href="{{ previous_url }}" hx-get="{{ previous_url }}" class="rounded border border-slate-300 px-2 py-1.5 hover:bg-slate-50">Trước</a>{% endif %}
+    <span>Trang {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+    {% if page_obj.has_next %}{% query_url page=page_obj.next_page_number as next_url %}<a href="{{ next_url }}" hx-get="{{ next_url }}" class="rounded border border-slate-300 px-2 py-1.5 hover:bg-slate-50">Sau</a>{% endif %}
+  </nav>
+</div>

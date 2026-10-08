@@ -1,0 +1,36 @@
+{% load workspace_tags %}
+<section id="scheme-lines-table" class="rounded border border-slate-200 bg-white" aria-labelledby="scheme-lines-title">
+  <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 p-3"><h2 id="scheme-lines-title" class="font-semibold">Thành phần tính giá <span class="font-normal text-slate-500">({{ page_obj.paginator.count }})</span></h2>
+    {% if editable and permissions.can_create_scheme_line %}<a href="{{ line_create_url }}?per_page={{ per_page }}&amp;page={{ page_obj.number }}" hx-get="{{ line_create_url }}?per_page={{ per_page }}&amp;page={{ page_obj.number }}" hx-target="#scheme-line-editor" hx-swap="outerHTML" hx-push-url="false" class="rounded border border-slate-300 px-3 py-2 text-brand-700 hover:bg-slate-50">+ Thêm thành phần</a>{% endif %}
+    {% include "partials/loading.html" %}
+  </div>
+  {% if lines %}<div class="overflow-x-auto"><table class="w-full whitespace-nowrap text-left text-sm"><caption class="sr-only">Cấu hình tính giá phiên bản {{ version.version_no }}</caption>
+    <thead class="bg-slate-50 text-xs font-semibold text-slate-600"><tr>
+      <th scope="col" class="px-3 py-3 text-right">Thứ tự</th><th scope="col" class="px-3 py-3">Mã dòng / Nhãn</th><th scope="col" class="px-3 py-3">Loại dòng</th>
+      <th scope="col" class="px-3 py-3">Phần tử chi phí</th><th scope="col" class="px-3 py-3">Nguồn dữ liệu</th><th scope="col" class="px-3 py-3">Tham chiếu nguồn</th>
+      <th scope="col" class="px-3 py-3">Tiền tệ / Đơn vị tính</th><th scope="col" class="px-3 py-3">Điều chỉnh</th><th scope="col" class="px-3 py-3 text-right">Thao tác</th>
+    </tr></thead><tbody>
+    {% for line in lines %}<tr class="h-12 border-t border-slate-200 hover:bg-slate-50">
+      <td class="px-3 py-2 text-right tabular-nums">{{ line.display_order }}</td><td class="px-3 py-2"><span class="font-mono">{{ line.line_code }}</span><div class="text-xs text-slate-500">{{ line.label }}</div></td>
+      <td class="px-3 py-2">{{ line.line_type|display_label }}</td><td class="px-3 py-2">{% if line.cost_element %}<span class="font-mono">{{ line.cost_element.code }}</span><div class="text-xs text-slate-500">{{ line.cost_element.name }}</div>{% else %}—{% endif %}</td>
+      <td class="px-3 py-2">{{ line.source_mode|display_label }}</td><td class="px-3 py-2">
+        {% if line.source_mode == 'FORMULA' and line.formula_version %}<a href="{% url 'formula_engine:formula_version_detail' line.formula_version.formula_id line.formula_version_id %}" class="text-brand-700 hover:underline"><span class="font-mono">{{ line.formula_version.formula.code }}</span> · Phiên bản {{ line.formula_version.version_no }}</a>
+        {% elif line.source_mode == 'LOOKUP' %}{{ line.rule_table.code|default:'—' }}{% elif line.source_mode == 'SYSTEM' %}<span class="font-mono">{{ line.system_resolver_code }}</span>{% elif line.source_mode == 'EXTERNAL' %}<span class="font-mono">{{ line.external_adapter_code }}</span>{% else %}Nhập khi tính giá{% endif %}
+        <details class="mt-1 max-w-sm whitespace-normal text-xs"><summary class="cursor-pointer text-slate-600">Thiết lập dòng</summary><dl class="mt-2 grid grid-cols-2 gap-2">
+          <dt>Phạm vi chi phí</dt><dd>{{ line.cost_scope|display_label }}</dd><dt>Phạm vi hiển thị</dt><dd>{{ line.visibility_scope|display_label }}</dd>
+          <dt>Số chữ số làm tròn</dt><dd>{% if line.rounding_scale != None %}{{ line.rounding_scale }}{% else %}Theo phần tử chi phí{% endif %}</dd>
+          <dt>Giá trị tối thiểu</dt><dd class="text-right tabular-nums">{{ line.min_override_value|vn_number }}</dd><dt>Giá trị tối đa</dt><dd class="text-right tabular-nums">{{ line.max_override_value|vn_number }}</dd>
+          <dt>Điều chỉnh cần lý do</dt><dd>{{ line.override_requires_reason|yesno:'Có,Không' }}</dd>
+          <dt>Ghi chú</dt><dd>{{ line.notes|default:'—' }}</dd>
+        </dl></details>
+      </td><td class="px-3 py-2">{{ line.cost_element.currency_code_id|default:'—' }}{% if line.cost_element.default_uom %} / {{ line.cost_element.default_uom.name }} ({{ line.cost_element.default_uom.symbol }}){% endif %}</td>
+      <td class="px-3 py-2">{{ line.editable|yesno:'Có,Không' }}</td>
+      <td class="px-3 py-2 text-right">{% if editable %}
+        {% url 'costing:scheme_line_edit' scheme.pk version.pk line.pk as edit_url %}{% url 'costing:scheme_line_remove' scheme.pk version.pk line.pk as remove_url %}
+        {% if permissions.can_edit_scheme_line %}<a href="{{ edit_url }}?per_page={{ per_page }}&amp;page={{ page_obj.number }}" hx-get="{{ edit_url }}?per_page={{ per_page }}&amp;page={{ page_obj.number }}" hx-target="#scheme-line-editor" hx-swap="outerHTML" hx-push-url="false" class="inline-block px-2 py-1 text-brand-700 hover:underline" aria-label="Chỉnh sửa thành phần {{ line.line_code }}">Chỉnh sửa</a>{% endif %}
+        {% if permissions.can_delete_scheme_line %}<a href="{{ remove_url }}?per_page={{ per_page }}&amp;page={{ page_obj.number }}" hx-get="{{ remove_url }}?per_page={{ per_page }}&amp;page={{ page_obj.number }}" hx-target="#scheme-line-editor" hx-swap="outerHTML" hx-push-url="false" class="inline-block px-2 py-1 text-slate-600 hover:underline" aria-label="Xóa thành phần {{ line.line_code }}">Xóa</a>{% endif %}
+      {% else %}<span class="text-xs text-slate-500">Đã chốt</span>{% endif %}</td>
+    </tr>{% endfor %}</tbody>
+  </table></div>{% else %}{% include "components/empty_state.html" with empty_title="Phương án chưa có thành phần tính giá." empty_description="Khai báo nguồn cho các phần tử chi phí và công thức tổng hợp." empty_url=None %}{% endif %}
+  {% include "components/pagination.html" %}
+</section>

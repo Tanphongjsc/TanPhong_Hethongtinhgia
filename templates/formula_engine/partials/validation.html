@@ -1,0 +1,16 @@
+{% load workspace_tags %}
+<section aria-label="Kiểm tra công thức" class="space-y-3">
+  <h2 class="text-sm font-semibold">Kiểm tra hợp lệ</h2>
+  {% if plan_error %}<p role="alert" class="break-words text-sm text-red-700">{{ plan_error }}</p>{% endif %}
+  {% if plan %}
+  <p class="text-sm text-emerald-700">Cú pháp, kiểu dữ liệu, đơn vị và phụ thuộc hợp lệ.</p>
+  <dl class="space-y-1 text-xs"><div><dt class="inline text-slate-500">Kiểu kết quả:</dt> <dd class="inline">{{ output_type.kind|display_label }}</dd></div>
+    {% if output_type.currency %}<div><dt class="inline text-slate-500">Tiền tệ:</dt> <dd class="inline font-mono">{{ output_type.currency }}</dd></div>{% endif %}
+    {% if output_type.dimension %}<div><dt class="inline text-slate-500">Đại lượng:</dt> <dd class="inline font-mono">{{ output_type.dimension }}</dd></div>{% endif %}
+  </dl>
+  <h3 class="text-xs font-semibold">Phụ thuộc trực tiếp</h3>
+  <ul class="space-y-2 text-xs">{% for dependency in dependency_rows %}<li>{{ dependency.name }} <code class="block text-slate-500">{{ dependency.code }}</code><span class="text-slate-500">{% if dependency.kind == 'ELEMENT' %}Phần tử chi phí{% else %}Công thức{% endif %}</span></li>{% empty %}<li>Công thức chưa tham chiếu dữ liệu nào.</li>{% endfor %}</ul>
+  {% if referenced_versions %}<h3 class="text-xs font-semibold">Phiên bản dùng khi kiểm thử</h3><ul class="text-xs">{% for code, ref_version in referenced_versions %}<li><code>{{ code }}</code> · Phiên bản {{ ref_version.version_no }}</li>{% endfor %}</ul>{% endif %}
+  {% else %}<p class="text-xs text-slate-500">Nhập biểu thức rồi bấm Kiểm tra công thức.</p>{% endif %}
+  <p class="text-xs text-slate-500">Kiểm tra trong trình soạn dùng phiên bản mới nhất của công thức phụ thuộc. Kích hoạt yêu cầu phụ thuộc đang hiệu lực tại ngày bắt đầu.</p>
+</section>

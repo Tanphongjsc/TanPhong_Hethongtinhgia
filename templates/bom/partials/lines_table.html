@@ -1,0 +1,36 @@
+{% load workspace_tags %}
+<section id="bom-lines-table" class="rounded border border-slate-200 bg-white" aria-labelledby="bom-lines-title">
+  <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-3 py-3">
+    <h2 id="bom-lines-title" class="font-semibold">Thành phần nguyên vật liệu <span class="font-normal text-slate-500">({{ page_obj.paginator.count }})</span></h2>
+    {% if editable %}<a href="{{ line_create_url }}?per_page={{ per_page }}&amp;page={{ page_obj.number }}" hx-get="{{ line_create_url }}?per_page={{ per_page }}&amp;page={{ page_obj.number }}" hx-target="#bom-line-editor" hx-swap="outerHTML" hx-push-url="false" class="rounded border border-slate-300 px-3 py-2 text-brand-700 hover:bg-slate-50">+ Thêm thành phần</a>{% endif %}
+    {% include "partials/loading.html" %}
+  </div>
+  {% if lines %}<div class="overflow-x-auto">
+    <table class="w-full whitespace-nowrap text-left text-sm">
+      <caption class="sr-only">Thành phần định mức phiên bản {{ version.version_no }}</caption>
+      <thead class="bg-slate-50 text-xs font-semibold text-slate-600"><tr>
+        <th scope="col" class="px-3 py-3 text-right">Thứ tự</th><th scope="col" class="px-3 py-3">Mã vật tư</th><th scope="col" class="px-3 py-3">Tên vật tư</th><th scope="col" class="px-3 py-3">Loại</th>
+        <th scope="col" class="px-3 py-3 text-right">Số lượng</th><th scope="col" class="px-3 py-3">Đơn vị tính</th><th scope="col" class="px-3 py-3 text-right">Hao hụt</th>
+        <th scope="col" class="px-3 py-3">Công đoạn / Nhóm thay thế</th><th scope="col" class="px-3 py-3">Tùy chọn</th><th scope="col" class="px-3 py-3">Ghi chú</th><th scope="col" class="px-3 py-3 text-right">Thao tác</th>
+      </tr></thead>
+      <tbody>
+      {% for line in lines %}
+        <tr class="h-12 border-t border-slate-200 hover:bg-slate-50">
+          <td class="px-3 py-2 text-right tabular-nums">{{ line.display_order }}</td><td class="px-3 py-2 font-mono">{{ line.component_item.code }}</td><td class="px-3 py-2">{{ line.component_item.name }}</td>
+          <td class="px-3 py-2">{{ line.component_item.item_type|display_label }}</td><td class="px-3 py-2 text-right tabular-nums">{{ line.qty|vn_number }}</td><td class="px-3 py-2">{{ line.uom.name }} ({{ line.uom.symbol }})</td>
+          <td class="px-3 py-2 text-right tabular-nums">{{ line.scrap_rate|vn_percent }}</td><td class="px-3 py-2 font-mono text-xs">{{ line.operation_code|default:"—" }} / {{ line.substitute_group|default:"—" }}</td>
+          <td class="px-3 py-2">{{ line.is_optional|yesno:"Có,Không" }}</td><td class="max-w-48 whitespace-normal px-3 py-2">{{ line.notes|default:"—" }}</td>
+          <td class="px-3 py-2 text-right">{% if editable %}
+            {% url 'bom:bom_line_edit' recipe.pk version.pk line.pk as edit_line_url %}
+            {% url 'bom:bom_line_remove' recipe.pk version.pk line.pk as remove_line_url %}
+            <a href="{{ edit_line_url }}?per_page={{ per_page }}&amp;page={{ page_obj.number }}" hx-get="{{ edit_line_url }}?per_page={{ per_page }}&amp;page={{ page_obj.number }}" hx-target="#bom-line-editor" hx-swap="outerHTML" hx-push-url="false" class="inline-block px-2 py-1 text-brand-700 hover:underline" aria-label="Chỉnh sửa thành phần {{ line.component_item.code }} dòng {{ line.pk }}">Chỉnh sửa</a>
+            <a href="{{ remove_line_url }}?per_page={{ per_page }}&amp;page={{ page_obj.number }}" hx-get="{{ remove_line_url }}?per_page={{ per_page }}&amp;page={{ page_obj.number }}" hx-target="#bom-line-editor" hx-swap="outerHTML" hx-push-url="false" class="inline-block px-2 py-1 text-slate-600 hover:underline" aria-label="Xóa thành phần {{ line.component_item.code }} dòng {{ line.pk }}">Xóa</a>
+          {% else %}<span class="text-xs text-slate-500">Đã chốt</span>{% endif %}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}{% include "components/empty_state.html" with empty_title="Định mức chưa có thành phần." empty_description="Thêm vật tư / hàng hóa và số lượng cho sản lượng chuẩn của phiên bản." empty_url=None %}{% endif %}
+  {% include "components/pagination.html" %}
+</section>

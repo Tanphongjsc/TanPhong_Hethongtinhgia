@@ -1,0 +1,25 @@
+@import "tailwindcss" source(none);
+@source "../../templates";
+@source "../../apps/master_data";
+@source "../../apps/product";
+@source "../../apps/bom";
+@source "../js";
+
+@theme {
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: Consolas, "Liberation Mono", monospace;
+  --breakpoint-lg: 62rem;
+  --color-brand-50: #eff6ff;
+  --color-brand-600: #2563eb;
+  --color-brand-700: #1d4ed8;
+}
+
+@layer base {
+  [x-cloak] { display: none !important; } /* Hide Alpine disclosures before init. */
+  button, input, select, textarea { font: inherit; }
+  button:not(:disabled), summary { cursor: pointer; }
+  :focus-visible { outline: 2px solid var(--color-brand-600); outline-offset: 3px; }
+}
+
+.htmx-indicator { visibility: hidden; }
+.htmx-request .htmx-indicator, .htmx-request.htmx-indicator { visibility: visible; }

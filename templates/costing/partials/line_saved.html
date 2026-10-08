@@ -1,0 +1,4 @@
+{% include "costing/partials/lines_table.html" %}
+<div id="scheme-line-editor" hx-swap-oob="outerHTML"></div>
+<div hx-swap-oob="beforeend:#toast-root">{% for message in messages %}{% include "components/toast.html" %}{% endfor %}</div>
+<div id="scheme-validation" hx-swap-oob="outerHTML" aria-live="polite"><p class="text-slate-500">Cấu hình đã thay đổi. Vui lòng kiểm tra lại.</p></div>

@@ -1,0 +1,32 @@
+{% load workspace_tags %}
+<section id="routing-operations-table" class="rounded border border-slate-200 bg-white" aria-labelledby="routing-operations-title">
+  <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-3 py-3">
+    <h2 id="routing-operations-title" class="font-semibold">Danh sách công đoạn <span class="font-normal text-slate-500">({{ page_obj.paginator.count }})</span></h2>
+    {% if editable and can_add_operation %}<a href="{{ operation_create_url }}?per_page={{ per_page }}&amp;page={{ page_obj.number }}" hx-get="{{ operation_create_url }}?per_page={{ per_page }}&amp;page={{ page_obj.number }}" hx-target="#routing-operation-editor" hx-swap="outerHTML" hx-push-url="false" class="rounded border border-slate-300 px-3 py-2 text-brand-700 hover:bg-slate-50">+ Thêm công đoạn</a>{% endif %}
+    {% include "partials/loading.html" %}
+  </div>
+  {% if operations %}<div class="overflow-x-auto"><table class="w-full whitespace-nowrap text-left text-sm">
+    <caption class="sr-only">Công đoạn sản xuất phiên bản {{ version.version_no }}</caption>
+    <thead class="bg-slate-50 text-xs font-semibold text-slate-600"><tr>
+      <th scope="col" class="px-3 py-3 text-right">Thứ tự</th><th scope="col" class="px-3 py-3">Mã công đoạn</th><th scope="col" class="px-3 py-3">Tên công đoạn</th>
+      <th scope="col" class="px-3 py-3">Trung tâm sản xuất</th><th scope="col" class="px-3 py-3">Nguồn lực chính</th>
+      <th scope="col" class="px-3 py-3 text-right">Thời gian thiết lập</th><th scope="col" class="px-3 py-3 text-right">Thời gian chạy</th><th scope="col" class="px-3 py-3">Đơn vị thời gian</th>
+      <th scope="col" class="px-3 py-3 text-right">Sản lượng cơ sở</th><th scope="col" class="px-3 py-3">Đơn vị sản lượng</th><th scope="col" class="px-3 py-3">Ghi chú</th><th scope="col" class="px-3 py-3 text-right">Thao tác</th>
+    </tr></thead>
+    <tbody>{% for operation in operations %}<tr class="h-12 border-t border-slate-200 hover:bg-slate-50">
+      <td class="px-3 py-2 text-right tabular-nums">{{ operation.sequence_no }}</td><td class="px-3 py-2 font-mono">{{ operation.operation_code }}</td><td class="px-3 py-2">{{ operation.operation_name }}</td>
+      <td class="px-3 py-2">{% if operation.work_center %}<span class="font-mono">{{ operation.work_center.code }}</span> — {{ operation.work_center.name }}{% else %}—{% endif %}</td>
+      <td class="px-3 py-2">{% if operation.primary_resource %}<span class="font-mono">{{ operation.primary_resource.code }}</span> — {{ operation.primary_resource.name }}{% else %}—{% endif %}</td>
+      <td class="px-3 py-2 text-right tabular-nums">{{ operation.setup_time|vn_number }}</td><td class="px-3 py-2 text-right tabular-nums">{{ operation.run_time|vn_number }}</td>
+      <td class="px-3 py-2">{% if operation.time_uom %}{{ operation.time_uom.name }} ({{ operation.time_uom.symbol }}){% else %}—{% endif %}</td>
+      <td class="px-3 py-2 text-right tabular-nums">{{ operation.quantity_basis|vn_number }}</td><td class="px-3 py-2">{% if operation.quantity_uom %}{{ operation.quantity_uom.name }} ({{ operation.quantity_uom.symbol }}){% else %}—{% endif %}</td>
+      <td class="max-w-48 whitespace-normal px-3 py-2">{{ operation.notes|default:"—" }}</td>
+      <td class="px-3 py-2 text-right">{% if editable %}
+        {% url 'bom:routing_operation_edit' routing.pk version.pk operation.pk as edit_url %}{% url 'bom:routing_operation_remove' routing.pk version.pk operation.pk as remove_url %}
+        {% if can_edit_operation %}<a href="{{ edit_url }}?per_page={{ per_page }}&amp;page={{ page_obj.number }}" hx-get="{{ edit_url }}?per_page={{ per_page }}&amp;page={{ page_obj.number }}" hx-target="#routing-operation-editor" hx-swap="outerHTML" hx-push-url="false" class="inline-block px-2 py-1 text-brand-700 hover:underline" aria-label="Chỉnh sửa công đoạn {{ operation.operation_code }}">Chỉnh sửa</a>{% endif %}
+        {% if can_remove_operation %}<a href="{{ remove_url }}?per_page={{ per_page }}&amp;page={{ page_obj.number }}" hx-get="{{ remove_url }}?per_page={{ per_page }}&amp;page={{ page_obj.number }}" hx-target="#routing-operation-editor" hx-swap="outerHTML" hx-push-url="false" class="inline-block px-2 py-1 text-slate-600 hover:underline" aria-label="Xóa công đoạn {{ operation.operation_code }}">Xóa</a>{% endif %}
+      {% else %}<span class="text-xs text-slate-500">Đã chốt</span>{% endif %}</td>
+    </tr>{% endfor %}</tbody>
+  </table></div>{% else %}{% include "components/empty_state.html" with empty_title="Quy trình chưa có công đoạn." empty_description="Thêm công đoạn, thời gian và nguồn lực sử dụng." empty_url=None %}{% endif %}
+  {% include "components/pagination.html" %}
+</section>

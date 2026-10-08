@@ -1,0 +1,11 @@
+{% extends "layouts/app_shell.html" %}
+{% block content %}
+<form id="reference-data-filters" method="get" class="mb-3 flex flex-wrap items-end gap-3" hx-get="{{ list_url }}" hx-trigger="submit, change target:select" hx-target="#reference-data-table" hx-select="#reference-data-table" hx-swap="outerHTML" hx-push-url="true" hx-indicator="#list-loading" hx-sync="this:replace">
+  {% for option in filter_options %}{% include "components/filter_select.html" with name=option.name label=option.label choices=option.choices selected=option.selected %}{% endfor %}
+  <input name="sort" type="hidden" value="{{ current_sort }}"><input name="per_page" type="hidden" value="{{ per_page }}">
+  {% include "components/button.html" with type="submit" label="Lọc" primary=False %}
+  <a href="{{ list_url }}" class="px-1 py-2 text-slate-600 underline">Đặt lại</a>
+  {% include "partials/loading.html" %}
+</form>
+{% include "master_data/partials/reference_data_table.html" %}
+{% endblock %}

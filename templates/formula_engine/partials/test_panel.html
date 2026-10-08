@@ -1,0 +1,20 @@
+{% load workspace_tags %}
+<section id="formula-test-panel" class="mt-5 border-t border-slate-200 pt-4">
+  <h2 class="mb-3 text-sm font-semibold">Kiểm thử công thức</h2>
+  {% if plan %}
+  <form method="post" action="{{ version_url }}" hx-post="{{ version_url }}" hx-target="#formula-test-panel" hx-select="#formula-test-panel" hx-swap="outerHTML" novalidate>
+    {% csrf_token %}
+    {% include "partials/form_errors.html" with form=test_form %}
+    <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">{% include "formula_engine/partials/test_fields.html" %}</div>
+    <div class="mt-4 flex flex-wrap gap-3"><button type="submit" name="action" value="test" class="rounded border border-slate-300 px-3 py-2 hover:bg-slate-50">Kiểm thử</button>
+      <button type="submit" name="action" value="save_test" class="rounded border border-slate-300 px-3 py-2 hover:bg-slate-50">Lưu bộ kiểm thử</button>
+      <button type="submit" name="action" value="run_cases" class="rounded border border-slate-300 px-3 py-2 hover:bg-slate-50">Chạy bộ kiểm thử đã lưu</button>
+    </div>
+  </form>
+  {% include "formula_engine/partials/result.html" %}
+  {% else %}<p class="text-sm text-slate-500">Cần sửa lỗi công thức trước khi kiểm thử.</p>{% endif %}
+  {% if cases %}<h3 class="mt-5 mb-2 font-semibold">Bộ kiểm thử đang hoạt động</h3>
+  <div class="overflow-x-auto"><table class="w-full text-left text-xs"><thead><tr><th scope="col" class="p-2">Tên bộ kiểm thử</th><th scope="col" class="p-2 text-right">Kết quả mong đợi</th><th scope="col" class="p-2 text-right">Sai số cho phép đã lưu</th><th scope="col" class="p-2 text-right">Thao tác</th></tr></thead><tbody>
+  {% for case in cases %}<tr class="border-t border-slate-200"><td class="p-2">{{ case.name }}</td><td class="p-2 text-right font-mono">{% if case.expected_value_numeric != None %}{{ case.expected_value_numeric|vn_number }}{% elif output_type.kind == 'BOOLEAN' %}{% if case.expected_value_text == 'TRUE' %}Có{% else %}Không{% endif %}{% else %}{{ case.expected_value_text }}{% endif %}</td><td class="p-2 text-right">{{ case.tolerance|vn_number }}</td><td class="p-2 text-right"><form method="post" action="{% url 'formula_engine:formula_test_deactivate' formula.pk case.pk %}">{% csrf_token %}<button type="submit" class="text-slate-600 underline underline-offset-2">Ngừng sử dụng</button></form></td></tr>{% endfor %}
+  </tbody></table></div>{% endif %}
+</section>

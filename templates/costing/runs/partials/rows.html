@@ -1,0 +1,13 @@
+{% load workspace_tags %}
+{% for record in records %}
+<tr class="h-12 border-t border-slate-200 hover:bg-slate-50">
+  <td class="px-3 py-2 font-mono text-xs"><a class="text-brand-700 hover:underline" href="{% url 'costing:run_detail' record.public_id %}">{{ record.run_no }}</a></td>
+  <td class="whitespace-nowrap px-3 py-2">{{ record.effective_at|date:'d/m/Y' }}</td>
+  <td class="px-3 py-2">{{ record.context_jsonb.display.product }}{% if record.context_jsonb.display.sku %}<span class="block text-xs text-slate-500">{{ record.context_jsonb.display.sku }}</span>{% endif %}</td>
+  <td class="px-3 py-2">{{ record.context_jsonb.display.scheme }}<span class="block text-xs text-slate-500">Phiên bản {{ record.context_jsonb.display.version }}</span></td>
+  <td class="px-3 py-2 text-right tabular-nums">{{ record.quantity|vn_number }} {{ record.context_jsonb.display.uom }}</td>
+  <td class="whitespace-nowrap px-3 py-2 text-right tabular-nums">{{ record.full_cost|vn_number }} {{ record.result_currency_code_id }}</td>
+  <td class="px-3 py-2">{% include "components/status_badge.html" with status=record.run_status %}</td>
+  <td class="px-3 py-2"><a href="{% url 'costing:run_detail' record.public_id %}" class="text-brand-700 hover:underline">Xem chi tiết</a></td>
+</tr>
+{% endfor %}

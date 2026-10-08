@@ -1,0 +1,20 @@
+<div id="overhead-detail">
+  <section class="rounded border border-slate-200 bg-white p-4 sm:p-5" aria-label="Thông tin {{ resource_label }}">
+    <div class="mb-4 flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-3">
+      <h2 class="font-mono font-semibold">{{ record.code }}</h2>
+      {% if resource == 'allocation_rule' %}{% include "components/status_badge.html" with status=record.status %}{% else %}{% include "master_data/partials/reference_data_status.html" %}{% endif %}
+    </div>
+    {% for title, fields in detail_sections %}
+    <section class="mb-4 border-b border-slate-200 pb-4"><h3 class="mb-3 font-semibold">{{ title }}</h3><dl class="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2 lg:grid-cols-3">
+      {% for field in fields %}{% include "components/detail_field.html" with label=field.label value=field.value technical=field.technical numeric=field.numeric %}{% endfor %}
+    </dl></section>
+    {% endfor %}
+    <dl class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      {% include "components/detail_field.html" with label="Ngày tạo" value=created_at %}
+      {% if resource == 'allocation_rule' %}<div><dt class="text-xs text-slate-500">Hiệu lực theo ngày</dt><dd class="mt-1">{% include "components/status_badge.html" with status=record.date_status %}</dd></div>{% endif %}
+    </dl>
+    {% if pool_url %}<a href="{{ pool_url }}" class="mt-4 inline-block text-brand-700 hover:underline">Xem nhóm chi phí →</a><p class="mt-3 text-xs text-slate-500">Hiệu lực theo ngày không thay thế trạng thái duyệt. Quy tắc này xác định cách áp dụng; màn hình không thực hiện phân bổ chi phí.</p>{% endif %}
+  </section>
+  {% if rule_history %}{% include "bom/overhead/partials/rule_history.html" %}{% endif %}
+  <a href="{{ list_url }}" class="mt-5 inline-block text-brand-700 hover:underline">← Quay lại danh sách</a>
+</div>

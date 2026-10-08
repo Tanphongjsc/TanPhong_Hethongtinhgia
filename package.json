@@ -1,0 +1,37 @@
+{
+  "name": "hethongtinhgiathanh",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "build:vendor": "node scripts/build-vendor.cjs",
+    "dev:css": "tailwindcss -i ./static/src/tailwind.css -o ./static/css/app.css --watch",
+    "build:css": "tailwindcss -i ./static/src/tailwind.css -o ./static/css/app.css --minify",
+    "build": "npm run build:vendor && npm run build:css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ThanhTrung2308/Hethongtinhgiathanh.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/ThanhTrung2308/Hethongtinhgiathanh/issues"
+  },
+  "homepage": "https://github.com/ThanhTrung2308/Hethongtinhgiathanh#readme",
+  "devDependencies": {
+    "@tailwindcss/cli": "4.3.3",
+    "tailwindcss": "4.3.3"
+  },
+  "dependencies": {
+    "@alpinejs/focus": "3.17.4",
+    "alpinejs": "3.17.4",
+    "htmx.org": "2.0.11"
+  },
+  "private": true
+}

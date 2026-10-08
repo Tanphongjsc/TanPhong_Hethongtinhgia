@@ -1,0 +1,24 @@
+<form id="cost-element-filters" method="get" action="{% url 'master_data:cost_element_list' %}" class="mb-3 flex flex-wrap items-end gap-3" hx-get="{% url 'master_data:cost_element_list' %}" hx-trigger="submit, change target:select" hx-target="#cost-element-table" hx-select="#cost-element-table" hx-swap="outerHTML" hx-push-url="true" hx-indicator="#list-loading" hx-sync="this:replace">
+  {% include "components/search_box.html" %}
+  <div>
+    <label for="filter-group" class="mb-1 block text-xs font-medium text-slate-600">Nhóm chi phí</label>
+    <select id="filter-group" name="group" class="h-9 max-w-48 rounded border border-slate-300 bg-white px-2">
+      <option value="">Tất cả</option>
+      {% for group in groups %}<option value="{{ group.pk }}" {% if filters.group == group.pk|stringformat:'s' %}selected{% endif %}>{{ group.name }}</option>{% endfor %}
+    </select>
+  </div>
+  {% include "components/filter_select.html" with name="value_type" label="Loại giá trị" choices=value_types selected=filters.value_type %}
+  {% include "components/filter_select.html" with name="source_mode" label="Nguồn dữ liệu" choices=source_modes selected=filters.source_mode %}
+  {% include "components/filter_select.html" with name="cost_scope" label="Phạm vi chi phí" choices=cost_scopes selected=filters.cost_scope %}
+  <div>
+    <label for="filter-active" class="mb-1 block text-xs font-medium text-slate-600">Trạng thái</label>
+    <select id="filter-active" name="active" class="h-9 rounded border border-slate-300 bg-white px-2">
+      <option value="">Tất cả</option><option value="true" {% if filters.active == 'true' %}selected{% endif %}>Đang hoạt động</option><option value="false" {% if filters.active == 'false' %}selected{% endif %}>Ngừng hoạt động</option>
+    </select>
+  </div>
+  <input name="sort" type="hidden" value="{{ current_sort }}">
+  <input name="per_page" type="hidden" value="{{ per_page }}">
+  {% include "components/button.html" with type="submit" label="Lọc" primary=False %}
+  <a href="{% url 'master_data:cost_element_list' %}" class="px-1 py-2 text-slate-600 underline underline-offset-2">Đặt lại</a>
+  {% include "partials/loading.html" %}
+</form>

@@ -1,0 +1,35 @@
+{% load workspace_tags %}
+<div id="cost-element-detail" class="max-w-5xl rounded border border-slate-200 bg-white p-4 sm:p-6">
+  <div class="mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-4">
+    <div class="flex items-center gap-3"><span class="font-mono font-semibold">{{ element.code }}</span>{% if element.is_active %}{% include "components/status_badge.html" with status="ACTIVE" %}{% else %}{% include "components/status_badge.html" with status="INACTIVE" %}{% endif %}</div>
+    <div x-data="{ open: false }" class="relative" @click.outside="open = false" @keydown.escape="open = false; $refs.trigger.focus()">
+      <button x-ref="trigger" type="button" @click="open = !open; if (open) $nextTick(() => $refs.audit.focus())" :aria-expanded="open" aria-controls="detail-more" class="rounded border border-slate-300 px-3 py-2">Thao tác khác</button>
+      <div id="detail-more" x-cloak x-show="open" class="absolute right-0 z-10 mt-1 w-52 rounded border border-slate-200 bg-white p-1">
+        <button x-ref="audit" type="button" @click="open = false; $dispatch('open-drawer', { id: 'element-metadata' })" class="w-full rounded px-3 py-2 text-left hover:bg-slate-50">Thông tin bản ghi</button>
+      </div>
+    </div>
+  </div>
+  <div class="space-y-5">
+    <section><h2 class="mb-3 font-semibold">Thông tin chung</h2><dl class="grid grid-cols-1 gap-x-6 gap-y-4 md:grid-cols-2">
+      {% include "components/detail_field.html" with label="Tên" value=element.name %}
+      {% include "components/detail_field.html" with label="Nhóm chi phí" value=element.group.name %}
+      <div class="md:col-span-2"><dt class="text-xs text-slate-500">Mô tả</dt><dd class="mt-1 whitespace-pre-line break-words">{{ element.description|default:'—' }}</dd></div>
+    </dl></section>
+    <section class="border-t border-slate-200 pt-5"><h2 class="mb-3 font-semibold">Cấu hình giá trị</h2><dl class="grid grid-cols-1 gap-x-6 gap-y-4 md:grid-cols-2">
+      {% include "components/detail_field.html" with label="Loại giá trị" value=element.value_type|display_label technical=False %}
+      {% include "components/detail_field.html" with label="Đại lượng" value=element.dimension_code technical=True %}
+      {% include "components/detail_field.html" with label="Nguồn dữ liệu" value=element.default_source_mode|display_label technical=False %}
+      {% include "components/detail_field.html" with label="Tiền tệ" value=element.currency_code_id technical=True %}
+      {% include "components/detail_field.html" with label="Đơn vị tính mặc định" value=element.default_uom.code technical=True %}
+      {% include "components/detail_field.html" with label="Số chữ số làm tròn" value=element.rounding_scale numeric=True %}
+      {% include "components/detail_field.html" with label="Phương pháp làm tròn" value=element.rounding_mode|display_label technical=False %}
+    </dl></section>
+    <section class="border-t border-slate-200 pt-5"><h2 class="mb-3 font-semibold">Phạm vi & bảo mật</h2><dl class="grid grid-cols-1 gap-x-6 gap-y-4 md:grid-cols-2">
+      {% include "components/detail_field.html" with label="Phạm vi kế toán" value=element.accounting_scope|display_label technical=False %}
+      {% include "components/detail_field.html" with label="Phạm vi chi phí" value=element.cost_scope|display_label technical=False %}
+      {% include "components/detail_field.html" with label="Dữ liệu nhạy cảm" value=element.is_sensitive|yesno:'Có,Không' %}
+    </dl></section>
+  </div>
+  <div class="mt-6 border-t border-slate-200 pt-4"><a href="{% url 'master_data:cost_element_list' %}" class="text-brand-700 hover:underline">← Danh mục phần tử chi phí</a></div>
+</div>
+{% include "components/drawer.html" with drawer_id="element-metadata" drawer_title="Thông tin bản ghi" drawer_content_template="master_data/partials/cost_element_metadata.html" %}

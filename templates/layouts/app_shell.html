@@ -1,0 +1,14 @@
+{% extends "base/base.html" %}
+{% block body %}
+<div x-data="appShell" @keydown.escape.window="mobileOpen = false" class="min-h-screen">
+  {% include "layouts/sidebar.html" %}
+  <div class="min-h-screen lg:pl-60" :class="{ 'lg:pl-60': expanded, 'lg:pl-18': !expanded }">
+    {% include "layouts/topbar.html" %}
+    <main id="main-content" tabindex="-1" data-resource-label="{{ resource_label|default:'dữ liệu' }}" class="mx-auto max-w-screen-2xl px-4 py-5 sm:px-6">
+      {% include "layouts/breadcrumbs.html" %}
+      {% include "layouts/page_header.html" %}
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</div>
+{% endblock %}

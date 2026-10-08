@@ -1,0 +1,6 @@
+<a href="{% url detail_url_name record.pk %}" class="inline-block px-2 py-1 text-brand-700 hover:underline" aria-label="Xem {{ resource_label }} {{ record.pk }}">Xem chi tiết</a>
+{% if can_edit %}
+  {% if resource != 'uom_conversion' or record.organization_id == current_organization.pk %}
+    <a href="{% url edit_url_name record.pk %}" class="inline-block px-2 py-1 text-slate-600 hover:underline" aria-label="Sửa {{ resource_label }} {{ record.pk }}">Chỉnh sửa</a>
+  {% endif %}
+{% endif %}
