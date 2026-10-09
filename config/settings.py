@@ -82,28 +82,9 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
+from .database import database_config
 
-        "NAME": env("DB_NAME"),
-        "USER": env("DB_USER"),
-        "PASSWORD": env("DB_PASSWORD"),
-        "HOST": env("DB_HOST"),
-        "PORT": env("DB_PORT"),
-
-        "CONN_MAX_AGE": env.int("DB_CONN_MAX_AGE", default=60),
-        "CONN_HEALTH_CHECKS": True,
-
-        "OPTIONS": {
-            "sslmode": env("DB_SSLMODE", default="require"),
-            "connect_timeout": env.int("DB_CONNECT_TIMEOUT", default=10),
-
-            # Chỉ làm việc với schema của phần mềm Costing.
-            "options": "-c search_path=costing,public",
-        },
-    }
-}
+DATABASES = {"default": database_config(env)}
 
 
 # Internationalization

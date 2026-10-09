@@ -6,6 +6,7 @@ from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.parse import urljoin, urlsplit
 from urllib.request import build_opener, HTTPRedirectHandler, Request
+from uuid import UUID
 
 PAGES = ("/", "/master-data/cost-elements/", "/product/items/", "/product/products/",
          "/product/skus/", "/bom/", "/bom/packaging/", "/formula-engine/formulas/",
@@ -31,7 +32,7 @@ class Assets(HTMLParser):
             self.paths.add(path)
 
 
-def smoke(base_url):
+def smoke(base_url, *, costing_run=None, costing_line=None, pricing_scenario=None, headers=None):
     parts = urlsplit(base_url)
     if parts.scheme not in ("http", "https") or not parts.hostname or parts.username or parts.password or parts.query or parts.fragment or parts.path not in ("", "/"):
         raise ValueError("Base URL phải là origin HTTP(S), không credentials/path/query.")
@@ -39,9 +40,11 @@ def smoke(base_url):
     opener = build_opener(SameOriginRedirect())  # TLS verification is never disabled.
     checks, assets = [], set()
 
+    default_headers = headers or {}
+
     def get(path, headers=None, *, kind="page"):
         try:
-            with opener.open(Request(urljoin(base_url, path), headers=headers or {}), timeout=20) as response:
+            with opener.open(Request(urljoin(base_url, path), headers={**default_headers, **(headers or {})}), timeout=20) as response:
                 data = response.read()
                 content_type = response.headers.get("Content-Type", "")
                 if kind == "probe":
@@ -63,19 +66,36 @@ def smoke(base_url):
 
     for probe in ("/health/", "/ready/"): get(probe, kind="probe")
     for path in PAGES: get(path)
+    if costing_run:
+        public_id = UUID(str(costing_run))
+        get(f"/costing/runs/{public_id}/", kind="history")
+        get(f"/costing/runs/{public_id}/snapshot/", kind="history")
+        if costing_line:
+            get(f"/costing/runs/{public_id}/lines/{int(costing_line)}/trace/", kind="history")
+    if pricing_scenario:
+        get(f"/pricing/scenarios/{int(pricing_scenario)}/", kind="history")
     get("/master-data/cost-elements/?q=DEMO&per_page=25", {"HX-Request": "true"}, kind="partial")
     for path in sorted(assets): get(path, kind="asset")
     checks.append({"kind": "asset_count", "pass": len(assets) == 7, "count": len(assets)})
-    return {"read_only": True, "passed": all(row["pass"] for row in checks), "checks": checks}
+    return {"read_only": True, "passed": all(row["pass"] for row in checks), "checks": checks,
+            "costing_history_checked": bool(costing_run), "pricing_history_checked": bool(pricing_scenario)}
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--base-url", required=True)
     parser.add_argument("--report", help="Local output JSON; no credentials included.")
+    parser.add_argument("--costing-run", type=UUID, help="UUID công khai của Run đã lưu; chỉ đọc lịch sử.")
+    parser.add_argument("--costing-line", type=int, help="ID dòng thuộc Run trên để kiểm tra trace.")
+    parser.add_argument("--pricing-scenario", type=int, help="ID kịch bản đã lưu để kiểm tra kết quả/nguồn/trace.")
     args = parser.parse_args()
     try:
-        report = smoke(args.base_url)
+        if args.costing_line and not args.costing_run:
+            raise ValueError("--costing-line cần --costing-run.")
+        if any(value is not None and value <= 0 for value in (args.costing_line, args.pricing_scenario)):
+            raise ValueError("ID dòng/kịch bản phải là số nguyên dương.")
+        report = smoke(args.base_url, costing_run=args.costing_run, costing_line=args.costing_line,
+                       pricing_scenario=args.pricing_scenario)
     except ValueError as error:
         parser.error(str(error))
     content = json.dumps(report, ensure_ascii=False, indent=2)

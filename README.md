@@ -20,7 +20,15 @@ Hardening/hồi quy toàn hệ thống: [SYSTEM_HARDENING.md](docs/SYSTEM_HARDEN
 Sidebar chỉ hiện các module đang hoạt động; lịch sử phiên bản vẫn nằm trong từng
 module. CSRF vẫn bắt buộc dù không đăng nhập; lỗi hết hạn yêu cầu tải lại trang.
 
-Production: cài `requirements-production.txt`, cấp process environment theo
+**Render Web Service:** dùng Python 3.11.5 / Node 24.11.0 đã pin, Build Command
+`bash build.sh`, Start Command `gunicorn -c config/gunicorn.py config.wsgi:application`,
+Health Check `/health/`; Supabase session pooler được giữ nguyên, không migrate/seed.
+Hướng dẫn Dashboard, env/secret, HTTPS, kiểm tra chỉ đọc, rollback và kết quả:
+[DEPLOYMENT_RENDER.md](docs/DEPLOYMENT_RENDER.md).
+Service chưa được tạo. Web Service có URL công khai; ứng dụng không login nên cần
+hạn chế truy cập trước khi dùng dữ liệu nhạy cảm.
+
+Production Windows/portable: cài `requirements-production.txt`, cấp process environment theo
 [.env.production.example](.env.production.example), build/collectstatic, kiểm tra
 `python -m config.serve --check`, start bằng **`python -m config.serve`**.
 Không dùng runserver/migrate/seed trong deployment. Production không tự đọc `.env`.

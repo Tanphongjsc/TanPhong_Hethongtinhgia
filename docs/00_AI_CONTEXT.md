@@ -7,12 +7,25 @@ Tài liệu này là entry point bắt buộc cho AI/Codex trước khi làm vi�
 
 Hệ thống Costing là **phần mềm độc lập**.
 
-- **Deployment preparation 08/10/2026:** thêm `config.production` (process env,
+- **Render deployment preparation 08/10/2026:** target mới là **Render Web Service**,
+  Supabase giữ Session pooler/SSL/search_path `costing,public`; `DATABASE_URL` ưu tiên
+  toàn bộ legacy `DB_*`, không thay schema/engine/models. Build `bash build.sh`, start
+  `gunicorn -c config/gunicorn.py config.wsgi:application`, health `/health/`. Python
+  3.11.5/Node 24.11.0 pin trong version files. WhiteNoise/manifest reuse, Render
+  managed HTTPS transport riêng với exact hostname/CSRF, không wildcard. Waitress
+  giữ cho Windows/portable. Chủ dự án xác nhận chưa có service; chỉ chuẩn bị repo và
+  Dashboard, không kết luận đã LIVE. Yêu cầu mới **supersedes** phần "bỏ qua giới hạn
+  truy cập" của phase trước: Web Service public + không Auth cần báo access risk,
+  kiểm tra plan/hạn chế IP trước dữ liệu nhạy cảm; không tự thêm Auth/Organization.
+  Runbook và manifest: [DEPLOYMENT_RENDER.md](DEPLOYMENT_RENDER.md).
+
+- **Deployment preparation 08/10/2026 (phase trước, target mới ở mục trên):** thêm `config.production` (process env,
   DEBUG=False, SSL/search_path costing,public, safe hosts), Waitress + WhiteNoise
   local assets/manifest, `/health/` và `/ready/`, JSON technical logging và guards
-  DEMO/migration/test commands. Start production duy nhất `python -m config.serve`;
-  không engine/schema/Golden changes. Chưa có production target nên chưa deploy;
-  thiết kế/cấu hình giới hạn truy cập được bỏ khỏi task theo yêu cầu chủ dự án.
+  DEMO/migration/test commands. Entry point portable `python -m config.serve`;
+  không engine/schema/Golden changes. Khi hoàn thành phase đó chưa có production
+  target nên chưa deploy; nội dung bỏ qua giới hạn truy cập của phase đó đã được
+  superseded bởi yêu cầu Render mới ở trên.
   Không thêm Auth hoặc organization workflow. Runbook hiện hành ở đầu
   [06_DEPLOYMENT_DEVOPS.md](06_DEPLOYMENT_DEVOPS.md), evidence/gates trong
   [PRODUCTION_READINESS.md](PRODUCTION_READINESS.md). Các mô tả “chưa có app server/

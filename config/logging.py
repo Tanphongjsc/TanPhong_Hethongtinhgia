@@ -5,14 +5,20 @@ import json
 import logging
 import os
 import re
+from urllib.parse import unquote, urlsplit
 
 request_trace = ContextVar("costing_request_trace", default=None)
 
 
 def redact(value):
     text = str(value)
-    for key in ("DJANGO_SECRET_KEY", "DB_PASSWORD", "DATABASE_URL"):
-        secret = os.environ.get(key, "")
+    secrets = [os.environ.get(key, "") for key in ("DJANGO_SECRET_KEY", "DB_PASSWORD", "DATABASE_URL")]
+    try:
+        password = urlsplit(os.environ.get("DATABASE_URL", "")).password or ""
+        secrets.extend((password, unquote(password)))
+    except ValueError:
+        pass
+    for secret in secrets:
         if secret and len(secret) >= 4:
             text = text.replace(secret, "[REDACTED]")
     text = re.sub(r"(?i)\bpostgres(?:ql)?://[^\s\"']+", "postgresql://[REDACTED]", text)

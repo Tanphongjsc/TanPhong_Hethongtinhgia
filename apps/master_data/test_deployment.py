@@ -29,7 +29,7 @@ from config.serve import server_options
 def safe_environment(**changes):
     # Deliberately discard inherited database credentials and Django settings.
     environment = {key: value for key, value in os.environ.items()
-                   if not key.startswith(("DB_", "DJANGO_", "APP_", "DEFAULT_ORGANIZATION"))}
+                   if not key.startswith(("DB_", "DJANGO_", "APP_", "DEFAULT_ORGANIZATION", "DATABASE_URL", "RENDER", "GUNICORN_", "WEB_CONCURRENCY", "PORT"))}
     environment.update(APP_ENV="production", DJANGO_SETTINGS_MODULE="config.production",
         DJANGO_SECRET_KEY="isolated-production-settings-test-key-with-at-least-fifty-characters",
         DJANGO_DEBUG="False", DJANGO_ALLOWED_HOSTS="localhost,127.0.0.1,testserver",
@@ -235,7 +235,10 @@ class ProductionHTTPTests(TransactionTestCase):
         from scripts.smoke_production import smoke
         from apps.core.models import CostingRun, PriceScenario
         from apps.costing.demo_verification import stored_fingerprint
-        report = smoke(self.base_url)
+        historical_run = CostingRun.objects.get(pk=self.costing["golden"]["id"])
+        report = smoke(self.base_url, costing_run=historical_run.public_id,
+            costing_line=historical_run.costingrunline_set.order_by("pk").first().pk,
+            pricing_scenario=self.pricing["scenario_id"])
         self.assertTrue(report["passed"], report)
         self.assertEqual(static_errors(), [])
         with urlopen(self.base_url + "/product/items/") as response:

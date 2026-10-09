@@ -5,23 +5,28 @@
 Phần này là hướng dẫn thực thi hiện tại; các mục SDLC 1–14 phía dưới là baseline
 cũ. Container, Kubernetes, migration, queue, auth/role, approval và audit trong
 baseline **không phải yêu cầu runtime hoặc command triển khai hiện tại**.
-Chưa có production target nên chưa deploy thật. Theo yêu cầu mới nhất của chủ
-dự án, thiết kế/cấu hình giới hạn truy cập không nằm trong task này; không có gate
-`APP_PRIVATE_ACCESS_ACK` hoặc authentication được thêm vào ứng dụng.
+**Target mới: Render Web Service**, chủ dự án xác nhận chưa có service.
+[DEPLOYMENT_RENDER.md](DEPLOYMENT_RENDER.md) là runbook ưu tiên cho target này:
+Gunicorn WSGI, build.sh, version pins, DATABASE_URL và managed HTTPS. Không tự thêm
+authentication hoặc organization workflow. Yêu cầu Render mới supersedes việc
+bỏ qua đánh giá giới hạn truy cập của phase trước: phải báo rõ Web Service public
+và hạn chế truy cập cần thiết trước khi dùng dữ liệu nhạy cảm. Không deploy thật
+khi chưa có tài khoản/service; phần dưới giữ hướng dẫn Windows/portable.
 
 ### 1. Runtime và artifact
 
 - Python 3.11 (đã kiểm thử 3.11.5), Django 5.2.17; chọn patch Python trên server
   và chạy lại regression trước khi promote. Giữ dependencies hiện tại.
-- Một process WSGI **Waitress 3.0.2**, mặc định 4 threads; **WhiteNoise 6.12.0**
-  phục vụ static cùng process. Chưa dùng Docker, Nginx, Gunicorn, Redis/Celery.
+- Windows/portable: một process WSGI **Waitress 3.0.2**, mặc định 4 threads;
+  **WhiteNoise 6.12.0** phục vụ static cùng process. Render dùng **Gunicorn 26.2.0**,
+  1 worker/4 threads mặc định, cấu hình riêng. Không Docker/Nginx/Redis/Celery mới.
 - Node 24.11.0/npm 11.6.1 dùng lúc build, Tailwind 4.3.3, HTMX/Alpine local.
   Runtime sau build không cần Node/npm, Playwright hoặc local PostgreSQL test.
 - Mỗi release có source, requirements, templates, static source + output vendor/CSS,
   `staticfiles/` và manifest cùng một build. Ghi commit/release ID và SHA256 artifact.
   Không đóng gói `.env*` thật, `env/`, `.test-postgres/`, node_modules, artifacts test,
   backup, cache hay credentials. Chỉ giữ env examples với placeholder.
-- Không dùng `runserver` trong production. Một start command duy nhất:
+- Không dùng `runserver` trong production. Start command Windows/portable:
 
 ```text
 python -m config.serve
@@ -42,13 +47,14 @@ file trong source rồi mong app tự load.
 | `DJANGO_SECRET_KEY` | Secret ngẫu nhiên >=50 ký tự, không placeholder; thiếu/sai thì fail startup |
 | `DJANGO_DEBUG` | `False`; `True` bị từ chối |
 | `DJANGO_ALLOWED_HOSTS` | Hostname/IP cụ thể, phân cách dấu phẩy; không wildcard, URL, port |
-| `DB_HOST/DB_PORT/DB_NAME/DB_USER/DB_PASSWORD` | Supabase PostgreSQL credentials hiện có; tất cả bắt buộc |
+| `DATABASE_URL` | Render dùng PostgreSQL URL với credentials encoded; thay thế toàn bộ 5 DB_* nếu có |
+| `DB_HOST/DB_PORT/DB_NAME/DB_USER/DB_PASSWORD` | Supabase PostgreSQL credentials hiện có; tất cả bắt buộc khi không dùng DATABASE_URL |
 | `DB_SSLMODE` | `require` mặc định; hoặc verify-ca/verify-full khi đã cấu hình CA phù hợp |
 | `DB_CONNECT_TIMEOUT` | 10 giây mặc định, configurable 1–60 |
 | `DB_CONN_MAX_AGE` | 60 giây mặc định, configurable 0–3600; connection health checks bật |
 | `APP_MODE` | `single_company`, giữ compatibility FK hiện có |
 | `DEFAULT_ORGANIZATION_ID` | Chỉ cần khi helper nội bộ không resolve được duy nhất một công ty active; không UI/user flow |
-| `APP_TRANSPORT` | Chọn rõ `private_http` hoặc `https_proxy` theo deployment thực tế |
+| `APP_TRANSPORT` | Portable: `private_http` hoặc `https_proxy`; riêng Render: `render_https`, xem runbook Render |
 | `APP_TRUSTED_PROXY` | Chỉ HTTPS proxy: exact TCP peer IP; không wildcard |
 | `DJANGO_CSRF_TRUSTED_ORIGINS` | Thường để rỗng cho same-origin; nếu cần, exact origins có scheme, không wildcard/path |
 | `DJANGO_SECURE_HSTS_SECONDS` | Mặc định 0; chỉ >0 khi HTTPS verified và `APP_HTTPS_VERIFIED=True` |

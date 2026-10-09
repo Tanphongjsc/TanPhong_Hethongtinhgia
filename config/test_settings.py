@@ -2,6 +2,8 @@
 import os
 
 os.environ["APP_ENV"] = "test"
+# A production URL must never influence even the base-settings import in tests.
+os.environ.pop("DATABASE_URL", None)
 os.environ.setdefault("DJANGO_SECRET_KEY", "costing-isolated-test-key")
 for key, value in {
     "DB_NAME": "unused", "DB_USER": "unused", "DB_PASSWORD": "unused",
