@@ -14,16 +14,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ThanhTrung2308/Hethongtinhgiathanh.git"
+    "url": "git+https://github.com/Tanphongjsc/TanPhong_Hethongtinhgia.git "
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "bugs": {
-    "url": "https://github.com/ThanhTrung2308/Hethongtinhgiathanh/issues"
+    "url": "https://github.com/Tanphongjsc/TanPhong_Hethongtinhgia/issues"
   },
-  "homepage": "https://github.com/ThanhTrung2308/Hethongtinhgiathanh#readme",
+  "homepage": "https://github.com/Tanphongjsc/TanPhong_Hethongtinhgia#readme",
   "devDependencies": {
     "@tailwindcss/cli": "4.3.3",
     "tailwindcss": "4.3.3"
