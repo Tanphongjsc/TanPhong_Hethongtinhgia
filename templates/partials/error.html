@@ -1,4 +1,5 @@
-<div role="alert" class="rounded border border-red-200 bg-red-50 p-4 text-red-800">
+<div role="alert" class="ui-alert border border-red-200 bg-red-50 text-red-800">
+  <span class="mb-3 inline-flex">{% include "components/icon.html" with name="circle-alert" %}</span>
   <p>{{ error_message }}</p>
   {% if trace_id %}<p class="mt-2 text-xs">Mã tham chiếu: <span class="font-mono">{{ trace_id }}</span></p>{% endif %}
 </div>

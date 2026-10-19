@@ -10,6 +10,6 @@
   <td class="px-3 py-2 text-right tabular-nums">{{ record.display_price }} {{ record.currency_code_id }}</td>
   <td class="px-3 py-2 text-right tabular-nums">{{ record.display_margin }}</td>
   <td class="px-3 py-2">{% include "components/status_badge.html" with status=record.status %}</td>
-  <td class="px-3 py-2 text-right"><a href="{% url 'pricing:scenario_detail' record.pk %}" class="text-brand-700 hover:underline">Xem chi tiết</a></td>
+  <td class="px-3 py-2 text-right"><a href="{% url 'pricing:scenario_detail' record.pk %}" class="ui-icon-button" aria-label="Xem chi tiết" data-tooltip="Xem chi tiết">{% include "components/icon.html" with name="eye" %}<span class="sr-only">Xem chi tiết</span></a></td>
 </tr>
 {% endfor %}

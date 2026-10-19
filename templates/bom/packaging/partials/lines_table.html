@@ -1,11 +1,11 @@
 {% load workspace_tags %}
-<section id="packaging-lines-table" class="rounded border border-slate-200 bg-white" aria-labelledby="packaging-lines-title">
+<section id="packaging-lines-table" class="ui-table-panel" aria-labelledby="packaging-lines-title">
   <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-3 py-3">
-    <h2 id="packaging-lines-title" class="font-semibold">Thành phần bao bì <span class="font-normal text-slate-500">({{ page_obj.paginator.count }})</span></h2>
-    {% if editable %}<a href="{{ line_create_url }}?per_page={{ per_page }}&amp;page={{ page_obj.number }}" hx-get="{{ line_create_url }}?per_page={{ per_page }}&amp;page={{ page_obj.number }}" hx-target="#packaging-line-editor" hx-swap="outerHTML" hx-push-url="false" class="rounded border border-slate-300 px-3 py-2 text-brand-700 hover:bg-slate-50">+ Thêm thành phần</a>{% endif %}
+    <h2 id="packaging-lines-title" class="ui-section-heading font-semibold">Thành phần bao bì <span class="font-normal text-slate-500">({{ page_obj.paginator.count }})</span></h2>
+    {% if editable %}<a href="{{ line_create_url }}?per_page={{ per_page }}&amp;page={{ page_obj.number }}" hx-get="{{ line_create_url }}?per_page={{ per_page }}&amp;page={{ page_obj.number }}" hx-target="#packaging-line-editor" hx-swap="outerHTML" hx-push-url="false" class="ui-button ui-button--secondary">+ Thêm thành phần</a>{% endif %}
     {% include "partials/loading.html" %}
   </div>
-  {% if lines %}<div class="overflow-x-auto"><table class="w-full whitespace-nowrap text-left text-sm">
+  {% if lines %}<div class="ui-table-scroll"><table class="ui-table whitespace-nowrap text-left">
     <caption class="sr-only">Thành phần bao bì phiên bản {{ version.version_no }}</caption>
     <thead class="bg-slate-50 text-xs font-semibold text-slate-600"><tr>
       <th scope="col" class="px-3 py-3 text-right">Thứ tự</th><th scope="col" class="px-3 py-3">Mã vật tư</th><th scope="col" class="px-3 py-3">Tên vật tư bao bì</th><th scope="col" class="px-3 py-3">Loại</th>
@@ -19,8 +19,8 @@
       <td class="px-3 py-2 font-mono text-xs">{{ line.market_code|default:"—" }} / {{ line.artwork_code|default:"—" }}</td><td class="max-w-48 whitespace-normal px-3 py-2">{{ line.notes|default:"—" }}</td>
       <td class="px-3 py-2 text-right">{% if editable %}
         {% url 'bom:packaging_line_edit' config.pk version.pk line.pk as edit_url %}{% url 'bom:packaging_line_remove' config.pk version.pk line.pk as remove_url %}
-        <a href="{{ edit_url }}?per_page={{ per_page }}&amp;page={{ page_obj.number }}" hx-get="{{ edit_url }}?per_page={{ per_page }}&amp;page={{ page_obj.number }}" hx-target="#packaging-line-editor" hx-swap="outerHTML" hx-push-url="false" class="inline-block px-2 py-1 text-brand-700 hover:underline" aria-label="Chỉnh sửa thành phần {{ line.packaging_item.code }} dòng {{ line.pk }}">Chỉnh sửa</a>
-        <a href="{{ remove_url }}?per_page={{ per_page }}&amp;page={{ page_obj.number }}" hx-get="{{ remove_url }}?per_page={{ per_page }}&amp;page={{ page_obj.number }}" hx-target="#packaging-line-editor" hx-swap="outerHTML" hx-push-url="false" class="inline-block px-2 py-1 text-slate-600 hover:underline" aria-label="Xóa thành phần {{ line.packaging_item.code }} dòng {{ line.pk }}">Xóa</a>
+        <a href="{{ edit_url }}?per_page={{ per_page }}&amp;page={{ page_obj.number }}" hx-get="{{ edit_url }}?per_page={{ per_page }}&amp;page={{ page_obj.number }}" hx-target="#packaging-line-editor" hx-swap="outerHTML" hx-push-url="false" class="ui-icon-button" aria-label="Chỉnh sửa thành phần {{ line.packaging_item.code }} dòng {{ line.pk }}" data-tooltip="Chỉnh sửa">{% include "components/icon.html" with name="square-pen" %}<span class="sr-only">Chỉnh sửa</span></a>
+        <a href="{{ remove_url }}?per_page={{ per_page }}&amp;page={{ page_obj.number }}" hx-get="{{ remove_url }}?per_page={{ per_page }}&amp;page={{ page_obj.number }}" hx-target="#packaging-line-editor" hx-swap="outerHTML" hx-push-url="false" class="ui-icon-button ui-icon-button--danger" aria-label="Xóa thành phần {{ line.packaging_item.code }} dòng {{ line.pk }}" data-tooltip="Xóa">{% include "components/icon.html" with name="trash-2" %}<span class="sr-only">Xóa</span></a>
       {% else %}<span class="text-xs text-slate-500">Đã chốt</span>{% endif %}</td>
     </tr>{% endfor %}</tbody>
   </table></div>{% else %}{% include "components/empty_state.html" with empty_title="Cấu hình chưa có thành phần bao bì." empty_description="Thêm vật tư bao bì, số lượng và cấp đóng gói." empty_url=None %}{% endif %}

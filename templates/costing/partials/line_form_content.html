@@ -5,7 +5,7 @@
   {% if removing %}<p class="mb-3">Bạn có chắc muốn xóa thành phần này khỏi phương án tính giá thành?</p><p class="mb-5"><span class="font-mono">{{ line.line_code }}</span> — {{ line.label }}</p>
   {% else %}{% include "components/form_sections.html" %}{% include "costing/partials/source_fields.html" %}{% endif %}
   <div class="flex items-center justify-end gap-3"><span id="scheme-line-loading" class="htmx-indicator text-xs text-slate-500" role="status">Đang xử lý…</span>
-    {% if inline_editor %}<button type="button" @click="close()" class="rounded border border-slate-300 px-3 py-2">Hủy</button>{% else %}<a href="{{ version_url }}" class="rounded border border-slate-300 px-3 py-2">Hủy</a>{% endif %}
+    {% if inline_editor %}<button type="button" @click="close()" class="ui-button ui-button--secondary">Hủy</button>{% else %}<a href="{{ version_url }}" class="ui-button ui-button--secondary">Hủy</a>{% endif %}
     {% if editable %}{% if removing %}{% include "components/button.html" with type="submit" href=None label="Xác nhận xóa" primary=True %}{% else %}{% include "components/button.html" with type="submit" href=None label="Lưu thành phần" primary=True %}{% endif %}{% endif %}
   </div>
 </form>

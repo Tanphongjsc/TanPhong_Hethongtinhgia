@@ -6,7 +6,7 @@
   {% else %}{% include "components/form_sections.html" %}{% endif %}
   <div class="flex items-center justify-end gap-3">
     <span id="line-loading" class="htmx-indicator text-xs text-slate-500" role="status">Đang xử lý…</span>
-    {% if inline_editor %}<button type="button" @click="close()" class="rounded border border-slate-300 px-3 py-2">Hủy</button>{% else %}<a href="{{ version_url }}" class="rounded border border-slate-300 px-3 py-2">Hủy</a>{% endif %}
+    {% if inline_editor %}<button type="button" @click="close()" class="ui-button ui-button--secondary">Hủy</button>{% else %}<a href="{{ version_url }}" class="ui-button ui-button--secondary">Hủy</a>{% endif %}
     {% if editable %}{% if removing %}{% include "components/button.html" with type="submit" href=None label="Xác nhận xóa" primary=True %}{% else %}{% include "components/button.html" with type="submit" href=None label="Lưu thành phần bao bì" primary=True %}{% endif %}{% endif %}
   </div>
 </form>

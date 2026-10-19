@@ -8,6 +8,6 @@
   <td class="px-3 py-2 text-right tabular-nums">{{ record.quantity|vn_number }} {{ record.context_jsonb.display.uom }}</td>
   <td class="whitespace-nowrap px-3 py-2 text-right tabular-nums">{{ record.full_cost|vn_number }} {{ record.result_currency_code_id }}</td>
   <td class="px-3 py-2">{% include "components/status_badge.html" with status=record.run_status %}</td>
-  <td class="px-3 py-2"><a href="{% url 'costing:run_detail' record.public_id %}" class="text-brand-700 hover:underline">Xem chi tiết</a></td>
+  <td class="px-3 py-2"><a href="{% url 'costing:run_detail' record.public_id %}" class="ui-icon-button" aria-label="Xem chi tiết" data-tooltip="Xem chi tiết">{% include "components/icon.html" with name="eye" %}<span class="sr-only">Xem chi tiết</span></a></td>
 </tr>
 {% endfor %}

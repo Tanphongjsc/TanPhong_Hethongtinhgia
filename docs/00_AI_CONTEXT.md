@@ -7,6 +7,14 @@ Tài liệu này là entry point bắt buộc cho AI/Codex trước khi làm vi�
 
 Hệ thống Costing là **phần mềm độc lập**.
 
+- **UI/UX redesign 16/10/2026:** giao diện hiện hành dùng Indigo/Slate, Inter local,
+  Lucide SVG sprite, shared `ui-*` presentation patterns và mật độ Gọn/Thoáng.
+  Giữ nguyên routes/forms/labels/HTMX và toàn bộ business Python/engines/Golden;
+  không Auth, Organization UI hoặc workflow mới. Hướng dẫn style cũ mâu thuẫn với
+  design system mới được **superseded chỉ ở lớp trình bày**, không ở nghiệp vụ.
+  Đọc [UI_BASELINE](ui-redesign/UI_BASELINE.md), [DESIGN_SYSTEM](ui-redesign/DESIGN_SYSTEM.md),
+  [SCREEN_ROLLOUT](ui-redesign/SCREEN_ROLLOUT.md) và [REGRESSION_REPORT](ui-redesign/REGRESSION_REPORT.md).
+
 - **Render deployment preparation 08/10/2026:** target mới là **Render Web Service**,
   Supabase giữ Session pooler/SSL/search_path `costing,public`; `DATABASE_URL` ưu tiên
   toàn bộ legacy `DB_*`, không thay schema/engine/models. Build `bash build.sh`, start

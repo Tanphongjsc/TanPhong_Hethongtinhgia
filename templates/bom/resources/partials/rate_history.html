@@ -1,7 +1,7 @@
 {% with rate_history as history %}
 <section aria-labelledby="rate-history-title" class="mt-5">
   <div class="mb-3 flex flex-wrap items-center justify-between gap-3">
-    <h2 id="rate-history-title" class="font-semibold">Lịch sử đơn giá</h2>
+    <h2 id="rate-history-title" class="ui-section-heading font-semibold">Lịch sử đơn giá</h2>
     {% if history.primary_action_url %}{% include "components/button.html" with href=history.primary_action_url label="Thêm đơn giá" primary=False %}{% endif %}
   </div>
   {% include "master_data/partials/reference_data_filters.html" with filter_form_id=history.filter_form_id list_url=history.list_url table_id=history.table_id search_id=history.search_id search_placeholder=history.search_placeholder filter_options=history.filter_options current_sort=history.current_sort per_page=history.per_page %}

@@ -6,5 +6,5 @@
   <td class="px-3 py-2">{{ record.effective_from|date:"d/m/Y"|default:"Chưa đặt" }}</td>
   <td class="px-3 py-2">{{ record.effective_to|date:"d/m/Y"|default:"Không giới hạn" }}</td>
   <td class="px-3 py-2">{% include "components/status_badge.html" with status=record.date_status %}</td>
-  <td class="px-3 py-2 text-right"><a href="{% url 'bom:routing_version_detail' routing.pk record.pk %}" class="inline-block px-2 py-1 text-brand-700 hover:underline" aria-label="Xem phiên bản {{ record.version_no }}">Xem chi tiết</a></td>
+  <td class="px-3 py-2 text-right"><a href="{% url 'bom:routing_version_detail' routing.pk record.pk %}" class="ui-icon-button" aria-label="Xem phiên bản {{ record.version_no }}" data-tooltip="Xem chi tiết">{% include "components/icon.html" with name="eye" %}<span class="sr-only">Xem chi tiết</span></a></td>
 </tr>{% endfor %}

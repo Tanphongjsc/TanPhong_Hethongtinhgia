@@ -1,4 +1,4 @@
-<div id="reference-data-detail" class="max-w-5xl rounded border border-slate-200 bg-white p-4 sm:p-6">
+<div id="reference-data-detail" class="ui-panel max-w-5xl p-4 sm:p-6">
   {% if resource == 'supplier_price' %}
   <div class="mb-5 flex flex-wrap items-center gap-3 border-b border-slate-200 pb-4">
     <span>Trạng thái bản ghi:</span>{% include "components/status_badge.html" with status=record.status %}
@@ -9,7 +9,7 @@
     <span class="font-mono font-semibold">{{ record.code }}</span>{% include "master_data/partials/reference_data_status.html" %}
   </div>
   {% endif %}
-  <dl class="grid grid-cols-1 gap-x-6 gap-y-4 md:grid-cols-2">
+  <dl class="ui-description-list grid grid-cols-1 gap-x-6 gap-y-4 md:grid-cols-2">
     {% for label, value in detail_fields %}
       {% if label == 'Hệ số quy đổi' or label == 'Số chữ số thập phân' or label == 'Độ chính xác' or label == 'Đơn giá' or label == 'Số lượng tối thiểu' or label == 'Tỷ lệ thuế' or label == 'Tỷ lệ thuế được khấu trừ' %}
         {% include "components/detail_field.html" with technical=False numeric=True %}

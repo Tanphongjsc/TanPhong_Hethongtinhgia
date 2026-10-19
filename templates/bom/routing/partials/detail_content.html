@@ -1,11 +1,11 @@
 {% load workspace_tags %}
 <div id="routing-detail">
-  <section class="mb-5 rounded border border-slate-200 bg-white p-4 sm:p-5" aria-labelledby="routing-header-title">
+  <section class="ui-panel mb-5 p-4 sm:p-5" aria-labelledby="routing-header-title">
     <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-3">
-      <h2 id="routing-header-title" class="font-mono font-semibold">{{ routing.code }}</h2>
+      <h2 id="routing-header-title" class="ui-section-heading font-mono font-semibold">{{ routing.code }}</h2>
       {% include "master_data/partials/reference_data_status.html" with record=routing %}
     </div>
-    <dl class="mt-4 grid grid-cols-1 gap-x-6 gap-y-3 md:grid-cols-2">
+    <dl class="ui-description-list mt-4 grid grid-cols-1 gap-x-6 gap-y-3 md:grid-cols-2">
       {% include "components/detail_field.html" with label="Tên quy trình" value=routing.name %}
       <div><dt class="text-xs text-slate-500">Sản phẩm</dt><dd class="mt-1"><span class="font-mono">{{ routing.product.code }}</span> — {{ routing.product.name }}</dd></div>
     </dl>
@@ -17,8 +17,8 @@
   </section>
   {% if version %}
   <section class="mb-5 border-b border-slate-200 pb-5" aria-labelledby="routing-version-title">
-    <div class="mb-4 flex flex-wrap items-center gap-3"><h2 id="routing-version-title" class="font-semibold">Phiên bản {{ version.version_no }}</h2>{% include "components/status_badge.html" with status=version.status %}</div>
-    <dl class="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2 lg:grid-cols-3">
+    <div class="mb-4 flex flex-wrap items-center gap-3"><h2 id="routing-version-title" class="ui-section-heading font-semibold">Phiên bản {{ version.version_no }}</h2>{% include "components/status_badge.html" with status=version.status %}</div>
+    <dl class="ui-description-list grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2 lg:grid-cols-3">
       <div><dt class="text-xs text-slate-500">Sản lượng lô chuẩn</dt><dd class="mt-1 text-right tabular-nums">{{ version.batch_size|vn_number }}{% if version.batch_uom %} {{ version.batch_uom.name }} ({{ version.batch_uom.symbol }}){% endif %}</dd></div>
       <div><dt class="text-xs text-slate-500">Hiệu lực theo ngày</dt><dd class="mt-1">{% include "components/status_badge.html" with status=version.date_status %}</dd></div>
       {% include "components/detail_field.html" with label="Hiệu lực từ ngày" value=version.effective_from|date:'d/m/Y'|default:'Chưa đặt' %}

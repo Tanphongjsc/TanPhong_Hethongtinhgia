@@ -1,11 +1,11 @@
 {% load workspace_tags %}
 <div id="packaging-detail">
-  <section class="mb-5 rounded border border-slate-200 bg-white p-4 sm:p-5" aria-labelledby="packaging-header-title">
+  <section class="ui-panel mb-5 p-4 sm:p-5" aria-labelledby="packaging-header-title">
     <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-3">
-      <h2 id="packaging-header-title" class="font-mono font-semibold">{{ config.code }}</h2>
+      <h2 id="packaging-header-title" class="ui-section-heading font-mono font-semibold">{{ config.code }}</h2>
       {% if config.is_active %}{% include "components/status_badge.html" with status="ACTIVE" %}{% else %}{% include "components/status_badge.html" with status="INACTIVE" %}{% endif %}
     </div>
-    <dl class="mt-4 grid grid-cols-1 gap-x-6 gap-y-3 md:grid-cols-2">
+    <dl class="ui-description-list mt-4 grid grid-cols-1 gap-x-6 gap-y-3 md:grid-cols-2">
       <div><dt class="text-xs text-slate-500">Sản phẩm</dt><dd class="mt-1"><span class="font-mono">{{ config.product.code }}</span> — {{ config.product.name }}</dd></div>
       <div><dt class="text-xs text-slate-500">Tên cấu hình</dt><dd class="mt-1">{{ config.name }}</dd></div>
       <div class="md:col-span-2"><dt class="text-xs text-slate-500">Mô tả</dt><dd class="mt-1 whitespace-pre-line">{{ config.description|default:"—" }}</dd></div>
@@ -17,7 +17,7 @@
     </nav>
   </section>
   <section class="mb-5 border-b border-slate-200 pb-5" aria-labelledby="packaging-skus-title">
-    <div class="mb-3 flex flex-wrap items-center justify-between gap-3"><h2 id="packaging-skus-title" class="font-semibold">SKU sử dụng cấu hình <span class="font-normal text-slate-500">({{ assignment_count }} liên kết)</span></h2><a href="{% url 'bom:packaging_assignment_create' config.pk %}" class="rounded border border-slate-300 px-3 py-2 text-brand-700 hover:bg-slate-50">+ Gán SKU</a></div>
+    <div class="mb-3 flex flex-wrap items-center justify-between gap-3"><h2 id="packaging-skus-title" class="ui-section-heading font-semibold">SKU sử dụng cấu hình <span class="font-normal text-slate-500">({{ assignment_count }} liên kết)</span></h2><a href="{% url 'bom:packaging_assignment_create' config.pk %}" class="ui-button ui-button--secondary">+ Gán SKU</a></div>
     {% if assignments %}<ul class="divide-y divide-slate-200">
       {% for assignment in assignments %}<li class="flex flex-wrap items-center justify-between gap-2 py-2"><div><span class="font-mono">{{ assignment.sku.code }}</span> — {{ assignment.sku.name }} <span class="text-xs text-slate-500">· {{ assignment.effective_from|date:"d/m/Y" }} → {{ assignment.effective_to|date:"d/m/Y"|default:"Không giới hạn" }}{% if assignment.is_primary %} · Cấu hình chính{% endif %}</span></div><div class="flex items-center gap-3">{% include "components/status_badge.html" with status=assignment.date_status %}<a href="{% url 'bom:packaging_assignment_edit' config.pk assignment.pk %}" class="text-brand-700 hover:underline" aria-label="Chỉnh sửa liên kết {{ assignment.sku.code }}">Chỉnh sửa</a></div></li>{% endfor %}
     </ul>{% else %}<p class="text-slate-500">Cấu hình chưa được gán SKU.</p>{% endif %}
@@ -25,8 +25,8 @@
   </section>
   {% if version %}
   <section class="mb-5 border-b border-slate-200 pb-5" aria-labelledby="packaging-version-title">
-    <div class="mb-4 flex flex-wrap items-center gap-3"><h2 id="packaging-version-title" class="font-semibold">Phiên bản {{ version.version_no }}</h2>{% include "components/status_badge.html" with status=version.status %}</div>
-    <dl class="grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2 lg:grid-cols-3">
+    <div class="mb-4 flex flex-wrap items-center gap-3"><h2 id="packaging-version-title" class="ui-section-heading font-semibold">Phiên bản {{ version.version_no }}</h2>{% include "components/status_badge.html" with status=version.status %}</div>
+    <dl class="ui-description-list grid grid-cols-1 gap-x-6 gap-y-3 sm:grid-cols-2 lg:grid-cols-3">
       <div><dt class="text-xs text-slate-500">Khối lượng tổng</dt><dd class="mt-1 text-right tabular-nums">{{ version.gross_weight|vn_number }}{% if version.weight_uom %} {{ version.weight_uom.name }} ({{ version.weight_uom.symbol }}){% endif %}</dd></div>
       <div><dt class="text-xs text-slate-500">Kích thước · Dài × Rộng × Cao</dt><dd class="mt-1 text-right tabular-nums">{{ version.length|vn_number }} × {{ version.width|vn_number }} × {{ version.height|vn_number }}{% if version.dimension_uom %} {{ version.dimension_uom.symbol }}{% endif %}</dd></div>
       <div><dt class="text-xs text-slate-500">Hiệu lực theo ngày</dt><dd class="mt-1">{% include "components/status_badge.html" with status=version.date_status %}</dd></div>

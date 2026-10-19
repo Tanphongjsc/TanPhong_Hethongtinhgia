@@ -1,4 +1,5 @@
-<div x-data="toast" x-show="visible" class="flex items-start gap-3 rounded border border-emerald-200 bg-white p-3 text-emerald-800" role="status">
+<div x-data="toast" x-show="visible" x-transition.opacity.duration.150ms data-severity="{{ message.tags|default:'success' }}" class="ui-toast" role="status">
+  {% include "components/icon.html" with name="circle-check" %}
   <p>{{ message }}</p>
-  <button type="button" @click="visible = false" class="ml-auto px-1 text-slate-500" aria-label="Đóng thông báo">×</button>
+  <button type="button" @click="visible = false" class="ui-icon-button -mt-1 -mr-1 ml-auto shrink-0" aria-label="Đóng thông báo">{% include "components/icon.html" with name="x" %}</button>
 </div>

@@ -1,4 +1,4 @@
-<form id="cost-element-filters" method="get" action="{% url 'master_data:cost_element_list' %}" class="mb-3 flex flex-wrap items-end gap-3" hx-get="{% url 'master_data:cost_element_list' %}" hx-trigger="submit, change target:select" hx-target="#cost-element-table" hx-select="#cost-element-table" hx-swap="outerHTML" hx-push-url="true" hx-indicator="#list-loading" hx-sync="this:replace">
+<form id="cost-element-filters" method="get" action="{% url 'master_data:cost_element_list' %}" class="ui-filterbar mb-3 flex flex-wrap items-end gap-3" hx-get="{% url 'master_data:cost_element_list' %}" hx-trigger="submit, change target:select" hx-target="#cost-element-table" hx-select="#cost-element-table" hx-swap="outerHTML" hx-push-url="true" hx-indicator="#list-loading" hx-sync="this:replace">
   {% include "components/search_box.html" %}
   <div>
     <label for="filter-group" class="mb-1 block text-xs font-medium text-slate-600">Nhóm chi phí</label>

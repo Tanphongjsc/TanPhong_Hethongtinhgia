@@ -9,6 +9,6 @@
   <td class="px-3 py-2 tabular-nums">{{ record.effective_from|date:"d/m/Y"|default:"Chưa đặt" }}</td>
   <td class="px-3 py-2 tabular-nums">{{ record.effective_to|date:"d/m/Y"|default:"Không giới hạn" }}</td>
   <td class="px-3 py-2">{% include "components/status_badge.html" with status=record.date_status %}</td>
-  <td class="px-3 py-2 text-right"><a href="{% url 'bom:bom_version_detail' recipe.pk record.pk %}" class="px-2 py-1 text-brand-700 hover:underline">Xem chi tiết</a><a href="{% url 'bom:bom_version_create' recipe.pk %}?source={{ record.pk }}" class="px-2 py-1 text-slate-600 hover:underline" aria-label="Sao chép phiên bản {{ record.version_no }}">Tạo phiên bản mới</a></td>
+  <td class="px-3 py-2 text-right"><a href="{% url 'bom:bom_version_detail' recipe.pk record.pk %}" class="ui-icon-button" aria-label="Xem chi tiết" data-tooltip="Xem chi tiết">{% include "components/icon.html" with name="eye" %}<span class="sr-only">Xem chi tiết</span></a><a href="{% url 'bom:bom_version_create' recipe.pk %}?source={{ record.pk }}" class="ui-button ui-button--ghost ui-button--sm" aria-label="Sao chép phiên bản {{ record.version_no }}">Tạo phiên bản mới</a></td>
 </tr>
 {% endfor %}

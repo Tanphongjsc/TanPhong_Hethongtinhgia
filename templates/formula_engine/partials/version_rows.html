@@ -5,5 +5,5 @@
   <td class="px-3 py-3">{{ record.validation_status|display_label }}</td>
   <td class="px-3 py-3">{{ record.effective_from|date:"d/m/Y"|default:"—" }}</td>
   <td class="px-3 py-3">{{ record.effective_to|date:"d/m/Y"|default:"Không giới hạn" }}</td>
-  <td class="px-3 py-3 text-right"><a class="text-brand-700 hover:underline" href="{% url 'formula_engine:formula_version_detail' formula.pk record.pk %}">Xem chi tiết</a></td>
+  <td class="px-3 py-3 text-right"><a class="ui-icon-button" href="{% url 'formula_engine:formula_version_detail' formula.pk record.pk %}" aria-label="Xem chi tiết" data-tooltip="Xem chi tiết">{% include "components/icon.html" with name="eye" %}<span class="sr-only">Xem chi tiết</span></a></td>
 </tr>{% endfor %}

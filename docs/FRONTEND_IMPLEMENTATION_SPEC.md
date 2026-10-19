@@ -1,6 +1,15 @@
 # FRONTEND_IMPLEMENTATION_SPEC.md
 ## Hệ thống tính giá thành & giá bán linh hoạt
 
+**UI/UX 16/10/2026:** design system hiện hành tại
+[docs/ui-redesign/DESIGN_SYSTEM.md](ui-redesign/DESIGN_SYSTEM.md) và
+[COMPONENT_CATALOG.md](ui-redesign/COMPONENT_CATALOG.md): Indigo/Slate, Inter local,
+Lucide SVG, compact/comfortable tables, unified form/detail/navigation patterns.
+Những yêu cầu style cũ như "không redesign" được superseded bởi iteration UI này.
+Mọi business labels/fields/URLs/validation/calculation/HTMX contracts vẫn giữ nguyên;
+không đưa Auth, Organization hay approval UI trở lại. Phạm vi và bằng chứng tại
+[SCREEN_ROLLOUT](ui-redesign/SCREEN_ROLLOUT.md), [REGRESSION_REPORT](ui-redesign/REGRESSION_REPORT.md).
+
 **Hardening 08/10/2026:** sidebar chỉ hiển thị destination đã triển khai, mỗi module
 một liên kết; bỏ placeholders History/Overrides/Import/Settings và các section rỗng.
 Lịch sử phiên bản và đầu vào điều chỉnh vẫn nằm trong module nghiệp vụ. Quy định

@@ -1,4 +1,4 @@
-<div id="reference-data-form-content" class="max-w-5xl rounded border border-slate-200 bg-white p-4 sm:p-6">
+<div id="reference-data-form-content" class="ui-form-panel">
   {% include "partials/form_errors.html" %}
   {% if version_form %}{% include "partials/form_errors.html" with form=version_form resource_label="phiên bản đầu tiên" %}{% endif %}
   {% if form_notice %}<p class="mb-5 rounded border border-slate-200 bg-slate-50 p-3 text-sm text-slate-600">{{ form_notice }}</p>{% endif %}
