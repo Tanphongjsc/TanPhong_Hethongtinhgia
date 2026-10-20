@@ -10,6 +10,7 @@ SUPPLIER_PRICE_FIELDS = (
 SUPPLIER_PRICE_STATUSES = tuple((code, display_label(code)) for code in (
     "DRAFT", "IN_REVIEW", "APPROVED", "EFFECTIVE", "RETIRED",
 ))
+SUPPLIER_PRICE_ACTIVATABLE_STATUSES = ("DRAFT", "IN_REVIEW", "APPROVED")
 PRICE_DATE_STATUSES = tuple((code, display_label(code)) for code in ("EFFECTIVE", "FUTURE", "EXPIRED"))
 
 VALUE_TYPES = tuple((value, display_label(value)) for value in (

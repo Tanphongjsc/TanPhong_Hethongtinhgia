@@ -9,6 +9,7 @@ urlpatterns = [
     path("packaging/<int:pk>/versions/", views.packaging_version_list, name="packaging_version_list"),
     path("packaging/<int:pk>/versions/create/", views.packaging_version_create, name="packaging_version_create"),
     path("packaging/<int:pk>/versions/<int:version_pk>/", views.packaging_version_detail, name="packaging_version_detail"),
+    path("packaging/<int:pk>/versions/<int:version_pk>/activate/", views.packaging_version_activate, name="packaging_version_activate"),
     path("packaging/<int:pk>/versions/<int:version_pk>/edit/", views.packaging_version_edit, name="packaging_version_edit"),
     path("packaging/<int:pk>/versions/<int:version_pk>/lines/create/", views.packaging_line_create, name="packaging_line_create"),
     path("packaging/<int:pk>/versions/<int:version_pk>/lines/<int:line_pk>/edit/", views.packaging_line_edit, name="packaging_line_edit"),

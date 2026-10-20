@@ -11,6 +11,7 @@ urlpatterns = [
     path("supplier-prices/", views.supplier_price_list, name="supplier_price_list"),
     path("supplier-prices/create/", views.supplier_price_create, name="supplier_price_create"),
     path("supplier-prices/<int:pk>/", views.supplier_price_detail, name="supplier_price_detail"),
+    path("supplier-prices/<int:pk>/activate/", views.supplier_price_activate, name="supplier_price_activate"),
     path("supplier-prices/<int:pk>/edit/", views.supplier_price_edit, name="supplier_price_edit"),
     path("cost-elements/", views.cost_element_list, name="cost_element_list"),
     path("cost-elements/create/", views.cost_element_create, name="cost_element_create"),

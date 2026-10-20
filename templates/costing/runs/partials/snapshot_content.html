@@ -1,17 +1,27 @@
 {% load costing_tags workspace_tags %}
-<div id="run-snapshot">
-  <p class="mb-4 text-slate-600">Dữ liệu đã sử dụng trong lần {{ run.run_no }}. Các nguồn và biểu thức được sao lưu tại thời điểm tính.</p>
-  <dl class="ui-description-list mb-5 grid gap-3 border-b border-slate-200 pb-4 sm:grid-cols-2">
-    {% include "components/detail_field.html" with label="Ngày tính giá" value=inputs.costing_date|snapshot_date %}
-    {% include "components/detail_field.html" with label="Sản lượng" value=inputs.quantity|vn_number %}
-    {% include "components/detail_field.html" with label="Sản lượng cơ sở đóng gói" value=inputs.packaging_quantity|vn_number %}
-    {% include "components/detail_field.html" with label="Ghi chú" value=inputs.notes %}
-  </dl>
-  <h2 class="ui-section-heading mb-3 font-semibold">Nguồn và phiên bản đã sử dụng</h2>
-  <div class="ui-table-scroll rounded border border-slate-200"><table class="ui-table whitespace-nowrap text-left"><thead class="bg-slate-50"><tr><th scope="col" class="p-3">Loại nguồn</th><th scope="col" class="p-3">Mã</th><th scope="col" class="p-3">Tên</th><th scope="col" class="p-3">Phiên bản / Tham chiếu</th><th scope="col" class="p-3">Hiệu lực từ</th><th scope="col" class="p-3">Hiệu lực đến</th></tr></thead><tbody>
-  {% for row in sources %}<tr class="h-12 border-t border-slate-200"><td class="p-3">{{ row.label }}</td><td class="p-3 font-mono">{{ row.code }}</td><td class="p-3">{{ row.name }}</td><td class="p-3">{% if row.version %}Phiên bản {{ row.version }} · {% endif %}#{{ row.reference }}</td><td class="p-3">{{ row.from|snapshot_date }}</td><td class="p-3">{{ row.to|snapshot_date }}</td></tr>{% empty %}<tr><td colspan="6" class="p-4">Chưa có dữ liệu nguồn đã lưu.</td></tr>{% endfor %}
-  </tbody></table></div>
-  <h2 class="ui-section-heading mb-3 mt-5 font-semibold">Biểu thức công thức đã sử dụng</h2>
-  {% for formula in formulas %}<section class="mb-3 border-b border-slate-200 pb-3"><h3 class="ui-section-heading font-semibold">{{ formula.code }} · Phiên bản {{ formula.version }}</h3><pre class="mt-2 overflow-x-auto whitespace-pre-wrap break-words font-mono text-xs">{{ formula.expression }}</pre></section>{% empty %}<p>Không sử dụng công thức.</p>{% endfor %}
+{% snapshot_sources run.version_snapshot_jsonb as groups %}
+{% saved_unit run.version_snapshot_jsonb inputs.quantity_uom as quantity_unit %}
+{% saved_unit run.version_snapshot_jsonb inputs.packaging_uom as packaging_unit %}
+<div id="run-snapshot" class="ui-explanation">
+  <p class="mb-4 text-slate-500">Các thông tin dưới đây được lưu cùng kết quả của lần tính này, giúp đối chiếu lại đúng số liệu đã sử dụng.</p>
+  <section class="mb-5 border-b border-slate-200 pb-5" aria-labelledby="snapshot-input-title"><h2 id="snapshot-input-title" class="ui-section-heading mb-3">Yêu cầu tính giá đã nhập</h2>
+    <dl class="ui-description-list grid gap-x-6 gap-y-4 sm:grid-cols-2">
+      {% include "components/detail_field.html" with label="Ngày tính giá" value=inputs.costing_date|snapshot_date %}
+      <div><dt>Sản lượng cần tính</dt><dd class="tabular-nums">{{ inputs.quantity|vn_number }} {{ run.context_jsonb.display.uom|default:quantity_unit }}</dd></div>
+      {% if inputs.packaging_quantity %}<div><dt>{{ "Sản lượng cơ sở đóng gói"|ui_label }}</dt><dd class="tabular-nums">{{ inputs.packaging_quantity|vn_number }} {{ packaging_unit }}</dd></div>{% endif %}
+      {% include "components/detail_field.html" with label="Ghi chú" value=inputs.notes %}
+    </dl>
+  </section>
+  <h2 class="ui-section-heading mb-2">Nguồn và phiên bản đã sử dụng</h2><p class="mb-4 text-slate-500">Mở từng nhóm để xem dữ liệu gốc. Tên, mã và ngày áp dụng đều lấy từ bản lưu của lần tính.</p>
+  {% for group in groups %}
+  <details class="ui-trace-details"><summary>{{ group.title }} <span class="ml-1 font-normal text-slate-500">({{ group.rows|length }} bản ghi)</span></summary>
+    <div class="ui-table-scroll mt-3"><table class="ui-table ui-trace-table"><thead><tr><th scope="col">Thông tin nguồn</th><th scope="col">Loại dữ liệu</th><th scope="col">Phiên bản / Tham chiếu</th><th scope="col">Thời gian áp dụng</th></tr></thead><tbody>
+    {% for row in group.rows %}<tr><td><p class="font-medium">{{ row.name }}</p>{% if row.code %}<p class="mt-1 font-mono text-xs text-slate-500">{{ row.code }}</p>{% endif %}{% if row.detail %}<p class="mt-1 text-xs text-slate-500">{{ row.detail }}</p>{% endif %}</td><td>{{ row.label }}</td><td>{% if row.version %}<p>Phiên bản {{ row.version }}</p>{% endif %}<p class="mt-1 text-xs text-slate-500">Bản ghi #{{ row.reference|default_if_none:'—' }}</p></td><td>{% if row.from %}<p>Từ {{ row.from|snapshot_date }}</p><p class="mt-1 text-slate-500">{% if row.to %}Đến {{ row.to|snapshot_date }}{% else %}Chưa giới hạn ngày kết thúc{% endif %}</p>{% else %}—{% endif %}</td></tr>{% endfor %}
+    </tbody></table></div>
+  </details>
+  {% empty %}<p class="py-4 text-slate-500">Chưa có dữ liệu nguồn đã lưu.</p>{% endfor %}
+  <details class="ui-trace-details mt-5"><summary>Biểu thức công thức đã sử dụng ({{ formulas|length }})</summary>
+    {% for formula in formulas %}<section class="mt-4 border-b border-slate-200 pb-3"><h3 class="ui-section-heading font-semibold">{{ formula.code }} · Phiên bản {{ formula.version }}</h3><pre class="ui-trace-expression mt-2">{{ formula.expression }}</pre></section>{% empty %}<p class="py-3">Không sử dụng công thức.</p>{% endfor %}
+  </details>
   <a href="{% url 'costing:run_detail' run.public_id %}" class="mt-5 inline-block text-brand-700 hover:underline">Quay lại kết quả</a>
 </div>

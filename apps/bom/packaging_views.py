@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from django.http import Http404
 from django.shortcuts import render
 from django.urls import reverse
-from django.views.decorators.http import require_GET, require_http_methods
+from django.views.decorators.http import require_GET, require_http_methods, require_POST
 from django.views.decorators.vary import vary_on_headers
 
 from apps.master_data.access import require_access
@@ -66,7 +66,7 @@ def _lines_context(request, config, version, workspace):
     }
 
 
-def _detail(request, pk, version_pk=None):
+def _detail(request, pk, version_pk=None, *, activation_errors=()):
     context = _context(request)
     workspace = require_access(request, resource="packaging")
     config = selectors.config_detail(organization=workspace.organization, pk=pk)
@@ -78,6 +78,7 @@ def _detail(request, pk, version_pk=None):
         context.update(_lines_context(request, config, version, workspace))
     assignments = selectors.assignment_queryset(config=config, organization=workspace.organization)
     context.update(assignment_count=assignments.count(), assignments=assignments.order_by("-effective_from", "pk")[:5])
+    context["activation_errors"] = activation_errors
     return render(request, "bom/packaging/partials/detail_content.html" if is_htmx(request) else "bom/packaging/detail.html", context)
 
 
@@ -331,3 +332,16 @@ def packaging_assignment_create(request, pk):
 @vary_on_headers("HX-Request", "HX-History-Restore-Request")
 def packaging_assignment_edit(request, pk, assignment_pk):
     return _assignment_form(request, pk, assignment_pk)
+
+
+@require_POST
+def packaging_version_activate(request, pk, version_pk):
+    workspace = require_access(request, "edit", resource="packaging_version")
+    config = selectors.config_detail(organization=workspace.organization, pk=pk)
+    version = selectors.version_detail(config=config, pk=version_pk)
+    try:
+        services.activate_version(workspace=workspace, config=config, version=version)
+    except ValidationError as error:
+        return _detail(request, pk, version_pk, activation_errors=error.messages)
+    messages.success(request, "Đã kích hoạt phiên bản bao bì. Phiên bản và thành phần đã được khóa.")
+    return saved_response(request, reverse("bom:packaging_version_detail", args=[pk, version_pk]))

@@ -26,7 +26,7 @@
       {% include "components/detail_field.html" with label="Ngày tạo" value=version.created_at|date:'d/m/Y H:i' %}
       {% include "components/detail_field.html" with label="Lý do thay đổi" value=version.change_reason %}
     </dl>
-    <p class="mt-4 text-xs text-slate-500">Thời gian thiết lập và thời gian chạy được lưu riêng. Hiệu lực theo ngày không thay thế trạng thái duyệt. Trang quy trình mặc định hiển thị phiên bản mới nhất.</p>
+    <p class="mt-4 text-xs text-slate-500">Thời gian chuẩn bị và thời gian chạy được lưu riêng. Hiệu lực theo ngày không thay thế trạng thái duyệt. Trang quy trình mặc định hiển thị phiên bản mới nhất.</p>
     {% if not editable %}<p class="mt-3 text-slate-700">Phiên bản đã được chốt. Tạo phiên bản mới để thay đổi cấu hình hoặc công đoạn.</p>{% endif %}
   </section>
   <div id="routing-operation-editor"></div>

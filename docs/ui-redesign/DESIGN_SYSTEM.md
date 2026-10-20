@@ -9,15 +9,15 @@ Nguồn duy nhất cho tokens/styles: `static/src/tailwind.css`; Tailwind 4.3.3 
 | Nhóm | Quy ước |
 |---|---|
 | Primary | Indigo 600 `#4f46e5`; hover Indigo 700 `#4338ca`; soft Indigo 50 `#eef2ff` |
-| Neutral | Slate 50/100 background; Slate 200 border; Slate 500 secondary; Slate 900 heading |
+| Neutral | Slate 50/100 background; Slate 200 border; Slate 800 body `#1e293b`; Slate 600 secondary `#475569`; Slate 900 heading |
 | Semantic | Emerald success, Amber warning, Red danger, Blue info; chữ/biểu tượng đi cùng màu |
 | Font | Inter variable, Latin + Vietnamese WOFF2 local; fallback Segoe UI/system sans |
 | Page heading | 24px/32px, weight 650, tracking nhẹ |
-| Section heading | 14px/20px, weight 600 |
-| Body/table | Body 14px, table 13px/20px; tiền và số có tabular-nums |
-| Label/helper | 12px; helper Slate 500; error Red 700 |
+| Section heading | 16px/24px, weight 650 |
+| Body/table | Body 15px, table 14px/22px, header 13px/20px; tiền và số có tabular-nums |
+| Label/helper | Label 14px/20px, helper 13px/20px; helper Slate 600; error Red 700 |
 | Financial metric | 24–28px, weight 650, tabular numbers; không tính thêm dữ liệu |
-| Code | Consolas/Liberation Mono/system monospace, 11–12px |
+| Code | Consolas/Liberation Mono/system monospace, 13px; ô soạn công thức 14px |
 | Spacing | Cơ sở 4px; control gap 8px; nhóm 16px; section 24px |
 | Radius | Control/panel 8px; badge pill; không rounded lớn đại trà |
 | Shadow | Panel border chính; shadow nhỏ cho menu, modal, drawer, tooltip |
@@ -29,7 +29,7 @@ Nguồn duy nhất cho tokens/styles: `static/src/tailwind.css`; Tailwind 4.3.3 
 
 ## Navigation
 
-Sidebar giữ nhóm/thứ tự/menu/routes và 240px expanded/72px collapsed. Expanded: icon + nhãn; collapsed: icon + tooltip, mọi đích vẫn truy cập được. Mobile overlay dưới 992px, Escape/focus trap/inert giữ nguyên. Topbar gọn chứa toggle, breadcrumb/context và density control. Không global search giả hoặc UI tài khoản/công ty.
+Sidebar giữ nhóm/thứ tự/menu/routes và 240px expanded/72px collapsed. Expanded: icon + nhãn 14px/22px, weight 500, Slate 700; tiêu đề nhóm 12px/18px, Slate 600. Nhãn dài được xuống dòng, không cắt chữ. Collapsed: icon + tooltip, mọi đích vẫn truy cập được. Mobile overlay dưới 992px, Escape/focus trap/inert giữ nguyên. Topbar gọn chứa toggle, breadcrumb/context và density control. Không global search giả hoặc UI tài khoản/công ty.
 
 Chỉ animate width/padding khi người dùng chủ động toggle sidebar. Lần render đầu và thay đổi breakpoint phải có layout đúng ngay, không trượt nội dung dưới sidebar.
 

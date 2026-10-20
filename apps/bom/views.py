@@ -3,7 +3,7 @@ from django.core.exceptions import ValidationError
 from django.http import Http404
 from django.shortcuts import render
 from django.urls import reverse
-from django.views.decorators.http import require_GET, require_http_methods
+from django.views.decorators.http import require_GET, require_http_methods, require_POST
 from django.views.decorators.vary import vary_on_headers
 
 from apps.master_data.access import require_access
@@ -65,7 +65,7 @@ def _lines_context(request, recipe, version, workspace):
     }
 
 
-def _detail(request, pk, version_pk=None):
+def _detail(request, pk, version_pk=None, *, activation_errors=()):
     context = _context(request)
     workspace = require_access(request, resource="bom")
     recipe = selectors.recipe_detail(organization=workspace.organization, pk=pk)
@@ -75,6 +75,7 @@ def _detail(request, pk, version_pk=None):
         page_title=recipe.name, primary_action_url=reverse("bom:bom_version_create", args=[recipe.pk]), primary_action_label="+ Tạo phiên bản mới")
     if version:
         context.update(_lines_context(request, recipe, version, workspace))
+    context["activation_errors"] = activation_errors
     return render(request, "bom/partials/detail_content.html" if is_htmx(request) else "bom/detail.html", context)
 
 
@@ -271,3 +272,16 @@ def bom_line_edit(request, pk, version_pk, line_pk):
 @vary_on_headers("HX-Request", "HX-History-Restore-Request")
 def bom_line_remove(request, pk, version_pk, line_pk):
     return _line_form(request, pk, version_pk, line_pk, removing=True)
+
+
+@require_POST
+def bom_version_activate(request, pk, version_pk):
+    workspace = require_access(request, "edit", resource="bom_version")
+    recipe = selectors.recipe_detail(organization=workspace.organization, pk=pk)
+    version = selectors.version_detail(recipe=recipe, pk=version_pk)
+    try:
+        services.activate_version(workspace=workspace, recipe=recipe, version=version)
+    except ValidationError as error:
+        return _detail(request, pk, version_pk, activation_errors=error.messages)
+    messages.success(request, "Đã kích hoạt phiên bản định mức. Phiên bản và thành phần đã được khóa.")
+    return saved_response(request, reverse("bom:bom_version_detail", args=[pk, version_pk]))

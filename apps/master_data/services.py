@@ -5,7 +5,7 @@ from django.utils import timezone
 
 from apps.core.models import CostElement, Currency, Item, Supplier, SupplierPrice, Uom, UomCategory, UomConversion
 from .access import require_write_access
-from .constants import SUPPLIER_FIELDS, SUPPLIER_PRICE_FIELDS
+from .constants import SUPPLIER_FIELDS, SUPPLIER_PRICE_FIELDS, SUPPLIER_PRICE_ACTIVATABLE_STATUSES
 from .constants import CURRENCY_FIELDS, EDITABLE_FIELDS, UOM_CATEGORY_FIELDS, UOM_CONVERSION_FIELDS, UOM_FIELDS
 from .validators import (
     normalize_cost_element, normalize_reference_values, validate_cost_element,
@@ -180,3 +180,29 @@ def save_supplier_price(*, workspace, data, instance=None):
     # status/created_by/created_at are absent from the allow-list. New prices are
     # DRAFT with a NULL actor; edits preserve the existing record status/history.
     return _save_reference(model=SupplierPrice, resource="supplier_price", fields=SUPPLIER_PRICE_FIELDS, validator=validate_supplier_price, workspace=workspace, data=data, instance=instance, uppercase=())
+
+
+def activate_supplier_price(*, workspace, instance):
+    """Explicit publication only; preserve amounts, dates and historical rows."""
+    require_write_access(workspace, resource="supplier_price", editing=True)
+    try:
+        with transaction.atomic():
+            try:
+                price = SupplierPrice.objects.select_for_update().get(
+                    pk=instance.pk, organization=workspace.organization,
+                )
+            except SupplierPrice.DoesNotExist:
+                raise ValidationError("Không tìm thấy giá nhà cung cấp.") from None
+            if price.status == "EFFECTIVE":
+                return price
+            if price.status not in SUPPLIER_PRICE_ACTIVATABLE_STATUSES:
+                raise ValidationError("Không thể kích hoạt giá đã ngừng hiệu lực. Vui lòng tạo bản ghi giá mới.")
+            values = {field: getattr(price, field) for field in SUPPLIER_PRICE_FIELDS}
+            _refresh_reference_values(SupplierPrice, values, workspace)
+            # No instance exemption: publishing requires currently active references.
+            validate_supplier_price(data=values, organization=workspace.organization)
+            price.status = "EFFECTIVE"
+            price.save(update_fields=["status"])
+            return price
+    except IntegrityError:
+        raise ValidationError("Không thể kích hoạt giá nhà cung cấp. Vui lòng kiểm tra dữ liệu và thử lại.") from None

@@ -1,6 +1,6 @@
 <div x-data="overlayPanel({{ drawer_open|yesno:'true,false' }})" @open-drawer.window="if ($event.detail.id === '{{ drawer_id }}') show()" @keydown.escape.window="close()">
   <div x-cloak x-show="open" x-trap.inert.noscroll="open" x-transition.opacity.duration.150ms class="ui-overlay fixed inset-0 z-50 flex justify-end" @click.self="close()">
-    <section role="dialog" aria-modal="true" aria-labelledby="{{ drawer_id }}-title" class="ui-drawer h-full w-full max-w-md overflow-y-auto border-l border-slate-200">
+    <section role="dialog" aria-modal="true" aria-labelledby="{{ drawer_id }}-title" class="ui-drawer h-full w-full {% if drawer_wide %}max-w-4xl{% else %}max-w-md{% endif %} overflow-y-auto border-l border-slate-200">
       <div class="ui-overlay-heading flex items-start justify-between gap-3"><h2 id="{{ drawer_id }}-title" class="ui-section-heading">{{ drawer_title }}</h2><button type="button" @click="close()" aria-label="Đóng chi tiết" class="ui-icon-button">{% include "components/icon.html" with name="x" %}</button></div>
       <div class="mt-4">{% include drawer_content_template %}</div>
     </section>

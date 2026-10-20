@@ -1,0 +1,6 @@
+{% load costing_tags workspace_tags %}
+{% if value|trace_is_mapping %}
+<dl class="ui-trace-nested">{% for key, item in value.items %}<div><dt>{{ key|trace_key|ui_label }}</dt><dd>{% include "costing/runs/partials/trace_value.html" with value=item only %}</dd></div>{% empty %}<div><dd>—</dd></div>{% endfor %}</dl>
+{% elif value|trace_is_sequence %}
+<div class="ui-trace-values">{% for item in value %}<span>{% include "costing/runs/partials/trace_value.html" with value=item only %}</span>{% empty %}—{% endfor %}</div>
+{% else %}{{ value|trace_value }}{% endif %}

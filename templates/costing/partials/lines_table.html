@@ -6,7 +6,7 @@
   </div>
   {% if lines %}<div class="ui-table-scroll"><table class="ui-table whitespace-nowrap text-left"><caption class="sr-only">Cấu hình tính giá phiên bản {{ version.version_no }}</caption>
     <thead class="bg-slate-50 text-xs font-semibold text-slate-600"><tr>
-      <th scope="col" class="px-3 py-3 text-right">Thứ tự</th><th scope="col" class="px-3 py-3">Mã dòng / Nhãn</th><th scope="col" class="px-3 py-3">Loại dòng</th>
+      <th scope="col" class="px-3 py-3 text-right">Thứ tự</th><th scope="col" class="px-3 py-3">Mã dòng / Tên hiển thị</th><th scope="col" class="px-3 py-3">{{ "Loại dòng"|ui_label }}</th>
       <th scope="col" class="px-3 py-3">Phần tử chi phí</th><th scope="col" class="px-3 py-3">Nguồn dữ liệu</th><th scope="col" class="px-3 py-3">Tham chiếu nguồn</th>
       <th scope="col" class="px-3 py-3">Tiền tệ / Đơn vị tính</th><th scope="col" class="px-3 py-3">Điều chỉnh</th><th scope="col" class="px-3 py-3 text-right">Thao tác</th>
     </tr></thead><tbody>
@@ -17,8 +17,8 @@
         {% if line.source_mode == 'FORMULA' and line.formula_version %}<a href="{% url 'formula_engine:formula_version_detail' line.formula_version.formula_id line.formula_version_id %}" class="text-brand-700 hover:underline"><span class="font-mono">{{ line.formula_version.formula.code }}</span> · Phiên bản {{ line.formula_version.version_no }}</a>
         {% elif line.source_mode == 'LOOKUP' %}{{ line.rule_table.code|default:'—' }}{% elif line.source_mode == 'SYSTEM' %}<span class="font-mono">{{ line.system_resolver_code }}</span>{% elif line.source_mode == 'EXTERNAL' %}<span class="font-mono">{{ line.external_adapter_code }}</span>{% else %}Nhập khi tính giá{% endif %}
         <details class="ui-disclosure mt-1 max-w-sm whitespace-normal text-xs"><summary class="cursor-pointer text-slate-600">Thiết lập dòng</summary><dl class="ui-description-list mt-2 grid grid-cols-2 gap-2">
-          <dt>Phạm vi chi phí</dt><dd>{{ line.cost_scope|display_label }}</dd><dt>Phạm vi hiển thị</dt><dd>{{ line.visibility_scope|display_label }}</dd>
-          <dt>Số chữ số làm tròn</dt><dd>{% if line.rounding_scale != None %}{{ line.rounding_scale }}{% else %}Theo phần tử chi phí{% endif %}</dd>
+          <dt>Phạm vi chi phí</dt><dd>{{ line.cost_scope|display_label }}</dd><dt>{{ "Phạm vi hiển thị"|ui_label }}</dt><dd>{{ line.visibility_scope|display_label }}</dd>
+          <dt>{{ "Số chữ số làm tròn"|ui_label }}</dt><dd>{% if line.rounding_scale != None %}{{ line.rounding_scale }}{% else %}Theo phần tử chi phí{% endif %}</dd>
           <dt>Giá trị tối thiểu</dt><dd class="text-right tabular-nums">{{ line.min_override_value|vn_number }}</dd><dt>Giá trị tối đa</dt><dd class="text-right tabular-nums">{{ line.max_override_value|vn_number }}</dd>
           <dt>Điều chỉnh cần lý do</dt><dd>{{ line.override_requires_reason|yesno:'Có,Không' }}</dd>
           <dt>Ghi chú</dt><dd>{{ line.notes|default:'—' }}</dd>

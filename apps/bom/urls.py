@@ -14,6 +14,7 @@ urlpatterns = [
     path("<int:pk>/versions/", views.bom_version_list, name="bom_version_list"),
     path("<int:pk>/versions/create/", views.bom_version_create, name="bom_version_create"),
     path("<int:pk>/versions/<int:version_pk>/", views.bom_version_detail, name="bom_version_detail"),
+    path("<int:pk>/versions/<int:version_pk>/activate/", views.bom_version_activate, name="bom_version_activate"),
     path("<int:pk>/versions/<int:version_pk>/edit/", views.bom_version_edit, name="bom_version_edit"),
     path("<int:pk>/versions/<int:version_pk>/lines/create/", views.bom_line_create, name="bom_line_create"),
     path("<int:pk>/versions/<int:version_pk>/lines/<int:line_pk>/edit/", views.bom_line_edit, name="bom_line_edit"),

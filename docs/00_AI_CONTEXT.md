@@ -5,6 +5,33 @@ Tài liệu này là entry point bắt buộc cho AI/Codex trước khi làm vi�
 
 ## 1. Current Architecture — nguồn sự thật hiện tại
 
+- **20/10/2026 — diễn giải dễ đọc và nhãn trường:** cải thiện Run trace/snapshot
+  và bảng diễn giải phí/thuế Pricing, chỉ đọc dữ liệu đã lưu. Presenter không ORM,
+  không gọi engine; labels/help hiển thị qua mapping trong master_data.presentation.
+  Tên field/POST/URL/validation và dữ liệu lưu không đổi; không Auth/Organization UI.
+  Một số nhãn cũ trong hướng dẫn được superseded chỉ về cách hiển thị, xem
+  [EXPLANATION_READABILITY](ui-redesign/EXPLANATION_READABILITY.md). Giữ baseline
+  redesign 16/10 làm lịch sử; không ghi đè snapshot baseline cũ để đổi labels.
+
+- **20/10/2026 — kích hoạt giá nhà cung cấp:** trang chi tiết báo giá có
+  **Kích hoạt giá → Xác nhận kích hoạt**, POST có CSRF; service khóa bản ghi,
+  đọc lại FK và chạy validation hiện có trước khi đổi status=EFFECTIVE. Nháp,
+  Chờ duyệt hoặc Đã duyệt có thể kích hoạt; bản đã EFFECTIVE gửi lại không sửa,
+  RETIRED cần bản ghi mới. Chỉ cập nhật status, giữ đơn giá/ngày/actor/lịch sử.
+  Không thêm overlap/winner policy, không đổi edit policy cũ, không sửa engine
+  hoặc schema, không tự kích hoạt dữ liệu thật. Các mô tả “giá mua chưa có nút
+  hiệu lực” trước đây được **superseded chỉ ở thao tác kích hoạt giá mua**.
+
+- **20/10/2026 — kích hoạt BOM và bao bì:** trang chi tiết phiên bản có nút
+  **Kích hoạt phiên bản → Xác nhận kích hoạt**, chuyển DRAFT/IN_REVIEW sang
+  EFFECTIVE qua POST có CSRF. Kiểm tra ngày, thành phần, danh mục hoạt động và
+  quy đổi theo validator hiện có; chặn nguồn EFFECTIVE chồng kỳ để giữ điều kiện
+  một nguồn duy nhất của resolver. Chốt content_hash trong transaction; trigger
+  bất biến vẫn giữ nguyên. Không tự kích hoạt dữ liệu thật, không tự đóng/thay thế
+  bản cũ, không sửa schema/engine, không thêm Workflow/Auth. Các mô tả “BOM/bao bì
+  chưa có thao tác hiệu lực” bên dưới và trong hướng dẫn cũ được **superseded chỉ
+  cho hai module này**; giá mua/routing/rate/allocation giữ nguyên phạm vi.
+
 Hệ thống Costing là **phần mềm độc lập**.
 
 - **UI/UX redesign 16/10/2026:** giao diện hiện hành dùng Indigo/Slate, Inter local,

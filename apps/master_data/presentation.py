@@ -92,3 +92,32 @@ def supplier_price_detail_fields(record):
         ("Nguồn dữ liệu", record.source_type or "—"), ("Tham chiếu / Số báo giá", record.source_reference or "—"),
         ("Ngày tạo", timezone.localtime(record.created_at).strftime("%d/%m/%Y %H:%M")),
     )
+
+
+# Display only: form names, persisted labels and business codes stay unchanged.
+UI_FIELD_LABELS = {
+    "Sản lượng cơ sở đóng gói": "Số thành phẩm theo định mức bao bì",
+    "Đơn vị cơ sở đóng gói": "Đơn vị thành phẩm đóng gói",
+    "Tiền tệ kết quả": "Tiền tệ tính giá",
+    "Nhãn hiển thị": "Tên hiển thị",
+    "Loại dòng": "Vai trò của dòng",
+    "Mã bộ lấy dữ liệu hệ thống": "Mã nguồn tính tự động",
+    "Phạm vi hiển thị": "Nơi hiển thị",
+    "Số chữ số làm tròn": "Số chữ số sau dấu phẩy",
+    "Độ chính xác": "Số chữ số thập phân",
+    "Thời gian thiết lập": "Thời gian chuẩn bị",
+    "Tham chiếu / Số báo giá": "Số báo giá / Tài liệu tham chiếu",
+}
+
+UI_FIELD_HELP = {
+    "Sản lượng cơ sở đóng gói": "Bảng định mức bao bì đã nhập đủ để đóng bao nhiêu thành phẩm? Ví dụ: định mức cho 1 túi chứa 50 gói thì nhập 1 và chọn đơn vị túi ở ô bên cạnh.",
+    "Đơn vị cơ sở đóng gói": "Đơn vị của số thành phẩm theo định mức bao bì ở trên, ví dụ: túi 50 gói, hộp hoặc thùng. Chọn đúng đơn vị mà bảng định mức đang áp dụng.",
+    "Loại dòng": "Chọn vai trò trong phương án: dữ liệu đầu vào, tổng phụ hoặc đầu ra. Dòng tổng giá thành cuối cùng phải chọn Đầu ra; nguồn dữ liệu của dòng được chọn riêng.",
+}
+
+
+def ui_field_label(label):
+    text = str(label)
+    if text.endswith((" ↑", " ↓")):
+        return UI_FIELD_LABELS.get(text[:-2], text[:-2]) + text[-2:]
+    return UI_FIELD_LABELS.get(text, label)

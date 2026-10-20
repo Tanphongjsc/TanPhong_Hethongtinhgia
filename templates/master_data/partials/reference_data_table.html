@@ -1,3 +1,4 @@
+{% load workspace_tags %}
 <section id="{{ table_id }}" class="ui-table-panel" data-sort="{{ current_sort }}" data-per-page="{{ per_page }}" data-filter-form="{{ filter_form_id }}" aria-label="Danh sách {{ resource_label }}">
   <div class="ui-table-toolbar flex flex-wrap items-center justify-between gap-3">
     <p class="text-xs text-slate-500">{{ page_obj.paginator.count }} bản ghi</p>
@@ -5,7 +6,7 @@
       {% for key, value in request.GET.items %}{% if key != 'page' and key != 'sort' %}<input type="hidden" name="{{ key }}" value="{{ value }}">{% endif %}{% endfor %}
       <label for="table-sort">Sắp xếp</label>
       <select id="table-sort" name="sort" class="rounded border border-slate-300 bg-white px-2 py-1">
-        {% for value, label in sort_options %}<option value="{{ value }}" {% if current_sort == value %}selected{% endif %}>{{ label }}</option>{% endfor %}
+        {% for value, label in sort_options %}<option value="{{ value }}" {% if current_sort == value %}selected{% endif %}>{{ label|ui_label }}</option>{% endfor %}
       </select>
       <noscript><button type="submit" class="ui-button ui-button--secondary ui-button--sm">Áp dụng</button></noscript>
     </form>
@@ -15,7 +16,7 @@
       <caption class="sr-only">Danh sách {{ resource_label }}</caption>
       <thead class="bg-slate-50 text-xs font-semibold text-slate-600"><tr>
         {% for field, label, numeric in columns %}
-          {% if field %}{% include "components/sort_header.html" %}{% else %}<th scope="col" class="px-3 py-3 {% if numeric %}text-right{% endif %}">{{ label }}</th>{% endif %}
+          {% if field %}{% include "components/sort_header.html" %}{% else %}<th scope="col" class="px-3 py-3 {% if numeric %}text-right{% endif %}">{{ label|ui_label }}</th>{% endif %}
         {% endfor %}
         <th scope="col" class="px-3 py-3 text-right">Thao tác</th>
       </tr></thead>

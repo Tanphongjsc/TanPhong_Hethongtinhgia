@@ -332,7 +332,7 @@ class RunIntegrationTests(TestCase):
     def test_dependent_sku_scheme_and_packaging_inputs_htmx(self):
         seal(self.data)
         response = self.client.get(self.url("options"), {"product": self.data.product.pk, "scheme": self.data.scheme.pk, "costing_date": self.data.day.isoformat()}, HTTP_HX_REQUEST="true")
-        self.assertContains(response, "Cà phê đóng hộp"); self.assertContains(response, "Sản lượng cơ sở đóng gói")
+        self.assertContains(response, "Cà phê đóng hộp"); self.assertContains(response, "Số thành phẩm theo định mức bao bì")
         self.assertNotContains(response, "<!doctype")
         self.assertNotContains(self.client.get(self.url("options"), {"product": "bad"}, HTTP_HX_REQUEST="true"), "Cà phê đóng hộp")
 

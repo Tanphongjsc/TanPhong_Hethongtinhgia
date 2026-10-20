@@ -6,6 +6,7 @@ from django.utils import timezone
 
 from apps.core.models import Item, PackagingConfig, PackagingConfigVersion, PackagingLine, Product, Sku, SkuPackagingAssignment, Uom
 from apps.master_data.access import require_write_access
+from .activation import definition_hash, require_active, validate_activation_period
 from .packaging_constants import ASSIGNMENT_FIELDS, CONFIG_FIELDS, LINE_FIELDS, VERSION_FIELDS
 from .packaging_validators import normalize_values, validate_assignment, validate_config, validate_conversions, validate_line, validate_version
 from .validators import ensure_editable
@@ -69,7 +70,7 @@ def _assign(record, values):
 
 
 def _validate_lines(version, organization, date):
-    lines = list(PackagingLine.objects.filter(packaging_config_version=version).select_related("packaging_item", "uom"))
+    lines = list(PackagingLine.objects.filter(packaging_config_version=version).select_related("packaging_item__base_uom__category", "uom__category").order_by("display_order", "pk"))
     if any(line.packaging_item.organization_id != organization.pk for line in lines):
         raise ValidationError("Phiên bản có vật tư không thuộc công ty hiện tại.")
     validate_conversions(lines=[(line.packaging_item, line.uom) for line in lines], organization=organization, effective_from=date)
@@ -208,5 +209,35 @@ def save_assignment(*, workspace, config, data, instance=None):
             _assign(assignment, values)
             assignment.save(force_insert=instance is None, force_update=instance is not None)
             return assignment
+    except DatabaseError as error:
+        _database_error(error)
+
+
+def activate_version(*, workspace, config, version):
+    require_write_access(workspace, resource="packaging_version", editing=True)
+    try:
+        with transaction.atomic():
+            config = _locked_config(workspace, config.pk)
+            version = _locked_version(config, version.pk)
+            if version.status == "EFFECTIVE":
+                return version
+            ensure_editable(version)
+            require_active(config, config.product, version.weight_uom, version.dimension_uom)
+            values = {field: getattr(version, field) for field in VERSION_FIELDS}
+            validate_version(data=values, organization=workspace.organization)
+            validate_activation_period(
+                version, PackagingConfigVersion.objects.filter(packaging_config=config),
+            )
+            lines = _validate_lines(version, workspace.organization, version.effective_from)
+            if not lines:
+                raise ValidationError("Cấu hình bao bì chưa có thành phần. Vui lòng thêm thành phần trước khi kích hoạt.")
+            for line in lines:
+                require_active(line.packaging_item, line.packaging_item.base_uom, line.uom)
+                validate_line(data={field: getattr(line, field) for field in LINE_FIELDS},
+                              organization=workspace.organization)
+            version.content_hash = definition_hash(version, VERSION_FIELDS, lines, LINE_FIELDS)
+            version.status = "EFFECTIVE"
+            version.save(update_fields=["content_hash", "status"])
+            return version
     except DatabaseError as error:
         _database_error(error)

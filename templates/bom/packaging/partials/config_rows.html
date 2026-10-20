@@ -7,5 +7,5 @@
   <td class="px-3 py-2">{% if record.latest_status %}{% include "components/status_badge.html" with status=record.latest_status %}{% else %}Chưa có phiên bản{% endif %}</td>
   <td class="px-3 py-2 tabular-nums">{{ record.latest_effective_from|date:"d/m/Y"|default:"Chưa đặt" }}</td>
   <td class="px-3 py-2">{% if record.is_active %}{% include "components/status_badge.html" with status="ACTIVE" %}{% else %}{% include "components/status_badge.html" with status="INACTIVE" %}{% endif %}</td>
-  {% include "master_data/partials/reference_data_actions.html" %}
+  <td class="px-3 py-2 text-right">{% include "master_data/partials/reference_data_actions.html" %}</td>
 </tr>{% endfor %}

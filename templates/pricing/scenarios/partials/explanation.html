@@ -1,0 +1,19 @@
+{% load workspace_tags %}
+{% if trace_fee_rows %}
+<h4 class="ui-section-heading mb-2 mt-5">Cách tính từng khoản phí</h4>
+<div class="ui-table-scroll"><table class="ui-table ui-trace-table"><thead><tr><th scope="col">Khoản phí</th><th scope="col" class="text-right">Số tiền làm cơ sở</th><th scope="col" class="text-right">Tỷ lệ / Phí cố định</th><th scope="col" class="text-right">Phí trước giới hạn</th><th scope="col">Mức tối thiểu / tối đa</th><th scope="col" class="text-right">Phí áp dụng</th></tr></thead><tbody>
+{% for row in trace_fee_rows %}<tr><td>{{ row.label }}</td><td class="text-right tabular-nums">{{ row.basis_display }}</td><td class="text-right tabular-nums">{{ row.rate|vn_percent }}<span class="block text-xs text-slate-500">+ {{ row.fixed_display }}</span></td><td class="text-right tabular-nums">{{ row.raw_display }}</td><td><span class="block">Tối thiểu: {{ row.floor_display }}</span><span class="mt-1 block">Tối đa: {{ row.cap_display }}</span></td><td class="text-right font-semibold tabular-nums">{{ row.amount_display }}</td></tr>{% endfor %}
+</tbody></table></div>
+{% endif %}
+{% if trace_tax_rows %}
+<h4 class="ui-section-heading mb-2 mt-5">Cách tính từng khoản thuế</h4>
+<div class="ui-table-scroll"><table class="ui-table ui-trace-table"><thead><tr><th scope="col">Khoản thuế</th><th scope="col" class="text-right">Giá trước thuế</th><th scope="col" class="text-right">Tỷ lệ thuế</th><th scope="col" class="text-right">Thuế cố định</th><th scope="col" class="text-right">Tiền thuế</th></tr></thead><tbody>
+{% for row in trace_tax_rows %}<tr><td>{{ row.label }}</td><td class="text-right tabular-nums">{{ row.basis_display }}</td><td class="text-right tabular-nums">{{ row.rate|vn_percent }}</td><td class="text-right tabular-nums">{{ row.fixed_display }}</td><td class="text-right font-semibold tabular-nums">{{ row.amount_display }}</td></tr>{% endfor %}
+</tbody></table></div>
+{% endif %}
+{% if snapshot.trace.fx %}
+<h4 class="ui-section-heading mb-2 mt-5">Tỷ giá đã sử dụng</h4>
+<div class="ui-table-scroll"><table class="ui-table ui-trace-table"><thead><tr><th scope="col">Quy đổi</th><th scope="col" class="text-right">Tỷ giá</th><th scope="col">Tham chiếu</th></tr></thead><tbody>
+{% for row in snapshot.trace.fx %}<tr><td>1 {{ row.from }} → {{ row.to }}</td><td class="text-right tabular-nums">{{ row.rate|vn_number }}</td><td>Bản ghi #{{ row.id }}</td></tr>{% endfor %}
+</tbody></table></div>
+{% endif %}

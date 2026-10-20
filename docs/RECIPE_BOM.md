@@ -1,5 +1,27 @@
 # Recipe / BOM — báo cáo implementation
 
+## Bổ sung hiện hành 20/10/2026: kích hoạt phiên bản
+
+Trang chi tiết có **Kích hoạt phiên bản → Xác nhận kích hoạt**.
+`POST /bom/<id>/versions/<version_id>/activate/` dùng service, transaction và khóa
+Recipe → Product → Version; không cập nhật dữ liệu bằng GET. Bản DRAFT/IN_REVIEW
+cần ngày bắt đầu, ít nhất một thành phần, tham chiếu đang hoạt động và quy đổi
+trực tiếp hợp lệ tại ngày bắt đầu. Sản lượng/thu hồi/hao hụt dùng validator có sẵn.
+Kích hoạt chốt content_hash và status=EFFECTIVE, giữ actor nullable; không thay
+số lượng, đơn vị, giá mua hoặc công thức tính. Bản EFFECTIVE gửi lại không sửa gì.
+
+Chặn chồng khoảng ngày với phiên bản EFFECTIVE thuộc mọi Recipe đang hoạt động
+của cùng Product, vì resolver Costing hiện cần đúng một định mức. Ngày cuối được
+bao gồm; kỳ mới chỉ được bắt đầu sau ngày cuối kỳ cũ. Không tự đóng hoặc sửa bản
+cũ bất biến. Khi có lịch sử mở không giới hạn, cần người phụ trách thống nhất kỳ
+áp dụng; không sửa SQL theo hướng dẫn người dùng. Kiểm tra giá mua và các nguồn
+khác vẫn diễn ra ở Run. Kích hoạt không đồng nghĩa bảo đảm mọi cấu hình nâng cao
+đã được engine hỗ trợ.
+
+Nội dung “không có publish/status transition/hash” và “cho phép kích hoạt chồng
+kỳ” của báo cáo iteration 07/10 bên dưới đã được **superseded** bởi mục này.
+Schema, trigger bảo vệ bản chốt, clone sang Nháp và các tính năng khác giữ nguyên.
+
 Ngày: 07/10/2026. Phạm vi: định mức nguyên vật liệu, phiên bản, thành phần.
 Không triển khai Packaging, Routing, Workflow, BOM expansion hoặc Costing.
 Không thay đổi model/database business, không chạy migration trên Supabase.

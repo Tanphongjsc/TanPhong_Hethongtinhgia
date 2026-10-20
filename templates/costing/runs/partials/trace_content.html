@@ -1,3 +1,37 @@
-{% load costing_tags %}
-<p class="mb-4 text-xs text-slate-500">Diễn giải được lưu tại lần tính này. Không sử dụng lại giá hoặc công thức hiện tại.</p>
-{% for entry in steps %}<section class="mb-4 border-b border-slate-200 pb-3"><h3 class="ui-section-heading mb-2 font-semibold">{{ entry.title }}</h3><dl class="ui-description-list space-y-2">{% for label, value in entry.fields %}<div><dt class="text-xs text-slate-500">{{ label }}</dt><dd class="break-words">{{ value|trace_value }}</dd></div>{% endfor %}</dl></section>{% empty %}<p>Không có dữ liệu giải thích.</p>{% endfor %}
+{% load costing_tags workspace_tags %}
+{% run_explanation run line steps as explanation %}
+<div class="ui-explanation" id="run-explanation">
+  <p class="mb-4 text-slate-500">Số liệu và cách tính được lưu khi chạy lần tính này.</p>
+  <section class="ui-trace-summary" aria-label="Kết quả khoản chi phí">
+    <div><p class="ui-field-label">Khoản đang xem</p><p class="font-semibold">{{ line.label }}</p><p class="mt-1 font-mono text-xs text-slate-500">{{ line.line_code }}</p></div>
+    <div class="text-right"><p class="ui-field-label">Kết quả đã tính</p><p class="font-semibold tabular-nums">{% if line.value_type == 'PERCENT' %}{{ explanation.value|vn_percent }}{% else %}{{ explanation.value|formula_value }}{% endif %}{% if explanation.unit %} {{ explanation.unit }}{% endif %}</p><p class="mt-1 text-slate-500">Nguồn: {{ line.source_mode|display_label }}</p></div>
+  </section>
+  {% if explanation.materials %}
+  <section class="mt-5" aria-labelledby="trace-materials-title"><h3 id="trace-materials-title" class="ui-section-heading mb-2">Vật tư và đơn giá đã dùng</h3>
+    <div class="ui-table-scroll"><table class="ui-table ui-trace-table"><thead><tr><th scope="col">Vật tư / Nhà cung cấp</th><th scope="col" class="text-right">Số lượng tính tiền</th><th scope="col" class="text-right">Đơn giá</th><th scope="col" class="text-right">Thành tiền</th></tr></thead><tbody>
+    {% for material in explanation.materials %}<tr><td><p class="font-medium">{{ material.title }}</p>{% if material.code %}<p class="mt-1 font-mono text-xs text-slate-500">{{ material.code }}</p>{% endif %}<p class="mt-1 text-xs text-slate-500">{{ material.supplier }}</p></td><td class="text-right tabular-nums">{{ material.quantity|vn_number }}<span class="block text-xs text-slate-500">{{ material.unit }}</span></td><td class="text-right tabular-nums">{{ material.price|vn_number }}<span class="block text-xs text-slate-500">{{ material.currency }} / {{ material.unit }}</span></td><td class="text-right font-semibold tabular-nums">{{ material.amount|vn_number }}<span class="block text-xs text-slate-500">{{ material.currency }}</span></td></tr>{% endfor %}
+    </tbody></table></div>
+  </section>
+  {% endif %}
+  {% if explanation.inputs %}
+  <section class="mt-5" aria-labelledby="trace-inputs-title"><h3 id="trace-inputs-title" class="ui-section-heading mb-2">Số liệu đưa vào công thức</h3>
+    <div class="ui-table-scroll"><table class="ui-table ui-trace-table"><thead><tr><th scope="col">Tên / Mã trong công thức</th><th scope="col" class="text-right">Giá trị đã dùng</th><th scope="col">Đơn vị</th></tr></thead><tbody>
+      {% for input in explanation.inputs %}<tr><td><p>{{ input.name }}</p><p class="mt-1 font-mono text-xs text-slate-500">{{ input.code }}</p></td><td class="text-right tabular-nums">{% if input.kind == 'PERCENT' %}{{ input.value|vn_percent }}{% else %}{% include "costing/runs/partials/trace_value.html" with value=input.value only %}{% endif %}</td><td>{{ input.unit|default:'—' }}</td></tr>{% endfor %}
+    </tbody></table></div>
+  </section>
+  {% endif %}
+  <h3 class="ui-section-heading mb-2 mt-5">Các bước tính và căn cứ chi tiết</h3>
+  {% for entry in explanation.sections %}
+    {% if entry.kind == 'calculations' %}
+    <details class="ui-trace-details"><summary>Xem {{ entry.rows|length }} bước tính trong công thức</summary>
+      <div class="ui-table-scroll mt-3"><table class="ui-table ui-trace-table"><thead><tr><th scope="col">Bước</th><th scope="col">Phép tính / Biến</th><th scope="col">Giá trị đầu vào</th><th scope="col" class="text-right">Kết quả</th></tr></thead><tbody>
+      {% for row in entry.rows %}<tr><td class="text-slate-500">{{ forloop.counter }}</td><td><p class="font-mono">{{ row.operation }}</p><p class="mt-1 text-xs text-slate-500">{{ row.title }}{% for label, value in row.metadata %} · {{ label }}: {{ value|trace_value }}{% endfor %}</p></td><td>{% include "costing/runs/partials/trace_value.html" with value=row.arguments only %}</td><td class="text-right tabular-nums">{% include "costing/runs/partials/trace_value.html" with value=row.value only %}</td></tr>{% endfor %}
+      </tbody></table></div>
+    </details>
+    {% else %}
+    <details class="ui-trace-details" {% if entry.expanded %}open{% endif %}><summary>{{ entry.title }}</summary>
+      <dl class="ui-trace-fields mt-3">{% for fact in entry.fields %}<div {% if fact.wide %}class="ui-trace-wide"{% endif %}><dt>{{ fact.label|ui_label }}</dt><dd {% if fact.code %}class="font-mono"{% endif %}>{% if fact.percent %}{{ fact.value|vn_percent }}{% elif fact.code %}{{ fact.value|default_if_none:'—' }}{% else %}{% include "costing/runs/partials/trace_value.html" with value=fact.value only %}{% endif %}</dd></div>{% endfor %}</dl>
+    </details>
+    {% endif %}
+  {% empty %}<p class="py-4 text-slate-500">Không có dữ liệu giải thích đã lưu cho khoản này.</p>{% endfor %}
+</div>

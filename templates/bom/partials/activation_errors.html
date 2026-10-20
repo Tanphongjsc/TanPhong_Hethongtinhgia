@@ -1,0 +1,6 @@
+{% if activation_errors %}
+<div class="ui-alert text-red-700 mb-4" role="alert">
+  <p class="font-semibold">Không thể kích hoạt phiên bản.</p>
+  <ul class="mt-1 list-disc pl-5">{% for error in activation_errors %}<li>{{ error }}</li>{% endfor %}</ul>
+</div>
+{% endif %}

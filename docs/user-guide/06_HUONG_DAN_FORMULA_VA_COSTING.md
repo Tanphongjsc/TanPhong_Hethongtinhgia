@@ -161,6 +161,8 @@ Khi kiểm tra cấu hình, ngày dùng là ngày bắt đầu phương án, ho�
 
 Chọn **Kích hoạt phiên bản** → **Xác nhận kích hoạt**. Cần ngày bắt đầu, phương án hoạt động, kiểm tra cấu hình không lỗi. Kích hoạt tạo mã băm cấu hình và chuyển `EFFECTIVE`; không tính giá/rate và không tạo lần tính. Phiên bản `APPROVED/EFFECTIVE/RETIRED` và các dòng là bất biến; sửa qua bản Nháp mới. Không có nút chuyển bản đã chốt sang nghỉ dùng.
 
+**Lưu ý tránh lỗi khi chạy:** dòng tổng phải có **Loại dòng = Đầu ra** và **Nguồn dữ liệu = Công thức** (nếu cộng bằng công thức). Đây là hai ô độc lập. Công thức kiểm thử đạt không biến một dòng Dữ liệu đầu vào thành Đầu ra. Kiểm tra cấu hình hiện chưa chặn trường hợp thiếu dòng Đầu ra trước kích hoạt; bộ chạy vẫn chặn. Bản đã hiệu lực cần giữ lịch sử; nếu không thể tạo phiên bản mới không chồng kỳ, tạo phương án riêng có cấu hình đúng. Xem [bài cà phê 3 trong 1](15_THUC_HANH_CAFE_3IN1_SHOPEE_VA_TRUC_TIEP.md) để phân biệt tính từ từng định mức với nhập tổng tiền.
+
 Trước khi chạy, kiểm tra:
 
 - [ ] Có đúng một phiên bản phương án EFFECTIVE cho ngày chạy.
@@ -231,6 +233,18 @@ Ngày cuối của các nguồn Costing là **bao gồm ngày đó**: nguồn t�
 Các mã `IN_REVIEW`, `APPROVED`, `SUPERSEDED` còn trong dữ liệu/ô lọc tương thích nhưng không có luồng chuyển các trạng thái ấy trong UI này. Không có trạng thái `RUNNING` hoặc `COMPLETED`. Nếu form sai hoặc không chọn được phiên bản phương án, hệ thống báo tại form và có thể chưa tạo Run. FAILED không giữ các dòng/kết quả/bản chụp thành công nửa chừng.
 
 ## 6. Đọc kết quả, diễn giải và lịch sử
+
+**Cập nhật giao diện 20/10/2026:** nhấn **Nguồn dữ liệu / Diễn giải** trên một dòng để mở khung chi tiết.
+
+1. Xem **Khoản đang xem** và **Kết quả đã tính** ở đầu khung.
+2. Với nguyên liệu/bao bì, xem bảng **Vật tư và đơn giá đã dùng**: tên/mã, nhà cung cấp, số lượng tính tiền, đơn giá và thành tiền nằm theo từng dòng.
+3. Với công thức, xem **Số liệu đưa vào công thức**: tên dễ hiểu đi kèm mã biến và giá trị đã sử dụng.
+4. Mở mục trong **Các bước tính và căn cứ chi tiết** để xem định mức, hệ số, quy đổi, ngày áp dụng hoặc làm tròn. Các phép tính công thức nằm trong bảng thu gọn; bấm dòng **Xem … bước tính trong công thức** để mở.
+5. Đóng bằng nút **Đóng chi tiết** hoặc phím **Esc**. Muốn tra toàn bộ nguồn, chọn **Xem dữ liệu và phiên bản đã sử dụng**, rồi mở nhóm cần xem.
+
+Hai ô chạy bao bì được đổi nhãn cho dễ hiểu: **Số thành phẩm theo định mức bao bì** (trước: Sản lượng cơ sở đóng gói) và **Đơn vị thành phẩm đóng gói** (trước: Đơn vị cơ sở đóng gói). Ví dụ bảng bao bì cho 1 túi chứa 50 gói: nhập **1**, chọn **Túi 50 gói × 18 g**. Ý nghĩa và cách tính không đổi.
+
+**Vai trò của dòng** là nhãn mới của **Loại dòng** trong phương án; dòng tổng cuối cùng vẫn chọn **Đầu ra**. **Tên hiển thị** thay nhãn **Nhãn hiển thị**, **Tiền tệ tính giá** thay nhãn **Tiền tệ kết quả**. Tên mã và số liệu không đổi.
 
 Trang **Kết quả tính giá thành** hiện sản phẩm/SKU/phương án/phiên bản, ngày, sản lượng, trạng thái, tổng và giá thành trên đơn vị sản lượng. Giá thành trên đơn vị = tổng / sản lượng nhập; đơn vị là đơn vị Run, không mặc định chiếc hay kg. Giá trị này được làm tròn khi hiển thị theo số chữ số tiền tệ đã lưu.
 

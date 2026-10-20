@@ -270,7 +270,15 @@ Nhóm Thuế luôn hiển thị; đánh dấu đã gồm thuế không tự ẩn
 
 Chi tiết và danh sách hiển thị **Trạng thái bản ghi** cùng **Hiệu lực theo ngày**. Hiệu lực theo ngày được tính từ hôm nay: trước ngày bắt đầu là **Sắp hiệu lực**, sau ngày cuối là **Hết hiệu lực**, còn lại **Đang hiệu lực**. Ngày cuối vẫn được tính. Vì vậy một giá **Nháp** có thể đồng thời có badge ngày **Đang hiệu lực**.
 
-**[CHƯA HỖ TRỢ]** UI hiện không có nút chuyển báo giá Nháp thành nguồn đang hiệu lực, và không cho nhập trạng thái trên form. Lưu mới luôn Nháp; sửa giữ trạng thái cũ. Bộ tính chỉ chọn trạng thái nguồn `EFFECTIVE`. Do đó tạo mới toàn bộ dữ liệu chỉ bằng các form hiện tại chưa hoàn tất được chuỗi nguồn giá mua để chạy Costing. Cần bộ nguồn đã được thiết lập hợp lệ; ghi nhận yêu cầu hoàn thiện thao tác thiết lập nguồn với người quản lý hệ thống. Không có bước duyệt giá dành cho người dùng. Câu nhắc cũ có từ “duyệt” trên form không cung cấp thêm chức năng.
+**[HỆ THỐNG HIỆN TẠI — 20/10/2026]** Lưu giá mới vẫn là **Nháp**. Để dùng giá khi tính:
+
+1. Mở **Giá nhà cung cấp → Xem chi tiết** của đúng báo giá.
+2. Kiểm tra vật tư, nhà cung cấp, đơn giá, tiền tệ, đơn vị, số lượng tối thiểu và ngày áp dụng.
+3. Nhấn **Kích hoạt giá → Xác nhận kích hoạt**. Nếu báo lỗi, sửa dữ liệu theo thông báo rồi thử lại; nhà cung cấp/vật tư/tiền tệ/đơn vị phải đang hoạt động.
+4. Kiểm tra **Trạng thái bản ghi: Đang hiệu lực**. Giá tương lai vẫn có badge ngày **Sắp hiệu lực**; chỉ được chọn ở lần tính có ngày phù hợp.
+5. Thực hiện cho mọi giá nguyên liệu và bao bì cần dùng, sau đó **tạo lần tính mới**. Lần tính thất bại cũ giữ nguyên để tra cứu.
+
+Không cần bước duyệt theo người dùng. Kích hoạt không tự chọn giá rẻ nhất, tự xử lý thuế hay quy đổi đơn vị. Nếu có nhiều giá cùng phù hợp, Run vẫn báo mơ hồ; kiểm tra nguồn thay vì kích hoạt thêm giá để thử. Giá đã ngừng hiệu lực không có nút kích hoạt lại; tạo bản ghi mới đúng kỳ. Thao tác Chỉnh sửa hiện có giữ nguyên chính sách, không tự tạo phiên bản giá.
 
 ### 12.2. Khi giá đổi theo kỳ
 

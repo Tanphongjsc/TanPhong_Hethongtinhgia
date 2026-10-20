@@ -2,7 +2,7 @@
 
 Phiên bản tài liệu: 09/10/2026. Phạm vi: giao diện và bộ tính hiện có trong repository tại thời điểm kiểm chứng. Đây là tài liệu cho kế toán, sản xuất, mua hàng và kinh doanh; không cần biết lập trình để đọc các chương chính.
 
-Bắt đầu tại [Sổ tay tổng hợp](../HUONG_DAN_SU_DUNG_HE_THONG_TINH_GIA.md). Để học bằng dữ liệu cụ thể, mở [Bài thực hành Cappuccino](09_THUC_HANH_CAPPUCCINO_END_TO_END.md).
+Bắt đầu tại [Sổ tay tổng hợp](../HUONG_DAN_SU_DUNG_HE_THONG_TINH_GIA.md). Để học bằng dữ liệu cụ thể, mở [Bài thực hành Cappuccino](09_THUC_HANH_CAPPUCCINO_END_TO_END.md). Bổ sung ngày 20/10/2026: [Bài cà phê 3 trong 1 theo Excel, bán Shopee và trực tiếp](15_THUC_HANH_CAFE_3IN1_SHOPEE_VA_TRUC_TIEP.md).
 
 | Chương | Khi nào đọc |
 |---|---|
@@ -20,6 +20,7 @@ Bắt đầu tại [Sổ tay tổng hợp](../HUONG_DAN_SU_DUNG_HE_THONG_TINH_GI
 | [12. Từng trường nhập](12_FIELD_REFERENCE.md) | Tra bắt buộc, mặc định, điều kiện, ví dụ của từng form |
 | [13. Ma trận phụ thuộc](13_DEPENDENCY_MATRIX.md) | Trước khi tạo X cần gì; sửa X ảnh hưởng đâu |
 | [14. Ma trận năng lực](14_BUSINESS_CAPABILITY_MATRIX.md) | Kiểm tra hệ thống có đáp ứng bài toán của doanh nghiệp |
+| [15. Thực hành cà phê 3 trong 1](15_THUC_HANH_CAFE_3IN1_SHOPEE_VA_TRUC_TIEP.md) | Tính chi tiết từ 1 gói 18 g, quy lên túi 50 gói và giá bán Shopee/trực tiếp |
 | [Giới hạn hiện tại](GAP_REGISTER.md) | Xác định phần phải chuẩn bị ngoài UI hoặc chưa hỗ trợ |
 | [Kiểm chứng nguồn](SOURCE_VERIFICATION.md) | Phụ lục dành cho người hỗ trợ kỹ thuật; route, form và bằng chứng |
 

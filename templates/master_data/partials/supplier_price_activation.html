@@ -1,0 +1,15 @@
+{% if activation_errors %}
+<div class="ui-alert mb-4 text-red-700" role="alert">
+  <p class="font-semibold">Không thể kích hoạt giá nhà cung cấp.</p>
+  <ul class="mt-1 list-disc pl-5">{% for error in activation_errors %}<li>{{ error }}</li>{% endfor %}</ul>
+</div>
+{% endif %}
+{% if can_activate_supplier_price %}
+<div class="mb-5">
+  <p class="mb-3 text-slate-500">Kiểm tra thông tin báo giá trước khi kích hoạt. Lần tính giá chỉ sử dụng giá đã kích hoạt và phù hợp ngày, số lượng, đơn vị, tiền tệ.</p>
+  <form id="activate-supplier-price-form" method="post" action="{% url 'master_data:supplier_price_activate' record.pk %}" x-data="{ confirmed: false }" @confirm-action.window="if ($event.detail.id === 'activate-supplier-price') confirmed = true" @submit="if (!confirmed) { $event.preventDefault(); $dispatch('open-modal', { id: 'activate-supplier-price' }) }">
+    {% csrf_token %}{% include "components/button.html" with type="submit" href=None label="Kích hoạt giá" primary=True %}
+  </form>
+  {% include "components/confirm_dialog.html" with confirm_id="activate-supplier-price" confirm_title="Kích hoạt giá nhà cung cấp" confirm_description="Xác nhận đưa báo giá này vào hiệu lực? Hệ thống sẽ kiểm tra lại dữ liệu. Khi có giá cho kỳ mới, hãy tạo bản ghi mới để giữ lịch sử." confirm_form_id="activate-supplier-price-form" confirm_label="Xác nhận kích hoạt" %}
+</div>
+{% endif %}

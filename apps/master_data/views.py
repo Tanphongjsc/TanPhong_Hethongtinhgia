@@ -3,13 +3,13 @@ from django.core.exceptions import PermissionDenied, ValidationError
 from django.http import Http404
 from django.shortcuts import render
 from django.urls import reverse
-from django.views.decorators.http import require_GET, require_http_methods
+from django.views.decorators.http import require_GET, require_http_methods, require_POST
 from django.views.decorators.vary import vary_on_headers
 
 from apps.core.models import CostElement
 
 from .access import require_access
-from .constants import COST_SCOPES, PAGE_SIZES, SOURCE_MODES, SORT_FIELDS, VALUE_TYPES
+from .constants import COST_SCOPES, PAGE_SIZES, SOURCE_MODES, SORT_FIELDS, VALUE_TYPES, SUPPLIER_PRICE_ACTIVATABLE_STATUSES
 from .forms import CostElementForm, CurrencyForm, SupplierForm, SupplierPriceForm, UomCategoryForm, UomForm, UomConversionForm
 from . import selectors, services
 from .selectors import cost_element_detail as get_element, cost_element_groups, cost_element_list as get_list
@@ -145,12 +145,14 @@ def _reference_list(request, *, resource, selector):
     return render(request, "master_data/partials/reference_data_table.html" if is_htmx(request) else "master_data/reference_data_list.html", context)
 
 
-def _reference_detail(request, *, resource, pk):
+def _reference_detail(request, *, resource, pk, activation_errors=()):
     context = _reference_context(request, resource)
     workspace = require_access(request, resource=resource)
     record = selectors.reference_detail(resource=resource, pk=pk, organization=workspace.organization)
     can_edit = getattr(workspace.permissions, f"can_edit_{resource}")
     if resource == "supplier_price":
+        context.update(activation_errors=activation_errors, can_activate_supplier_price=(
+            can_edit and record.status in SUPPLIER_PRICE_ACTIVATABLE_STATUSES))
         fields = supplier_price_detail_fields(record)
         title = f"{record.supplier.code} / {record.item.code}"
     elif resource == "uom_conversion":
@@ -200,7 +202,7 @@ def _reference_form(request, *, resource, form_class, service, pk=None):
     if resource == "supplier_price":
         context["form_notice"] = (
             "Chỉnh sửa sẽ thay đổi bản ghi lịch sử này. Khi cập nhật báo giá cho kỳ mới, hãy thêm bản ghi mới để giữ giá cũ. Trạng thái bản ghi hiện có được giữ nguyên."
-            if record else "Giá mới được lưu ở trạng thái Nháp. Khoảng hiệu lực theo ngày không thay thế việc duyệt giá."
+            if record else "Giá mới được lưu ở trạng thái Nháp. Sau khi lưu, mở chi tiết và chọn Kích hoạt giá để đưa giá vào hiệu lực."
         )
     return render(request, "master_data/partials/reference_data_form_content.html" if is_htmx(request) else "master_data/reference_data_form.html", context)
 
@@ -349,3 +351,13 @@ def supplier_price_edit(request, pk):
     return _reference_form(request, resource="supplier_price", form_class=SupplierPriceForm, service=services.save_supplier_price, pk=pk)
 
 
+@require_POST
+def supplier_price_activate(request, pk):
+    workspace = require_access(request, "edit", resource="supplier_price")
+    record = selectors.reference_detail(resource="supplier_price", pk=pk, organization=workspace.organization)
+    try:
+        services.activate_supplier_price(workspace=workspace, instance=record)
+    except ValidationError as error:
+        return _reference_detail(request, resource="supplier_price", pk=pk, activation_errors=error.messages)
+    messages.success(request, "Đã kích hoạt giá nhà cung cấp.")
+    return saved_response(request, reverse("master_data:supplier_price_detail", args=[pk]))

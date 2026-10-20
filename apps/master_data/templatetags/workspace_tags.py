@@ -30,3 +30,15 @@ def query_url(context, **changes):
     encoded = query.urlencode()
     base = context.get("query_base_url", request.path)
     return f"{base}?{encoded}" if encoded else base
+
+
+@register.filter
+def ui_label(label):
+    from apps.master_data.presentation import ui_field_label
+    return ui_field_label(label)
+
+
+@register.filter
+def ui_help(field):
+    from apps.master_data.presentation import UI_FIELD_HELP
+    return UI_FIELD_HELP.get(str(field.label), field.help_text)

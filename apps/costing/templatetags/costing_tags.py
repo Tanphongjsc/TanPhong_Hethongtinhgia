@@ -28,3 +28,35 @@ def trace_value(value):
     if value is None: return "—"
     if isinstance(value, str) and (len(value) == 10 and value[4:5] == "-" or "T" in value and ":" in value): return snapshot_date(value)
     return display_label(format_number(value))
+
+
+@register.simple_tag
+def run_explanation(run, line, steps):
+    from apps.costing.presentation import trace_presentation
+    return trace_presentation(run, line, steps)
+
+
+@register.simple_tag
+def snapshot_sources(snapshot):
+    from apps.costing.presentation import source_groups
+    return source_groups(snapshot)
+
+
+@register.simple_tag
+def saved_unit(snapshot, reference):
+    from apps.costing.presentation import saved_unit as label
+    return label(snapshot, reference)
+
+
+@register.filter
+def trace_is_mapping(value):
+    return isinstance(value, dict)
+
+
+@register.filter
+def trace_is_sequence(value):
+    return isinstance(value, (list, tuple))
+
+@register.filter
+def trace_key(value):
+    return {"expression": "Phép tính", "arguments": "Giá trị đầu vào", "value": "Kết quả"}.get(value, value)

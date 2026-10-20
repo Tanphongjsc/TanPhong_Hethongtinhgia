@@ -17,7 +17,7 @@
 | Nhóm chi phí chung | Chi phí chung được tập hợp vào nhóm nào? | Không có danh mục nghiệp vụ bắt buộc khác trong form | Quy tắc phân bổ, số liệu kỳ |
 | Quy tắc phân bổ | Chia chi phí chung theo cơ sở nào? | Nhóm chi phí; đơn vị tiêu thức nếu cần | Nguồn `ALLOCATION:<mã quy tắc>` |
 
-**Giới hạn cần biết ngay:** tạo hoặc sao chép BOM, bao bì, quy trình luôn tạo phiên bản **Nháp**. Tạo đơn giá nguồn lực và quy tắc phân bổ cũng tạo bản ghi **Nháp**. Các màn hình này **chưa có thao tác đưa vào hiệu lực**. Nhập ngày hôm nay, đánh dấu **Đang hoạt động**, hoặc gán SKU không đổi Nháp thành Đang hiệu lực. Lần tính chỉ chọn nguồn có mã trạng thái `EFFECTIVE` phù hợp ngày tính. Vì vậy có thể hoàn thành bài nhập dữ liệu bằng UI, nhưng chưa thể tự hoàn tất toàn bộ chuỗi từ dữ liệu mới đến tính giá bằng UI. Xem [GAP_REGISTER](GAP_REGISTER.md); bài thực hành dùng dữ liệu demo đã chuẩn bị sẵn trạng thái.
+**Cập nhật 20/10/2026:** tạo hoặc sao chép BOM, bao bì, quy trình luôn tạo phiên bản **Nháp**. Với BOM và bao bì, mở chi tiết phiên bản rồi chọn **Kích hoạt phiên bản → Xác nhận kích hoạt** sau khi kiểm tra dữ liệu. Quy trình, đơn giá nguồn lực và quy tắc phân bổ vẫn chưa có thao tác đưa vào hiệu lực. Nhập ngày hôm nay, đánh dấu **Đang hoạt động**, hoặc gán SKU không đổi Nháp thành Đang hiệu lực. Lần tính chỉ chọn nguồn có mã trạng thái `EFFECTIVE` phù hợp ngày tính. Vì vậy có thể hoàn thành bài nhập dữ liệu bằng UI, nhưng chưa thể tự hoàn tất toàn bộ chuỗi từ dữ liệu mới đến tính giá bằng UI. Xem [GAP_REGISTER](GAP_REGISTER.md); bài thực hành dùng dữ liệu demo đã chuẩn bị sẵn trạng thái.
 
 ## 2. Cách dùng màn hình chung
 
@@ -64,6 +64,16 @@ SKU trong bộ lọc giúp tìm BOM của Sản phẩm chứa SKU đó. BOM khô
 
 Form cho lưu **Nhóm thay thế** và **Thành phần tùy chọn**, nhưng engine chưa có quy tắc chọn các thành phần ấy và sẽ chặn lần tính. Khi chuẩn bị BOM cho khả năng tính hiện tại, dùng các dòng bắt buộc đã xác định rõ, không bật tùy chọn hay điền nhóm thay thế. **Mã công đoạn** là tham chiếu văn bản, không tự liên kết với công đoạn Routing hay phân bổ vật tư theo công đoạn.
 
+### Kích hoạt BOM để dùng khi tính giá
+
+1. Mở **Sản xuất → Định mức / Công thức sản xuất**, chọn định mức và đúng phiên bản cần dùng.
+2. Kiểm tra Sản phẩm, sản lượng chuẩn, đơn vị, thu hồi và đủ thành phần. Muốn bổ sung ngày, chọn **Chỉnh sửa phiên bản**, nhập **Hiệu lực từ ngày** rồi lưu. Nếu có ngày kết thúc, ngày đó phải sau ngày bắt đầu.
+3. Nhấn **Kích hoạt phiên bản → Xác nhận kích hoạt**. Nếu báo lỗi, đọc nội dung trên đầu trang, sửa dữ liệu rồi thực hiện lại. Bản lỗi vẫn là Nháp; không có kích hoạt dở dang.
+4. Kiểm tra trạng thái phiên bản **Đang hiệu lực**. Ngày tính giá phải nằm trong khoảng áp dụng. Trạng thái theo ngày và ô **Đang hoạt động** không thay thế bước này.
+5. Sau khi kích hoạt, không chỉnh sửa/xóa thành phần trực tiếp. Muốn đổi định mức, tạo phiên bản mới. Không tự sửa database hoặc đổi lịch sử đã chốt.
+
+Hệ thống không cho hai phiên bản Đang hiệu lực của các định mức đang hoạt động cùng Sản phẩm chồng ngày. Ngày cuối vẫn được tính: bản cũ kết thúc 31/10 thì bản mới có thể bắt đầu 01/11. Nếu bản cũ không có ngày kết thúc, báo người phụ trách để thống nhất lịch áp dụng; nút kích hoạt không tự đóng bản cũ. Giá mua vật tư vẫn cần đủ điều kiện riêng; kích hoạt BOM không kích hoạt giá mua.
+
 ### Sửa và thay phiên bản
 
 Ở chi tiết, **Chỉnh sửa thông tin định mức** sửa header; **Chỉnh sửa phiên bản** sửa sản lượng, đơn vị, thu hồi, ngày và lý do của bản còn sửa được. Trong bảng thành phần, dùng **Chỉnh sửa**, **Xóa** tương ứng từng dòng. Đổi ngày bắt đầu sẽ kiểm tra lại quy đổi của tất cả thành phần.
@@ -72,7 +82,7 @@ Form cho lưu **Nhóm thay thế** và **Thành phần tùy chọn**, nhưng eng
 
 **Trường hợp hợp lệ:** sản lượng và số lượng dòng > 0; thu hồi trong `(0,100%]`; hao hụt trong `[0,100%)`; quy đổi trực tiếp phù hợp nếu dùng đơn vị khác đơn vị gốc. **Trường hợp không hợp lệ:** sản lượng bằng 0, thu hồi 0%, hao hụt 100%, thiếu vật tư/đơn vị, ngày kết thúc không sau ngày bắt đầu, chọn mới danh mục đã ngừng hoạt động, hoặc thiếu quy đổi.
 
-Sau khi nhập, kiểm tra: đúng Sản phẩm; đúng sản lượng/đơn vị đầu ra; đủ dòng; đúng đơn vị/thu hồi/hao hụt; đúng phiên bản/ngày. Trạng thái Nháp vẫn cần được xử lý theo giới hạn hiệu lực ở mục 1 trước khi chạy tính giá. Sau đó kiểm tra Giá nhà cung cấp của từng vật tư và cấu hình phương án tính giá thành.
+Sau khi nhập, kiểm tra: đúng Sản phẩm; đúng sản lượng/đơn vị đầu ra; đủ dòng; đúng đơn vị/thu hồi/hao hụt; đúng phiên bản/ngày. Chọn **Kích hoạt phiên bản → Xác nhận kích hoạt** trước khi chạy tính giá; xem hướng dẫn ngay phía trên. Sau đó kiểm tra Giá nhà cung cấp của từng vật tư và cấu hình phương án tính giá thành.
 
 ## 4. Cấu hình bao bì và gán SKU
 
@@ -107,11 +117,19 @@ Nếu nghiệp vụ gọi một hộp có 20 gói và một carton riêng cho m�
 
 **Chỉnh sửa thông tin cấu hình** sửa header. **Chỉnh sửa phiên bản** sửa quy cách/ngày/lý do. Sửa hoặc xóa thành phần bằng thao tác trên dòng. Muốn giữ lịch sử quy cách, mở bản nguồn rồi chọn **Tạo phiên bản mới từ phiên bản N**, sửa thông số và nhấn **Lưu phiên bản bao bì**. Toàn bộ dòng được sao chép; các liên kết SKU thuộc header vẫn giữ nguyên, không tạo lại theo phiên bản mới.
 
-Ngày bắt đầu liên kết mặc định hôm nay, **Cấu hình chính** mặc định được chọn. Hệ thống cấm lặp đúng bộ SKU + cấu hình + ngày bắt đầu; nhưng form chưa cấm nhiều cấu hình chính hoặc phiên bản trùng kỳ. Engine cần duy nhất một liên kết chính và một phiên bản hiệu lực. Khi đổi cấu hình cho SKU, thêm liên kết kỳ mới, kiểm tra ngày kết thúc kỳ cũ và tránh cùng ngày biên. Chưa có nút xóa liên kết SKU hoặc khóa liên kết do đã được dùng.
+Ngày bắt đầu liên kết mặc định hôm nay, **Cấu hình chính** mặc định được chọn. Hệ thống cấm lặp đúng bộ SKU + cấu hình + ngày bắt đầu; nhưng form chưa cấm nhiều cấu hình chính hoặc bản Nháp trùng kỳ. Riêng khi kích hoạt phiên bản bao bì, hệ thống chặn chồng ngày với bản Đang hiệu lực của cùng cấu hình. Engine cần duy nhất một liên kết chính và một phiên bản hiệu lực. Khi đổi cấu hình cho SKU, thêm liên kết kỳ mới, kiểm tra ngày kết thúc kỳ cũ và tránh cùng ngày biên. Chưa có nút xóa liên kết SKU hoặc khóa liên kết do đã được dùng.
 
 **Trường hợp hợp lệ:** số lượng dòng > 0; số đơn vị trong cấp cha > 0 nếu nhập; quy cách ≥ 0 với đúng đơn vị; SKU cùng Sản phẩm; ngày kết thúc sau ngày bắt đầu. **Trường hợp không hợp lệ:** SKU thuộc Sản phẩm khác, lặp cùng ngày gán, số lượng 0, thiếu đơn vị trọng lượng/kích thước khi đã nhập số đo, thiếu quy đổi của dòng.
 
 Kiểm tra sau khi nhập: đúng Sản phẩm/SKU; một cấu hình chính phù hợp ngày dự kiến; đủ vật tư; lượng dòng cùng một cơ sở đóng gói; ngày liên kết và phiên bản đúng; giá mua có sẵn. Ghi lại cơ sở đóng gói để nhập vào Run. Gán SKU thành công không đưa phiên bản Nháp vào hiệu lực.
+
+### Kích hoạt phiên bản bao bì
+
+Sau khi nhập đủ thành phần và gán đúng SKU, mở chi tiết đúng phiên bản bao bì. Kiểm tra ngày bắt đầu/kết thúc, vật tư và đơn vị. Nhấn **Kích hoạt phiên bản → Xác nhận kích hoạt** và kiểm tra trạng thái phiên bản **Đang hiệu lực**.
+
+Nếu thiếu ngày, chưa có thành phần, danh mục ngừng hoạt động, thiếu quy đổi hoặc chồng ngày với bản hiệu lực của cùng cấu hình, hệ thống báo lỗi trên trang và chưa kích hoạt. Sửa đúng nguyên nhân rồi thử lại. Không tự đóng hoặc sửa bản cũ đã chốt. Sau kích hoạt, muốn thay thành phần phải tạo phiên bản mới.
+
+Gán SKU và trạng thái **Đang hoạt động** không tự kích hoạt phiên bản. Lần tính vẫn cần đúng liên kết SKU, giá mua hiệu lực của từng vật tư và cơ sở đóng gói nhập trên form chạy. Nút này không tự lấy giá hoặc tính chi phí bao bì.
 
 ## 5. Trung tâm sản xuất
 
@@ -254,7 +272,7 @@ Kiểm tra: nhóm đúng; tiêu thức có khả năng thực thi; mã được 
 | Tham chiếu ngừng hoạt động | Giữ tham chiếu đang gắn để xem/sửa lịch sử hoặc sao chép; không cho chọn một tham chiếu ngừng hoạt động khác. Engine còn kiểm tra nguồn hoạt động |
 | Chồng khoảng ngày | Form chưa tự ngăn; engine báo thiếu/mơ hồ thay vì tự lấy bản mới nhất hoặc ưu tiên cao nhất |
 
-Đặt ngày bắt đầu hôm nay có thể khiến badge **Hiệu lực theo ngày** hiển thị **Đang hiệu lực** trong khi **Trạng thái bản ghi** vẫn **Nháp**. Khi kiểm tra nguồn cho Run, phải đọc cả trạng thái, ngày, header hoạt động và tính duy nhất của nguồn. Không có nút duyệt, gửi duyệt hoặc phát hành cần tìm thêm ở các màn hình sản xuất.
+Đặt ngày bắt đầu hôm nay có thể khiến badge **Hiệu lực theo ngày** hiển thị **Đang hiệu lực** trong khi **Trạng thái bản ghi** vẫn **Nháp**. Khi kiểm tra nguồn cho Run, phải đọc cả trạng thái, ngày, header hoạt động và tính duy nhất của nguồn. BOM và bao bì có nút **Kích hoạt phiên bản → Xác nhận kích hoạt** cho bản còn sửa được; không có bước gửi duyệt hay duyệt theo người dùng. Các nguồn sản xuất khác giữ giới hạn đã nêu ở mục 1.
 
 ## 11. Lỗi và cách xử lý tại chỗ
 
@@ -325,4 +343,4 @@ Các đường dẫn tương đối trong cột cuối nối tiếp base tương
 | Phạm vi phân bổ công suất bình thường | [resolvers/allocation.py](../../apps/costing/engine/resolvers/allocation.py), [registry.py](../../apps/costing/engine/registry.py) |
 | Nút lưu, xác nhận ngừng, thao tác dòng | [form chung](../../templates/master_data/partials/reference_data_form_content.html), các templates [BOM](../../templates/bom/partials/detail_content.html), [bao bì](../../templates/bom/packaging/partials/detail_content.html), [quy trình](../../templates/bom/routing/partials/operation_form_content.html) |
 
-Tài liệu triển khai cũ có câu “chưa tính Costing” mô tả thời điểm chỉ làm màn hình cấu hình; phạm vi thực thi hiện tại được xác nhận từ resolver bên trên. Các nút hiệu lực, kiểm tra chồng kỳ, nhập số liệu kỳ hoặc nhân cây bao bì chưa có không được giả định từ thiết kế dự kiến.
+Tài liệu triển khai cũ có câu “chưa tính Costing” mô tả thời điểm chỉ làm màn hình cấu hình; phạm vi thực thi hiện tại được xác nhận từ resolver bên trên. Từ 20/10/2026, BOM/bao bì có nút kích hoạt và kiểm tra chồng kỳ tại bước kích hoạt. Không suy rộng sang nguồn khác; UI nhập số liệu kỳ và nhân cây bao bì vẫn chưa có.

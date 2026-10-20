@@ -1,5 +1,24 @@
 # Supplier + Supplier Price
 
+## Cập nhật 20/10/2026 — Kích hoạt báo giá
+
+Trang chi tiết giá có **Kích hoạt giá → Xác nhận kích hoạt**.
+`POST /master-data/supplier-prices/<id>/activate/` dùng CSRF, internal edit hook,
+transaction và khóa bản ghi. Service đọc lại Supplier/Item/UoM/Currency, kiểm tra
+tham chiếu hoạt động, đơn giá/min_qty không âm, tỷ lệ thuế và ngày theo validator
+hiện có. Nháp/Chờ duyệt/Đã duyệt → EFFECTIVE; giá EFFECTIVE gửi lại không thay đổi;
+giá RETIRED phải tạo bản ghi mới. Actor nullable vẫn NULL, chỉ status được cập nhật.
+
+Không tự kích hoạt theo ngày hoặc kích hoạt hàng loạt dữ liệu thật. Không đổi
+đơn giá/ngày/nguồn tham chiếu; không đóng kỳ hoặc cập nhật báo giá khác. Edit policy
+cũ giữ nguyên; không giả định kích hoạt tạo khóa bất biến. Overlap/quantity-break/
+nhà cung cấp ưu tiên chưa có winner policy: Run vẫn cần duy nhất một giá phù hợp.
+Thuế/FX/quy đổi vẫn tuân theo khả năng hiện có của Costing, không được tự sửa thuế
+hoặc tỷ giá để vượt lỗi. Sau kích hoạt, tạo lần tính mới; Run đã thất bại giữ lịch sử.
+
+Các mô tả “chưa có status transition/nút kích hoạt giá mua” của iteration 07/10
+bên dưới được **superseded** bởi mục này. Không thay schema, model hoặc engine.
+
 Iteration 07/10/2026, single-company/no-auth; UI tiếng Việt. Chỉ triển khai nhà
 cung cấp và giá mua; không triển khai BOM/Costing/approval hoặc module tiếp theo.
 

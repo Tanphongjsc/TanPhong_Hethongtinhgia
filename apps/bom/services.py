@@ -6,6 +6,7 @@ from django.utils import timezone
 
 from apps.core.models import Item, Product, Recipe, RecipeLine, RecipeVersion, Uom
 from apps.master_data.access import require_write_access
+from .activation import definition_hash, require_active, validate_activation_period
 from .constants import LINE_FIELDS, RECIPE_FIELDS, VERSION_FIELDS
 from .validators import ensure_editable, normalize_values, validate_conversions, validate_line, validate_recipe, validate_version
 
@@ -69,7 +70,7 @@ def _assign(record, values):
 
 
 def _validate_version_lines(version, organization, date):
-    lines = list(RecipeLine.objects.filter(recipe_version=version).select_related("component_item", "uom"))
+    lines = list(RecipeLine.objects.filter(recipe_version=version).select_related("component_item__base_uom__category", "uom__category").order_by("display_order", "pk"))
     if any(line.component_item.organization_id != organization.pk for line in lines):
         raise ValidationError("Phiên bản có thành phần không thuộc công ty hiện tại.")
     validate_conversions(lines=[(line.component_item, line.uom) for line in lines], organization=organization, effective_from=date)
@@ -185,5 +186,40 @@ def remove_line(*, workspace, recipe, version, instance):
                 raise ValidationError("Không tìm thấy thành phần của phiên bản này.")
             version.content_hash = None
             version.save(update_fields=["content_hash"])
+    except DatabaseError as error:
+        _database_error(error)
+
+
+def activate_version(*, workspace, recipe, version):
+    require_write_access(workspace, resource="bom_version", editing=True)
+    try:
+        with transaction.atomic():
+            recipe = _locked_recipe(workspace, recipe.pk)
+            # Serialize publication across different Recipes of the same Product:
+            # the costing resolver requires exactly one effective Recipe.
+            product = _reference(Product, recipe.product, "product", workspace.organization)
+            version = _locked_version(recipe, version.pk)
+            if version.status == "EFFECTIVE":
+                return version
+            ensure_editable(version)
+            require_active(recipe, product, version.output_uom)
+            values = {field: getattr(version, field) for field in VERSION_FIELDS}
+            validate_version(data=values, organization=workspace.organization)
+            peers = RecipeVersion.objects.filter(
+                recipe__organization=workspace.organization,
+                recipe__product=product, recipe__is_active=True,
+            )
+            validate_activation_period(version, peers)
+            lines = _validate_version_lines(version, workspace.organization, version.effective_from)
+            if not lines:
+                raise ValidationError("Định mức chưa có thành phần. Vui lòng thêm thành phần trước khi kích hoạt.")
+            for line in lines:
+                require_active(line.component_item, line.component_item.base_uom, line.uom)
+                validate_line(data={field: getattr(line, field) for field in LINE_FIELDS},
+                              organization=workspace.organization)
+            version.content_hash = definition_hash(version, VERSION_FIELDS, lines, LINE_FIELDS)
+            version.status = "EFFECTIVE"
+            version.save(update_fields=["content_hash", "status"])
+            return version
     except DatabaseError as error:
         _database_error(error)

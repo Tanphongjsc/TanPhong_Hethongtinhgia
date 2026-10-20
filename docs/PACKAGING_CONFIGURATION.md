@@ -1,5 +1,25 @@
 # Packaging Configuration — báo cáo implementation
 
+## Bổ sung hiện hành 20/10/2026: kích hoạt phiên bản
+
+Trang chi tiết có **Kích hoạt phiên bản → Xác nhận kích hoạt**.
+`POST /bom/packaging/<id>/versions/<version_id>/activate/` dùng transaction, khóa
+Config → Version và validation hiện có. Cần ngày bắt đầu, ít nhất một thành phần,
+tham chiếu đang hoạt động và quy đổi trực tiếp phù hợp tại ngày bắt đầu. Chặn
+chồng khoảng ngày giữa các bản EFFECTIVE của cùng Config, theo yêu cầu một nguồn
+của resolver; hai kỳ không được cùng chứa ngày ranh giới. Không tự sửa/đóng kỳ cũ.
+
+Service chốt content_hash và status=EFFECTIVE; không thay line, đơn vị, quy cách,
+liên kết SKU hoặc giá. EFFECTIVE bất biến theo trigger hiện có, gửi kích hoạt lại
+không cập nhật bản đã chốt. Muốn thay thành phần phải tạo bản mới Nháp. Việc gán
+SKU, chuẩn đóng gói trên Run và giá mua hiệu lực vẫn là những điều kiện riêng.
+Không thêm sản lượng đầu ra vào schema, không tính giá ở module bao bì.
+
+Các mô tả “chưa có publish/status transition/hash” và “cho phép kích hoạt chồng
+kỳ” trong báo cáo 07/10 bên dưới được **superseded** bởi mục bổ sung này; policy
+liên kết SKU và các phần khác không đổi. Icon Xem/Chỉnh sửa ở danh sách được đặt
+trong ô Thao tác đúng cấu trúc bảng, không thay đường dẫn hoặc chức năng.
+
 Ngày: 07/10/2026. Phạm vi: cấu hình bao bì, phiên bản, thành phần và liên kết SKU
 bằng bảng có sẵn. Không triển khai Routing/Resource/Costing/Pricing/Workflow.
 Single-company/no-auth, UI tiếng Việt, code/database identifiers giữ tiếng Anh.

@@ -4,7 +4,7 @@
 
 **[HỆ THỐNG HIỆN TẠI]** Thứ tự dưới đây dựa trên form, dịch vụ lưu và bộ chọn nguồn hiện có, đối chiếu 09/10/2026. “Tạo được bản ghi” và “đủ nguồn để tính” là hai mốc khác nhau. Nhập đúng thứ tự giúp tránh danh sách lựa chọn trống, liên kết sai đơn vị và nguồn không đủ điều kiện theo ngày.
 
-**Giới hạn từ database rỗng:** giao diện chưa cung cấp mọi bước để tự khởi tạo toàn bộ hệ thống và đưa nguồn mới vào tính giá. Nhóm phần tử chi phí có dropdown nhưng chưa có màn hình quản lý; nhóm này **tùy chọn**, có thể để trống. Giá nhà cung cấp, phiên bản BOM/bao bì/quy trình, đơn giá nguồn lực và quy tắc phân bổ mới lưu Nháp nhưng chưa có thao tác đưa vào hiệu lực. Số liệu kỳ chi phí chung và lịch công suất chưa có UI. Người vận hành bắt đầu khi ứng dụng và ngữ cảnh dữ liệu đã được người phụ trách hệ thống chuẩn bị; không có bước tự tạo bằng menu đăng nhập/công ty trong hướng dẫn này. Dùng [bài thực hành DEMO](09_THUC_HANH_CAPPUCCINO_END_TO_END.md) để học chuỗi tính trên nguồn đã chuẩn bị hợp lệ; không coi lệnh chuẩn bị demo hay sửa database là bước UI.
+**Giới hạn từ database rỗng:** giao diện chưa cung cấp mọi bước để tự khởi tạo toàn bộ hệ thống và đưa nguồn mới vào tính giá. Nhóm phần tử chi phí có dropdown nhưng chưa có màn hình quản lý; nhóm này **tùy chọn**, có thể để trống. BOM và bao bì có thao tác **Kích hoạt phiên bản → Xác nhận kích hoạt** ở trang chi tiết phiên bản. Giá nhà cung cấp có **Kích hoạt giá → Xác nhận kích hoạt** ở trang chi tiết. Phiên bản quy trình, đơn giá nguồn lực và quy tắc phân bổ mới lưu Nháp vẫn chưa có thao tác đưa vào hiệu lực. Số liệu kỳ chi phí chung và lịch công suất chưa có UI. Người vận hành bắt đầu khi ứng dụng và ngữ cảnh dữ liệu đã được người phụ trách hệ thống chuẩn bị; không có bước tự tạo bằng menu đăng nhập/công ty trong hướng dẫn này. Dùng [bài thực hành DEMO](09_THUC_HANH_CAPPUCCINO_END_TO_END.md) để học chuỗi tính trên nguồn đã chuẩn bị hợp lệ; không coi lệnh chuẩn bị demo hay sửa database là bước UI.
 
 ## 1. Bản đồ thứ tự LEVEL 0–8
 
@@ -71,7 +71,7 @@ Vào **Giá nhà cung cấp**; chọn Nhà cung cấp, Item, Đơn vị tính gi
 
 Một giá tồn tại chưa đủ. Khi tính cần đúng một giá hiệu lực phù hợp ngày, vật tư, lượng/ngưỡng và tiền tệ, nhà cung cấp hoạt động; nếu khác đơn vị cần quy đổi. Bộ chọn không tự chọn rẻ nhất, mới nhất hoặc supplier ưu tiên. Các metadata thuế có thể lưu, nhưng Costing hiện chặn xử lý thuế mua chưa hỗ trợ; không xóa thuế thực tế để ép bài toán chạy. FX của Pricing không đổi giá mua sang tiền tệ Run.
 
-**[CHƯA HỖ TRỢ]** Form tạo giá Nháp; chưa có nút đưa giá mới vào hiệu lực. Có thể hoàn thành phần nhập, nhưng chưa vượt qua điều kiện nguồn của engine bằng UI. Dừng xác nhận tại mốc này, ghi thiếu điều kiện, hoặc học phần chạy với nguồn DEMO hợp lệ.
+**[HỆ THỐNG HIỆN TẠI — 20/10/2026]** Sau khi lưu giá Nháp, mở **Xem chi tiết → Kích hoạt giá → Xác nhận kích hoạt**. Kiểm tra trạng thái bản ghi **Đang hiệu lực** và khoảng ngày phù hợp ngày tính. Kích hoạt từng giá nguyên liệu và bao bì cần dùng; không chỉ giá của dòng đầu tiên. Nếu báo lỗi, sửa đúng dữ liệu rồi thử lại. Nguồn khác như thuế, quy đổi, tiền tệ và tính duy nhất vẫn cần đáp ứng điều kiện của bộ tính.
 
 Sau level 3:
 
@@ -90,7 +90,7 @@ Thực hiện các nhánh cần cho phương án, theo [hướng dẫn sản xu�
 4. **Quy trình sản xuất:** tạo header/phiên bản; khai báo lô nếu cần; thêm công đoạn theo thứ tự, thời gian, trung tâm, nguồn lực chính và cơ sở. Công đoạn có thời gian khác 0 cần nguồn lực chính và TIME UoM để tính; thời gian chạy cần cơ sở công đoạn hoặc cơ sở lô.
 5. **Nhóm chi phí chung → Quy tắc phân bổ:** chỉ dùng nguồn phân bổ `NORMAL_CAPACITY` trong phạm vi thực thi hiện tại. Cần số liệu kỳ chi phí chung có tiền/công suất/đơn vị hợp lệ. Nhóm chi phí không tự cộng các Phần tử chi phí vào số tiền kỳ.
 
-**[CHƯA HỖ TRỢ]** Phiên bản BOM/bao bì/quy trình, Rate và Rule mới đều Nháp, chưa có nút hiệu lực. `CostPoolPeriod` có model nhưng chưa có form nhập kỳ. Lịch công suất (`CapacityCalendar`) chưa có module/form hoặc mapping model trong source đã kiểm tra; công suất trên WorkCenter/Resource không tự tạo số liệu kỳ hoặc lịch. Không nhập hoặc tìm các nút chưa tồn tại.
+**[HỆ THỐNG HIỆN TẠI — 20/10/2026]** Sau khi nhập đủ thành phần và ngày áp dụng, mở chi tiết phiên bản BOM và bao bì, chọn **Kích hoạt phiên bản → Xác nhận kích hoạt**. Bản được kích hoạt không sửa trực tiếp; muốn đổi cần tạo phiên bản mới. **[CHƯA HỖ TRỢ]** Phiên bản quy trình, Rate và Rule mới vẫn Nháp, chưa có nút hiệu lực. `CostPoolPeriod` có model nhưng chưa có form nhập kỳ. Lịch công suất (`CapacityCalendar`) chưa có module/form hoặc mapping model trong source đã kiểm tra; công suất trên WorkCenter/Resource không tự tạo số liệu kỳ hoặc lịch. Không nhập hoặc tìm các nút chưa tồn tại.
 
 Sau level 4:
 
@@ -119,7 +119,7 @@ Sau level 5:
 
 Vào **Lần tính giá thành**, tạo lần tính với **Sản phẩm**, **SKU** khi cần, **Ngày tính giá**, **Phương án tính giá thành**, **Sản lượng cần tính**, **Đơn vị sản lượng**, **Tiền tệ kết quả**. Chọn Product sẽ tải SKU; đổi ngày có thể đổi phương án hiệu lực và các trường nhập. Khi chọn phương án, các đầu vào MANUAL được sinh theo các dòng nguồn; có `PACKAGING_COST` thì hai trường cơ sở đóng gói bắt buộc.
 
-**Kiểm tra trước khi tính:** đúng một SchemeVersion, đúng nguồn SYSTEM cần dùng, nguồn hoạt động/hiệu lực, giá/rate/quy đổi duy nhất, cơ sở đóng gói đầy đủ, lượng và đơn vị rõ, đầu vào thủ công đủ. Công thức/Phương án có thể kích hoạt bằng UI, nhưng điều đó không giải quyết các nguồn manufacturing/price Nháp chưa có thao tác hiệu lực.
+**Kiểm tra trước khi tính:** đúng một SchemeVersion, đúng nguồn SYSTEM cần dùng, nguồn hoạt động/hiệu lực, giá/rate/quy đổi duy nhất, cơ sở đóng gói đầy đủ, lượng và đơn vị rõ, đầu vào thủ công đủ. Công thức/Phương án có thể kích hoạt bằng UI, BOM/bao bì và giá mua có thao tác kích hoạt riêng ở chi tiết. Các nguồn quy trình/đơn giá nguồn lực/quy tắc phân bổ mới vẫn giữ giới hạn hiệu lực đã nêu ở trên.
 
 Khi thành công, kiểm tra tổng và giá thành một đơn vị, trace vật tư/bao bì/nguồn lực/phân bổ. Kết quả được lưu và khóa theo hành vi Run hiện tại; Pricing chỉ chọn nguồn **Đã khóa** có kết quả hợp lệ. Khi thất bại, đọc thông báo nguồn thiếu/mơ hồ, sửa nguyên nhân và tạo/tính lại theo thao tác tạo bản mới; không ghi đè Run lịch sử.
 
