@@ -1,3 +1,5 @@
+{% load deletion_tags %}
+{% if version %}{% deletion_action version "formula_version" secondary=True as version_delete %}{% if version_delete %}<div class="mb-3 flex justify-end">{% include "components/delete_action.html" with delete_action=version_delete %}</div>{% endif %}{% endif %}
 {% load workspace_tags %}
 <div id="formula-detail" class="ui-panel p-4 sm:p-6">
   {% if activation_error %}<p role="alert" class="mb-4 rounded border border-red-200 bg-red-50 p-3 text-red-700">{{ activation_error }}</p>{% endif %}

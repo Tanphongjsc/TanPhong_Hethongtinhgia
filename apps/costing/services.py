@@ -149,6 +149,8 @@ def remove_line(*, workspace, scheme, version, instance):
         with transaction.atomic():
             scheme, version = _lock(workspace, scheme, version)
             ensure_editable(version)
+            from apps.master_data.deletion import assert_child_removable
+            assert_child_removable(instance)
             deleted, _ = CostingSchemeLine.objects.filter(pk=instance.pk, scheme_version=version).delete()
             if not deleted: raise ValidationError("Không tìm thấy dòng cấu hình.")
             version.content_hash = None; version.save(update_fields=["content_hash"])

@@ -1,9 +1,11 @@
 from django.urls import path
 
 from . import views
+from .deletion_views import record_delete
 
 app_name = "master_data"
 urlpatterns = [
+    path("delete/<str:resource>/<path:identifier>/", record_delete, name="record_delete"),
     path("suppliers/", views.supplier_list, name="supplier_list"),
     path("suppliers/create/", views.supplier_create, name="supplier_create"),
     path("suppliers/<int:pk>/", views.supplier_detail, name="supplier_detail"),

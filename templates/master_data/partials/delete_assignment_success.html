@@ -1,0 +1,3 @@
+{% include "master_data/partials/reference_data_table.html" %}
+<div id="modal-root" hx-swap-oob="innerHTML"></div>
+<div id="toast-root" hx-swap-oob="beforeend">{% for message in messages %}{% include "components/toast.html" with message=message %}{% endfor %}</div>

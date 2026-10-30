@@ -182,6 +182,8 @@ def remove_line(*, workspace, config, version, instance):
             config = _locked_config(workspace, config.pk)
             version = _locked_version(config, version.pk)
             ensure_editable(version)
+            from apps.master_data.deletion import assert_child_removable
+            assert_child_removable(instance)
             deleted, _ = PackagingLine.objects.filter(pk=instance.pk, packaging_config_version=version).delete()
             if not deleted:
                 raise ValidationError("Không tìm thấy thành phần của phiên bản này.")

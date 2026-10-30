@@ -1,3 +1,5 @@
+{% load deletion_tags %}
+{% if version %}{% deletion_action version "scheme_version" secondary=True as version_delete %}{% if version_delete %}<div class="mb-3 flex justify-end">{% include "components/delete_action.html" with delete_action=version_delete %}</div>{% endif %}{% endif %}
 {% load workspace_tags %}
 <div id="scheme-detail">
   <section class="ui-panel mb-5 p-4 sm:p-5" aria-labelledby="scheme-header-title">

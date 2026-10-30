@@ -1,8 +1,8 @@
 # Bộ hướng dẫn sử dụng tính giá thành và giá bán
 
-Phiên bản tài liệu: 09/10/2026. Phạm vi: giao diện và bộ tính hiện có trong repository tại thời điểm kiểm chứng. Đây là tài liệu cho kế toán, sản xuất, mua hàng và kinh doanh; không cần biết lập trình để đọc các chương chính.
+Bản hướng dẫn có ảnh cập nhật: **23/10/2026**, bao quát 28 mục chức năng, thao tác CRUD và các bước nghiệp vụ nâng cao; toàn bộ ảnh là desktop. Các chương tra cứu gốc có mốc 09/10/2026 và các bổ sung theo ngày. Phạm vi: giao diện và bộ tính hiện có trong repository tại thời điểm kiểm chứng. Đây là tài liệu cho kế toán, sản xuất, mua hàng và kinh doanh; không cần biết lập trình để đọc các chương chính.
 
-Bắt đầu tại [Sổ tay tổng hợp](../HUONG_DAN_SU_DUNG_HE_THONG_TINH_GIA.md). Để học bằng dữ liệu cụ thể, mở [Bài thực hành Cappuccino](09_THUC_HANH_CAPPUCCINO_END_TO_END.md). Bổ sung ngày 20/10/2026: [Bài cà phê 3 trong 1 theo Excel, bán Shopee và trực tiếp](15_THUC_HANH_CAFE_3IN1_SHOPEE_VA_TRUC_TIEP.md).
+Bắt đầu tại **[Hướng dẫn sử dụng có ảnh](HUONG_DAN_SU_DUNG_CO_ANH.md)** ([bản PDF](HUONG_DAN_SU_DUNG_DAY_DU_DESKTOP.pdf), [độ phủ chức năng](DO_PHU_HUONG_DAN_CO_ANH.md)). Nếu cần tra cứu chuyên sâu, xem [Sổ tay tổng hợp](../HUONG_DAN_SU_DUNG_HE_THONG_TINH_GIA.md). Để học bằng dữ liệu cụ thể, mở [Bài thực hành Cappuccino](09_THUC_HANH_CAPPUCCINO_END_TO_END.md). Bổ sung ngày 20/10/2026: [Bài cà phê 3 trong 1 theo Excel, bán Shopee và trực tiếp](15_THUC_HANH_CAFE_3IN1_SHOPEE_VA_TRUC_TIEP.md).
 
 | Chương | Khi nào đọc |
 |---|---|
@@ -41,3 +41,7 @@ Phần mềm phải được người phụ trách triển khai và kết nối 
 **Database rỗng hoàn toàn chưa thể thiết lập đầy đủ chỉ bằng giao diện hiện có.** Một số nguồn mới lưu Nháp nhưng chưa có thao tác đưa vào hiệu lực; số liệu kỳ chi phí chung cũng chưa có màn hình nhập. Chương 03 và GAP_REGISTER chỉ rõ các điểm dừng. Bài thực hành sử dụng mẫu đã được người phụ trách chuẩn bị, không hướng dẫn sửa trực tiếp trạng thái trong database.
 
 Đọc các ví dụ thuế như giả định đào tạo; doanh nghiệp tự xác định chính sách và mức thuế phù hợp thực tế. Mức 10%/11% trong DEMO không phải khẳng định thuế suất pháp lý hiện hành.
+
+## Xóa dữ liệu (bổ sung 21/10/2026)
+
+Mở trang chi tiết, chọn **Xóa …**, đọc ràng buộc và xác nhận. Bản ghi đang được sử dụng hoặc đã chốt được bảo vệ. Xem [hướng dẫn và chính sách xóa](../delete-feature/DELETE_POLICY.md) trước khi dọn dữ liệu nhập nhầm. Những mô tả chưa có chức năng xóa trong tài liệu cũ được thay thế theo đúng phạm vi hướng dẫn này.

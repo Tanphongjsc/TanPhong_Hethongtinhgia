@@ -1,7 +1,11 @@
+{% load deletion_tags %}
 <div class="ui-page-header flex flex-wrap justify-between">
   <div class="min-w-0">
     <h1 class="ui-page-title break-words">{{ page_title }}</h1>
     {% if page_description %}<p class="ui-page-description whitespace-pre-line">{{ page_description }}</p>{% endif %}
   </div>
+  <div class="flex flex-wrap items-center gap-2">
+  {% deletion_action as delete_action %}{% include "components/delete_action.html" %}
   {% if primary_action_url %}{% include "components/button.html" with href=primary_action_url label=primary_action_label primary=True %}{% endif %}
+  </div>
 </div>

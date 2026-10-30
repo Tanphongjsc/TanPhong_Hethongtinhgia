@@ -1,3 +1,5 @@
+{% load deletion_tags %}
+{% if version %}{% deletion_action version "bom_version" secondary=True as version_delete %}{% if version_delete %}<div class="mb-3 flex justify-end">{% include "components/delete_action.html" with delete_action=version_delete %}</div>{% endif %}{% endif %}
 {% load workspace_tags %}
 {% include "bom/partials/activation_errors.html" %}
 <div id="bom-detail">

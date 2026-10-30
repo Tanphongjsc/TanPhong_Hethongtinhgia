@@ -188,6 +188,8 @@ def remove_operation(*, workspace, routing, version, instance):
             routing = _locked_routing(workspace, routing.pk)
             version = _locked_version(routing, version.pk)
             ensure_editable(version)
+            from apps.master_data.deletion import assert_child_removable
+            assert_child_removable(instance)
             deleted, _ = RoutingOperation.objects.filter(pk=instance.pk, routing_version=version).delete()
             if not deleted:
                 raise ValidationError("Không tìm thấy công đoạn của phiên bản này.")

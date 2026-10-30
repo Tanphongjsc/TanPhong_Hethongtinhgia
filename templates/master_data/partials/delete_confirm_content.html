@@ -1,0 +1,3 @@
+<div x-data x-init="$nextTick(() => $dispatch('open-modal', { id: 'delete-confirm' }))">
+{% include "components/modal.html" with modal_id="delete-confirm" modal_title="Xác nhận xóa" modal_content_template="master_data/partials/delete_form.html" %}
+</div>

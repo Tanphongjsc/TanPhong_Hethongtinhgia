@@ -8,7 +8,8 @@ def install_scheme_fixtures(editor):
     database = editor.connection.settings_dict
     if database["NAME"] != "test_costing_slice" or database["HOST"] != "127.0.0.1":
         raise RuntimeError("Scheme fixtures require isolated localhost tests.")
-    for model in (RuleTable, CostingScheme, CostingSchemeVersion, CostingSchemeLine): editor.create_model(model)
+    from apps.core.models import RuleTableVersion, RuleRow
+    for model in (RuleTable, RuleTableVersion, RuleRow, CostingScheme, CostingSchemeVersion, CostingSchemeLine): editor.create_model(model)
     constraints = (
         (CostingSchemeVersion, "ck_costing_scheme_version_status", models.Q(status__in=tuple(dict(VERSION_STATUSES)))),
         (CostingSchemeVersion, "ck_costing_scheme_version_period", models.Q(effective_to__isnull=True) | models.Q(effective_from__isnull=True) | models.Q(effective_to__gt=models.F("effective_from"))),

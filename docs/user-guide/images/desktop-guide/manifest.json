@@ -1,0 +1,322 @@
+{
+  "date": "2026-10-23",
+  "chapters": 16,
+  "menu_destinations": 28,
+  "images_used": 44,
+  "viewport": [
+    1440,
+    960
+  ],
+  "capture_pages": 67,
+  "missing_links": 0,
+  "screenshots": [
+    {
+      "name": "channel-list",
+      "url": "/pricing/channels/",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    },
+    {
+      "name": "work_center-list",
+      "url": "/bom/work-centers/",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    },
+    {
+      "name": "resource_rate-list",
+      "url": "/bom/resource-rates/",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    },
+    {
+      "name": "cost_element-list",
+      "url": "/master-data/cost-elements/",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    },
+    {
+      "name": "currency-list",
+      "url": "/master-data/currencies/",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    },
+    {
+      "name": "uom_category-list",
+      "url": "/master-data/uom-categories/",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    },
+    {
+      "name": "uom-list",
+      "url": "/master-data/uoms/",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    },
+    {
+      "name": "uom_conversion-list",
+      "url": "/master-data/uom-conversions/",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    },
+    {
+      "name": "category-list",
+      "url": "/product/categories/",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    },
+    {
+      "name": "item-list",
+      "url": "/product/items/",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    },
+    {
+      "name": "product-list",
+      "url": "/product/products/",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    },
+    {
+      "name": "sku-list",
+      "url": "/product/skus/",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    },
+    {
+      "name": "supplier-list",
+      "url": "/master-data/suppliers/",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    },
+    {
+      "name": "cost-element-form",
+      "url": "/master-data/cost-elements/create/",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    },
+    {
+      "name": "supplier-price-form",
+      "url": "/master-data/supplier-prices/create/",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    },
+    {
+      "name": "allocation-form",
+      "url": "/bom/allocation-rules/create/",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    },
+    {
+      "name": "formula-form",
+      "url": "/formula-engine/formulas/create/",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    },
+    {
+      "name": "fee-form",
+      "url": "/pricing/channel-fee-rules/create/",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    },
+    {
+      "name": "tax-form",
+      "url": "/pricing/tax-rules/create/",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    },
+    {
+      "name": "fx-form",
+      "url": "/pricing/fx-rates/create/",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    },
+    {
+      "name": "supplier-price-detail",
+      "url": "/master-data/supplier-prices/2/",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    },
+    {
+      "name": "bom-line-form",
+      "url": "/bom/1/versions/2/lines/create/",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    },
+    {
+      "name": "bom-versions",
+      "url": "/bom/1/versions/",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    },
+    {
+      "name": "packaging-detail",
+      "url": "/bom/packaging/1/versions/1/",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    },
+    {
+      "name": "packaging-line-form",
+      "url": "/bom/packaging/1/versions/2/lines/create/",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    },
+    {
+      "name": "packaging-assignments",
+      "url": "/bom/packaging/1/skus/",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    },
+    {
+      "name": "resource-detail",
+      "url": "/bom/resources/1/",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    },
+    {
+      "name": "routing-detail",
+      "url": "/bom/routings/1/versions/1/",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    },
+    {
+      "name": "operation-form",
+      "url": "/bom/routings/1/versions/2/operations/create/",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    },
+    {
+      "name": "pool-detail",
+      "url": "/bom/cost-pools/1/",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    },
+    {
+      "name": "formula-detail",
+      "url": "/formula-engine/formulas/1/versions/3/",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    },
+    {
+      "name": "scheme-line-form",
+      "url": "/costing/schemes/1/versions/2/lines/create/",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    },
+    {
+      "name": "run-detail",
+      "url": "/costing/runs/396e9202-1fef-40a1-b6a8-31a1c0258a4e/",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    },
+    {
+      "name": "run-sources",
+      "url": "/costing/runs/396e9202-1fef-40a1-b6a8-31a1c0258a4e/snapshot/",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    },
+    {
+      "name": "scenario-detail",
+      "url": "/pricing/scenarios/1/",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    },
+    {
+      "name": "run-form",
+      "url": "/costing/runs/create/",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    },
+    {
+      "name": "scenario-form",
+      "url": "/pricing/scenarios/create/",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    },
+    {
+      "name": "run-trace",
+      "url": "/costing/runs/396e9202-1fef-40a1-b6a8-31a1c0258a4e/",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    },
+    {
+      "name": "bom-activation",
+      "url": "/bom/1/versions/2/",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    },
+    {
+      "name": "delete-confirm",
+      "url": "/master-data/delete/supplier/1/",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    },
+    {
+      "name": "comparison-result",
+      "url": "/pricing/scenarios/compare/?product=1&sku=1&scenario=1&scenario=2",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    },
+    {
+      "name": "formula-tests",
+      "url": "/formula-engine/formulas/1/versions/3/",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    },
+    {
+      "name": "scheme-validation",
+      "url": "/costing/schemes/1/versions/2/",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    },
+    {
+      "name": "pricing-close-period",
+      "url": "/pricing/channel-fee-rules/3/close/",
+      "width": 1440,
+      "height": 960,
+      "status": 200
+    }
+  ]
+}

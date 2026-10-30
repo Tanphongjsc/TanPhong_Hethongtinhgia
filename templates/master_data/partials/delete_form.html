@@ -1,0 +1,15 @@
+<div id="delete-confirm-content">
+  <p class="break-words">Bản ghi: <strong>{{ record_label }}</strong></p>
+  {% if delete_errors %}<div role="alert" class="ui-alert mt-3 border border-red-200 bg-red-50 text-red-800"><p class="font-semibold">Không thể xóa dữ liệu.</p><ul class="mt-2 list-disc pl-5">{% for error in delete_errors %}<li>{{ error }}</li>{% endfor %}</ul></div>{% endif %}
+  {% if blockers %}<div role="alert" class="ui-alert mt-3 border border-amber-200 bg-amber-50 text-amber-900"><ul class="list-disc pl-5">{% for reason in blockers %}<li>{{ reason }}</li>{% endfor %}</ul></div>{% endif %}
+  {% if owned_rows %}<p class="mt-3 font-medium">Dữ liệu của bản nháp sẽ được xóa cùng:</p><ul class="list-disc pl-5">{% for label,count in owned_rows %}<li>{{ count }} {{ label }}</li>{% endfor %}</ul>{% endif %}
+  {% if warnings %}<div class="ui-alert mt-3 border border-amber-200 bg-amber-50 text-amber-900"><ul class="list-disc pl-5">{% for warning in warnings %}<li>{{ warning }}</li>{% endfor %}</ul></div>{% endif %}
+  {% if can_delete %}
+  <p class="mt-3">Thao tác này xóa dữ liệu vĩnh viễn và không thể hoàn tác. Dữ liệu liên quan sẽ được kiểm tra lại trước khi xóa.</p>
+  <form id="delete-record-form" method="post" action="{{ delete_url }}" {% if delete_modal %}hx-post="{{ delete_url }}" hx-target="#modal-root" hx-swap="innerHTML" hx-push-url="false" hx-sync="this:drop" hx-disabled-elt="find button"{% endif %} class="mt-5 flex flex-wrap justify-end gap-2">
+    {% csrf_token %}<input type="hidden" name="query" value="{{ return_query }}"><input type="hidden" name="confirmation" value="{{ confirmation_token }}">
+    {% if delete_modal %}<button type="button" @click="close()" class="ui-button ui-button--secondary">Hủy</button>{% else %}<a href="{{ list_url }}" class="ui-button ui-button--secondary">Hủy</a>{% endif %}
+    <button type="submit" class="ui-button ui-button--danger">{% include "components/icon.html" with name="trash-2" %}Xóa</button>
+  </form>
+  {% else %}<div class="mt-5 flex justify-end">{% if delete_modal %}<button type="button" @click="close()" class="ui-button ui-button--secondary">Đóng</button>{% else %}<a href="{{ list_url }}" class="ui-button ui-button--secondary">Quay lại danh sách</a>{% endif %}</div>{% endif %}
+</div>

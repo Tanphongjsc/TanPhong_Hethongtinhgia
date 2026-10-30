@@ -97,6 +97,8 @@ class CostingTestRunner(DiscoverRunner):
             install_scheme_fixtures(editor)
             from apps.costing.run_testing import install_run_fixtures
             install_run_fixtures(editor)
+            from apps.core.models import CostingOverride
+            editor.create_model(CostingOverride)
             from apps.pricing.testing import install_pricing_fixtures
             install_pricing_fixtures(editor)
             editor.add_constraint(CostPool, models.CheckConstraint(condition=models.Q(pool_type__in=tuple(dict(POOL_TYPES))), name="ck_cost_pool_type"))

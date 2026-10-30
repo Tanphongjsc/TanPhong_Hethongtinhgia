@@ -181,6 +181,8 @@ def remove_line(*, workspace, recipe, version, instance):
             recipe = _locked_recipe(workspace, recipe.pk)
             version = _locked_version(recipe, version.pk)
             ensure_editable(version)
+            from apps.master_data.deletion import assert_child_removable
+            assert_child_removable(instance)
             deleted, _ = RecipeLine.objects.filter(pk=instance.pk, recipe_version=version).delete()
             if not deleted:
                 raise ValidationError("Không tìm thấy thành phần của phiên bản này.")

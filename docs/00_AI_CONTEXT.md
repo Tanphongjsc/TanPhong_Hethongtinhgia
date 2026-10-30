@@ -5,6 +5,16 @@ Tài liệu này là entry point bắt buộc cho AI/Codex trước khi làm vi�
 
 ## 1. Current Architecture — nguồn sự thật hiện tại
 
+- **21/10/2026 — xóa dữ liệu an toàn:** có nút Xóa ở trang chi tiết danh mục/cấu hình
+  đủ điều kiện và xác nhận modal dùng POST + CSRF. Chặn FK, tham chiếu mã, quy đổi
+  đang sử dụng, lịch sử thiếu bằng chứng và bản đã chốt; bản nháp chỉ xóa các dòng
+  sở hữu đã kiểm tra. Run đã lưu và Scenario có kết quả giữ nguyên; FormulaTestCase
+  tiếp tục ngừng sử dụng. Không thay schema/engine/Golden, không Auth/Organization UI.
+  Các hướng dẫn “chưa có chức năng xóa” trước đây được superseded trong phạm vi
+  [DELETE_POLICY](delete-feature/DELETE_POLICY.md) và
+  [DELETE_COVERAGE_MATRIX](delete-feature/DELETE_COVERAGE_MATRIX.md).
+
+
 - **20/10/2026 — diễn giải dễ đọc và nhãn trường:** cải thiện Run trace/snapshot
   và bảng diễn giải phí/thuế Pricing, chỉ đọc dữ liệu đã lưu. Presenter không ORM,
   không gọi engine; labels/help hiển thị qua mapping trong master_data.presentation.
