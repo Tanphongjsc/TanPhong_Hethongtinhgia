@@ -102,7 +102,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = '/static/'
+# Khi chạy sau cổng Tân Phong: DJANGO_STATIC_URL=/tinh-gia/static/ (xem docs/DEPLOYMENT_RENDER.md).
+STATIC_URL = env("DJANGO_STATIC_URL", default="/static/")
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 

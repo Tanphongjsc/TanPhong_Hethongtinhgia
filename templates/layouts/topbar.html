@@ -2,6 +2,11 @@
   <button type="button" @click="toggleSidebar" class="ui-icon-button" aria-label="Đóng hoặc mở thanh điều hướng" aria-controls="workspace-sidebar" :aria-expanded="desktop ? expanded : mobileOpen" data-tooltip="Đóng hoặc mở thanh điều hướng">
     {% include "components/icon.html" with name="panel-left" %}
   </button>
+  {% if request.META.SCRIPT_NAME %}
+  <a href="/" class="ui-icon-button" aria-label="Về trang chủ Tân Phong" data-tooltip="Về trang chủ Tân Phong">
+    {% include "components/icon.html" with name="arrow-left" %}
+  </a>
+  {% endif %}
   <div class="ui-topbar-context">
     {% if breadcrumbs %}{% include "layouts/breadcrumbs.html" %}{% else %}<span class="font-medium text-slate-700">Hệ thống tính giá thành</span>{% endif %}
   </div>

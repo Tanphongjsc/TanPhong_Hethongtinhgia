@@ -233,6 +233,19 @@ Nếu không hỗ trợ: ghi trạng thái public, cần giải pháp hạn ch�
 được quyết định riêng trước khi đưa dữ liệu nhạy cảm vào. Không tự thêm login/
 Basic Auth/roles và không tự chuyển Private Service thiếu gateway browser.
 
+## 7a. Chạy dưới cổng Tân Phong (`/tinh-gia/`)
+
+Từ 2026-11, Tính giá có thể chạy chung service Render với phần mềm lương, sau cổng nginx, tại `https://tanphong-manager-project-ydbo.onrender.com/tinh-gia/`. Cấu hình container nằm trong thư mục `deploy/` của repo `TanPhong_Manager_Project` (xem `deploy/README.txt`). Logic nghiệp vụ, `manage.py`, test runner và schema `costing` không đổi; không chạy `migrate`/`seed`.
+
+- Code được lấy theo commit SHA ghi trong biến `TINHGIA_GIT_REF` của service chung.
+- Mọi biến của service cũ được khai báo lại với tiền tố `TINHGIA_` (ví dụ `TINHGIA_DATABASE_URL`, `TINHGIA_DJANGO_SECRET_KEY`, `TINHGIA_APP_TRANSPORT=render_https`). `deploy/with_env.py` bỏ tiền tố trước khi khởi động, nên Tính giá không thấy biến của phần mềm khác.
+- Gunicorn chạy với `SCRIPT_NAME=/tinh-gia` và `--bind 127.0.0.1:8103`; `{% url %}` tự sinh đường dẫn có tiền tố.
+- `DJANGO_STATIC_URL=/tinh-gia/static/` (mặc định vẫn `/static/`). Giá trị tuyệt đối là cố ý, vì Django cache `STATIC_URL` ở lần đọc đầu tiên. nginx phục vụ trực tiếp `/tinh-gia/static/` từ `DJANGO_STATIC_ROOT=/app/tinhgia/staticfiles`.
+- `collectstatic` chạy lúc build image với giá trị cấu hình giả, không kết nối DB. `post_worker_init` vẫn kiểm tra DB và static manifest trước khi nhận request.
+- Truy cập yêu cầu đăng nhập bằng tài khoản phần mềm lương và quyền `access_control.view_tinh_gia`, do cổng nginx kiểm tra (`auth_request`). Tính giá vẫn không có login riêng (`APP_MODE=single_company`).
+- Cookie `csrftoken` và `messages` của Tính giá bị nginx giới hạn trong path `/tinh-gia/`.
+- Khi chạy dưới cổng, thanh trên cùng có nút "Về trang chủ Tân Phong" (chỉ hiện khi có `SCRIPT_NAME`).
+
 ## 8. Troubleshooting và rollback
 
 | Lỗi | Kiểm tra / cách xử lý |
